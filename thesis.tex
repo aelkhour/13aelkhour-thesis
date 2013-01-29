@@ -1,28 +1,5 @@
 \documentclass[a4paper,twoside,openright]{book}
 
-%PdfTeX settings for a correct UTF 8 Mapping
-%------------------------------------------------------
-\usepackage{ifpdf}
-\ifpdf    \input{glyphtounicode.tex}    %Part of modern distribution
-      %%%\input{glyphtounicode-cmr.tex}     %Additionnal glyph: You must grab it from pdfx package
-      \pdfgentounicode=1
-\else  %Place here the settings for other compilator
-\fi
-
-
-%Encoding + cmap (to get proper UTF8 mapping)
-%------------------------------------------------------
-\usepackage{cmap}
-%\usepackage[utf8x]{inputenc}
-\usepackage{CJKutf8}
-\usepackage[C40,T1]{fontenc}
-
-%NB: CHANGE lmodern AND fourier TO SEE THE PROBLEM OF MISSING UNICODE CHARACTERS
-%     You can see this on Acrobat Pro with acessibility checking or simply by copy-pasting the content.
-%     Of course copy paste is not perfect in both case but it is better with lmodern
-%------------------------------------------------------
-\usepackage{lmodern}
-
 %AMS Math + UTF8 mapping of ams symbols
 %------------------------------------------------------
 %\usepackage{amsmath}
@@ -37,7 +14,7 @@
 \fi
 
 % Other packages.
-\usepackage[USenglish,francais]{babel}
+\usepackage[USenglish]{babel}
 
 \usepackage{array}
 \usepackage{amsthm}
@@ -80,12 +57,6 @@
 
 \usepackage{algorithmic, algorithm}
 
-%\usepackage{newunicodechar}
-%\newunicodechar{ }{~}
-\DeclareUnicodeCharacter{00A0}{~}
-
-\floatname{table}{Tableau}
-
 \usepackage[squaren, Gray, cdot]{SIunits}
 
 \usepackage{rotating}
@@ -97,8 +68,6 @@
 
 \renewcommand{\algorithmicrequire}{\textbf{Input:}}
 \renewcommand{\algorithmicensure}{\textbf{Output:}}
-
-
 
 % Setup pdf meta-data.
 \hypersetup{ % Modifiez la valeur des champs suivants
@@ -122,25 +91,13 @@ pdfproducer = {Antonio El Khoury}
   {\parindent \z@ \raggedright \normalfont
     \ifnum \c@secnumdepth >\m@ne
       \if@mainmatter
-        \huge\bfseries\thechapter\enspace
+        \Huge\bfseries\thechapter\enspace
       \fi
     \fi
     \Huge \bfseries #1\par\nobreak
     \vskip 40\p@
   }}
 \makeatother
-
-% Add definition definition.
-\newtheorem{mydef}{Définition}
-\newtheorem{myexample}{Exemple}
-
-\newtheorem{theorem}{Théorème}
-\newtheorem{definition}{Définition}
-\newtheorem{lemma}[theorem]{Lemme}
-\newtheorem{corollary}[theorem]{corollaire}
-\newtheorem{property}[theorem]{Propriété}
-
-%\newenvironment{proof}{\noindent {\bf Démonstration~:}}{\hfill $\Box$\vspace{2mm}\par}
 
 \newcommand\vect[1]{\textbf{#1}}
 \newcommand\moment[2]{{\cal M}_{#2}^{#1}}
@@ -161,11 +118,6 @@ pdfproducer = {Antonio El Khoury}
 \pagestyle{headings}
 \setlength{\headheight}{25pt}
 
-% Fix Autoref french support.
-\def\chapterautorefname{Chapitre}
-\def\mydefautorefname{Définition}
-
-
 % Custom commands.
 \newcommand{\transformation}[2]{%
 \ensuremath{{}^{#1}\!\text{M}_{#2}}}
@@ -173,7 +125,7 @@ pdfproducer = {Antonio El Khoury}
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 
 \begin{document}
-\bibliographystyle{francais}
+\bibliographystyle{these}
 %
 \author{Antonio El Khoury}
 \title{Optimisation numérique pour la robotique et exécution de trajectoires référencées capteurs}
@@ -193,15 +145,19 @@ pdfproducer = {Antonio El Khoury}
 \pagestyle{empty}
 %\include{src/remerciements}
 %\include{src/publis}
-\pagestyle{headings}
+
+% Define headers
+\pagestyle{fancy}
+\renewcommand{\headrulewidth}{0pt}
+\fancyhf{}
+\fancyhead[LE]{\leftmark} % Chapter name on left even pages
+\fancyhead[RE]{\thepage} % Page number on right even pages
+\fancyhead[LO]{\rightmark} % Section name on left odd pages
+\fancyhead[RO]{\thepage} % Page number on right odd pages
+
 %\include{src/chap0-introduction/chap0-introduction}
 \include{src/chap1-path-optimization/chap1-path-optimization}
-%\include{src/chap2-suivi-trajectoire/chap2-suivi-trajectoire}
-%\include{src/chap3-primitive-mouvement/chap3-primitive-mouvement}
-%\include{src/chap4-integration/chap4-integration}
-%\include{src/chap5-conclusion/chap5-conclusion}
-%
-%
+
 \backmatter
 
 \addcontentsline{toc}{chapter}{Liste of figures}
