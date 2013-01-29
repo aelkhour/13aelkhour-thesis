@@ -1,0 +1,223 @@
+\documentclass[a4paper,twoside,openright]{book}
+
+%PdfTeX settings for a correct UTF 8 Mapping
+%------------------------------------------------------
+\usepackage{ifpdf}
+\ifpdf    \input{glyphtounicode.tex}    %Part of modern distribution
+      %%%\input{glyphtounicode-cmr.tex}     %Additionnal glyph: You must grab it from pdfx package
+      \pdfgentounicode=1
+\else  %Place here the settings for other compilator
+\fi
+
+
+%Encoding + cmap (to get proper UTF8 mapping)
+%------------------------------------------------------
+\usepackage{cmap}
+%\usepackage[utf8x]{inputenc}
+\usepackage{CJKutf8}
+\usepackage[C40,T1]{fontenc}
+
+%NB: CHANGE lmodern AND fourier TO SEE THE PROBLEM OF MISSING UNICODE CHARACTERS
+%     You can see this on Acrobat Pro with acessibility checking or simply by copy-pasting the content.
+%     Of course copy paste is not perfect in both case but it is better with lmodern
+%------------------------------------------------------
+\usepackage{lmodern}
+
+%AMS Math + UTF8 mapping of ams symbols
+%------------------------------------------------------
+%\usepackage{amsmath}
+\usepackage{mathtools}
+\usepackage{amssymb} % I load it after Fourier else I have more incorrect utf8 mapping (with \geqslant for example)
+%Correct UTF8 mapping for ams fonts
+\ifdefined\pdffontattr% \ifdefined is part of the e-TeX extension, which is part of any modern LaTeX compiler.
+    \immediate\pdfobj stream file {umsa.cmap}
+    {\usefont{U}{msa}{m}{n}\pdffontattr\font{/ToUnicode \the\pdflastobj\space 0 R}}
+    \immediate\pdfobj stream file {umsb.cmap}
+    {\usefont{U}{msb}{m}{n}\pdffontattr\font{/ToUnicode \the\pdflastobj\space 0 R}}
+\fi
+
+% Other packages.
+\usepackage[USenglish,francais]{babel}
+
+\usepackage{array}
+\usepackage{amsthm}
+\usepackage{amsfonts}
+\usepackage{mathtools}
+\usepackage{makeidx}
+\usepackage[pdftex]{graphicx}
+\usepackage{url}
+\usepackage{epigraph}
+\usepackage{hyperref}
+\usepackage{natbib}
+
+\usepackage{fancyhdr}
+
+\usepackage{hyperref}
+
+\usepackage{type1cm}
+\usepackage{lettrine}
+
+\usepackage{color}
+\usepackage{colortbl}
+\usepackage{placeins}
+
+\usepackage[overlap,CJK]{ruby}    % Furigana support
+\renewcommand{\rubysize}{0.5}     % Furigana size
+\renewcommand{\rubysep}{-0.3ex}   % Spacing between Furigana and Kanji
+
+\usepackage{multirow}
+
+\usepackage{titlesec}
+\titleformat{\chapter}[display]
+{\normalfont\bfseries\filcenter}
+{\LARGE\thechapter}
+{1ex}
+{\titlerule[2pt]
+\vspace{2ex}%
+\LARGE}
+[\vspace{1ex}%
+{\titlerule[2pt]}]
+
+\usepackage{algorithmic, algorithm}
+
+%\usepackage{newunicodechar}
+%\newunicodechar{ }{~}
+\DeclareUnicodeCharacter{00A0}{~}
+
+\floatname{table}{Tableau}
+
+\usepackage[squaren, Gray, cdot]{SIunits}
+
+\usepackage{rotating}
+
+\usepackage{tikz, pgfplots}
+\usepackage{tikz-qtree}
+
+\usetikzlibrary{patterns}
+
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+
+
+
+% Setup pdf meta-data.
+\hypersetup{ % Modifiez la valeur des champs suivants
+pdfauthor = {Antonio El Khoury},
+pdftitle = {Optimisation num\'erique pour la robotique et ex\'ecution de trajectoires r\'ef\'erenc\'ees capteurs},
+pdfsubject = {Optimisation num\'erique pour la robotique et ex\'ecution de trajectoires r\'ef\'erenc\'ees capteurs},
+pdfkeywords = {Motion Planning, Optimal Control, Humanoid Robot},
+pdfcreator = {Antonio El Khoury},
+pdfproducer = {Antonio El Khoury}
+}
+
+% Customize chapter head.
+\makeatletter
+\renewcommand\chapter{\if@openright\cleardoublepage\else\clearpage\fi
+                    \thispagestyle{empty}%
+                    \global\@topnum\z@
+                    \@afterindentfalse
+                    \secdef\@chapter\@schapter}
+\def\@makechapterhead#1{%
+  \vspace*{50\p@}%
+  {\parindent \z@ \raggedright \normalfont
+    \ifnum \c@secnumdepth >\m@ne
+      \if@mainmatter
+        \huge\bfseries\thechapter\enspace
+      \fi
+    \fi
+    \Huge \bfseries #1\par\nobreak
+    \vskip 40\p@
+  }}
+\makeatother
+
+% Add definition definition.
+\newtheorem{mydef}{Définition}
+\newtheorem{myexample}{Exemple}
+
+\newtheorem{theorem}{Théorème}
+\newtheorem{definition}{Définition}
+\newtheorem{lemma}[theorem]{Lemme}
+\newtheorem{corollary}[theorem]{corollaire}
+\newtheorem{property}[theorem]{Propriété}
+
+%\newenvironment{proof}{\noindent {\bf Démonstration~:}}{\hfill $\Box$\vspace{2mm}\par}
+
+\newcommand\vect[1]{\textbf{#1}}
+\newcommand\moment[2]{{\cal M}_{#2}^{#1}}
+\def\crossprod{\times}
+
+\def\vi{\vect{v}_{i}}
+\def\vG{\vect{v}_{G}}
+\def\gammai{\gamma_{i}}
+\def\gammaG{\gamma_{G}}
+
+% Enforce math style.
+\everymath{\displaystyle}
+
+% Generate index.
+\makeindex
+
+% Please fancyhdr.
+\pagestyle{headings}
+\setlength{\headheight}{25pt}
+
+% Fix Autoref french support.
+\def\chapterautorefname{Chapitre}
+\def\mydefautorefname{Définition}
+
+
+% Custom commands.
+\newcommand{\transformation}[2]{%
+\ensuremath{{}^{#1}\!\text{M}_{#2}}}
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+
+\begin{document}
+\bibliographystyle{francais}
+%
+\author{Antonio El Khoury}
+\title{Optimisation numérique pour la robotique et exécution de trajectoires référencées capteurs}
+\date{Juillet 2012}
+%
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture, overlay]
+ \node[inner sep=0pt] at (current page.center) {%
+  \includegraphics[width=\paperwidth,height=\paperheight]{couverture}%
+};
+\end{tikzpicture}
+%
+\frontmatter
+\tableofcontents{\thispagestyle{headings}}
+%
+\mainmatter
+\pagestyle{empty}
+%\include{src/remerciements}
+%\include{src/publis}
+\pagestyle{headings}
+%\include{src/chap0-introduction/chap0-introduction}
+\include{src/chap1-path-optimization/chap1-path-optimization}
+%\include{src/chap2-suivi-trajectoire/chap2-suivi-trajectoire}
+%\include{src/chap3-primitive-mouvement/chap3-primitive-mouvement}
+%\include{src/chap4-integration/chap4-integration}
+%\include{src/chap5-conclusion/chap5-conclusion}
+%
+%
+\backmatter
+
+\addcontentsline{toc}{chapter}{Liste of figures}
+\listoffigures
+\addcontentsline{toc}{chapter}{Liste of tables}
+\listoftables
+
+%
+% Bibliography
+\addcontentsline{toc}{chapter}{Bibliography}
+\nocite{*}
+\bibliography{thesis}
+%
+% Index
+\cleardoublepage
+\addcontentsline{toc}{chapter}{Index}
+\printindex
+%
+\end{document}

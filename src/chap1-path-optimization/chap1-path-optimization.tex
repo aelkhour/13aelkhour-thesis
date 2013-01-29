@@ -1,0 +1,445 @@
+\chapter{Path Optimization for Humanoid Walk Planning}\label{chap:chap1}
+
+\epigraph{Awesome citation}{Awesome author}
+% Selected Writings on Computing: A Personal Perspective}, pp. 338-348
+\clearpage
+
+\section{Related Work and Contribution}
+\lettrine[lines=2, lraise=0.1, nindent=0em, slope=-.5em]%
+{T}{he} problem of humanoid walk planning can be defined as
+follows: given an environment and a humanoid robot with start and goal
+placements, a collision-free trajectory needs to be found. It should
+ideally represent realistic human motion, i.e. a motion similar to
+that of a human being in the same conditions. This result is desirable
+since humanoid robots are bound to move in man-made environments such
+as homes, offices, and factories and because it can help them blend in
+among humans.
+
+\subsection{Humanoid Walk Planning}
+\label{subsec:humanoid-walk-planning}
+\noindent The problem of motion planning is now well formalized in
+robotics and several books present the various approaches
+\cite{lato91,chos05,lava06}. Sampling-based methods rely on random
+sampling in the configuration space (CS) and use for instance
+Probabilistic Roadmaps (PRM) \cite{kavr96} or Rapidly-Expanding Random
+Trees (RRT) \cite{kuff00}. With these methods it is possible to solve
+problems for systems with large numbers of Degrees of Freedom (DoF).
+\begin{figure}
+  \centering
+      {\includegraphics[width = \linewidth]{src/chap1-path-optimization/hrp2-chairs.png}}
+      \caption{Humanoid Robot HRP-2 uses holonomic motion, or
+        side-stepping, to pass between two chairs.}
+      \label{fig:hrp2-chairs}
+\end{figure}
+
+The motion planning problem is certainly a complex one in the case of
+humanoid robots, which are high-DoF redundant systems that have to
+verify bipedal stability constraints. Various planning strategies can be found
+in literature.
+
+One category relies on whole-body task planning: kinematic redundancy
+is used to accomplish tasks with different orders of priorities
+\cite{khat04,kano09}. Static balance and obstacle avoidance can
+thus be defined as tasks that the algorithm has to respect.
+
+Works of \cite{kuff01,ches05} describe in particular humanoid footstep
+planning schemes. Starting from an initial footstep placement, they
+use an A* graph search \cite{hart68} to explore a discrete set of
+footstep transitions. The search stops when the neighborhood of the
+goal footstep placement is reached. This approach is not practical in
+some environments with narrow passages, and \cite{xia09} reduced the
+computational cost of footstep planning by using an RRT planning
+algorithm.
+
+Another strategy consists of dividing a high-dimensional problem
+into smaller problems and solving them successively \cite{zhan09}. The
+idea of dividing the problem into a two-stage scheme is described in
+\cite{yosh08}: A 36-DoF humanoid robot is reduced to a 3-DoF bounding
+box. Using the robot simplified model, the PRM algorithm solves the
+path planning problem and generates a feasible path for the bounding
+box. A geometric decomposition of the path places footsteps on it, and
+a walk pattern generator based on \cite{kaji03} finally produces the
+whole-body trajectory for the robot. In \cite{moul10}, this two-stage
+approach is also used; numerical optimization of the bounding box path
+produces a time-optimal trajectory that is constrained by foot speed
+and distance to obstacles.
+
+Another important issue is the notion of holonomic motion: while
+wheeled robots always remain tangent to their path, thus following a
+nonholonomic constraint, legged robots can also move sideways, and
+their motion can be described as holonomic. The path planning scheme
+in \cite{yosh08} is designed to this end; a PRM algorithm first builds
+a roadmap with Dubins curves \cite{dubi57}; but such curves impose a
+nonholonomic constraint and narrow passages cannot be crossed. The
+roadmap is therefore enriched with linear local paths. As a result
+this planning scheme generates motion such that the robot remains
+tangent to its path most of the time and uses sidestepping only in
+narrow passages.
+
+Furthermore, \cite{momb10} conducted a series of walking experiments
+that allowed them to build a model of human walking trajectories; if a
+human being walks long distances, his body tends to be tangential to
+his path, while holonomic motion is used over smaller distances. This
+is an attractive property for computed paths if a realistic motion is
+to be achieved, and holonomic motion can as well be used to pass
+through narrow spaces. These results suggests that a good combination
+of both nonholonomic and holonomic motions can be used to achieve
+realistic walking.
+
+\subsection{Contribution}
+\noindent The work of \cite{moul10} solves the walk planning problem
+in a natural way, i.e. it uses numerical optimization to minimize the
+robot walking along the path while following speed and obstacle
+distance constraints. After having tried this approach, it was
+empirically concluded that achieving successful numerical optimization
+in any kind of environment is a difficult and computationally
+expensive task; in fact, it requires computing a large set of
+parameters to fully define the optimized path.
+
+While using the same two-stage approach of \cite{yosh08}, a simpler
+heuristic method that generates realistic time-optimal humanoid
+trajectories is proposed. First the PRM algorithm and the Dubins local
+paths are replaced with an RRT-Connect algorithm and linear local
+paths. The path is then optimized by locally reorienting the robot
+bounding box on a discrete set of configurations of the path. Priority
+to nonholonomic motion is considered and holonomic motion is used only
+to pass in narrow passages and to avoid nearby obstacles.
+
+The following section presents this method and explains how it is
+integrated in the motion planning scheme. Examples of different
+scenarios, including a real one with the HRP-2 platform, are shown in
+\autoref{examples}.
+
+\section{Optimization by Regular Sampling}
+\label{regular-sampling-optim}
+
+\begin{figure}
+  \centering
+      {\includegraphics[width = \linewidth]{src/chap1-path-optimization/bb-plan-optim.pdf}}
+      \caption{Top view: (a) RRT-Connect path for the bounding box
+        passing between two chairs. (b) Optimized bounding box path by
+        random optimization (RO). (c) Optimized bounding box after
+        adding regular sampling optimization (RSO) .}
+      \label{fig:bb-plan-optim}
+\end{figure}
+
+\noindent Assuming full knowledge of the environment, the RRT
+algorithm produces a collision-free piecewise linear path $P_{RRT}$
+for the robot bounding box (in offline mode), i.e. the path consists
+of the concatenation of linear local paths $LP_{RRT}$.
+
+Due to the probabilistic nature of RRTs, $P_{RRT}$ may not be optimal
+in terms of length, and a preliminary random shortcut optimization
+(RO) can be run in order to shorten it (See
+\autoref{fig:bb-plan-optim}). While the optimized path $P$ is
+collision-free, the bounding box orientation is such that it could
+lead to an unrealistic trajectory that is not time-optimal. For
+instance, the humanoid robot could spend a long time walking sideways
+or backwards over a long distance in an open space. An additional
+optimization stage is introduced to address this issue in the next
+section.
+
+\subsection{Bounding Box Path Optimization}
+\noindent Note that each configuration $q$ can be written as $q =
+(\mathbf{X},~\theta)$, where $\mathbf{X} = (x,~y)$ describes the
+bounding box position in the horizontal plane, and $\theta$ gives its
+orientation.  The optimizer reorients the bounding box along $P$ by
+changing $\theta$ while retaining the value of $\mathbf{X}$.
+
+For this purpose, an A* search algorithm is executed; first $P$ is
+regularly sampled. Using a discrete set of possible orientations for
+each sample configuration and an adequate heuristic estimation
+function, the bounding box orientation is then modified along $P$. An
+optimized path $P_{opt}$ is created and leads to a realistic
+time-optimal trajectory.
+
+\subsubsection{Preliminary Notations}
+\noindent After running RO on the piecewise linear path $P_{RRT}$, the
+path $P$ is also piecewise linear, and its first and last
+configurations are denoted by $q_s$ and $q_g$.
+
+Let $d_{sample} \in \mathbb{R}_+^*$ be a sampling distance. Sampling
+$P$ with a distance $d_{sample}$ means dividing each local path $LP_j$
+of $P$ into smaller local paths of length $d_{sample}$; each new local
+path end is a sample configuration. The $n^{th}$ sample configuration
+of $P$ in its intial state can be obtained by indexing new local path
+ends starting from $q_s$, and is denoted by $q_n^{init}$.
+
+\begin{figure}
+  \centering
+      {\includegraphics[width = \linewidth]{src/chap1-path-optimization/A-star.pdf}}
+      \caption{Each initial sample configuration can be rotated and be
+        in one of four states. Starting from $q_s$, the A* search
+        algorithm searches the graph $G$ that contains only valid
+        nodes and arcs to produce an optimized path $P_{opt}$.}
+      \label{fig:A-star}
+\end{figure}
+
+The possible orientation states need to be defined. We aim to make a
+humanoid robot reach its goal as soon as possible. Since the robot is
+faster while walking straight than side-stepping, we attempt to change
+the orientation of each inital sample configuration $q_n^{init}$ such
+that the bounding box is tangent to the local path and introduce a new
+configuration denoted by $q_n^{front}$. To take into account the fact
+that there may be obstacles that forbid a frontal orientation, we also
+create $q_n^{lat_1}$ and $q_n^{lat_2}$ that are rotated by
+$\frac{\pi}{2}$ and $-\frac{\pi}{2}$ relative to the path tangent, see
+\autoref{fig:A-star}. One particular case is local path end
+configurations: the mean direction of the two adjacent local paths is
+considered to define frontal and lateral configurations. This is done
+to ensure a smooth transition between two local paths.
+
+A sample configuration whose orientation is unknown will be denoted by
+$q_n^{state}$. It can have any orientation state of the set
+$\{init,~front,~lat_1,~lat_2\}$ except for $q_s$ and $q_g$ which
+remain in their initial state.  Ideally, the algorithm should be able
+(as long as there are no obstacles) to put each sample configuration
+in the frontal state, create a new path $P_{opt}$ and generate a
+time-optimal trajectory for the robot.
+
+An A* search is run to achieve this goal; the algorithm functions are
+described in the following section.
+
+\subsubsection{A* Function Definition}
+\label{sec:A-star}
+\noindent An A* search algorithm can find an optimal path in a graph
+as long as a graph and an evaluation function are correctly
+defined. Starting from $q_s$, A* expands in each iteration the
+possible transitions from one sample to the next one in the graph and
+evaluates with the evaluation function the cost of going through each
+different state, see \autoref{fig:A-star}.
+
+A graph $G$ is defined to be a set of nodes and arcs. A valid node
+$q_n^{state_n}$ is defined to be a configuration with no collisions, and a valid arc
+$q_n^{state_n}q_{n+1}^{state_{n+1}}$ is a collision-free local
+path. The whole graph $G$ could be built before running A* by testing
+all nodes and arcs and making sure they are collision-free. But
+collision tests are slow, and A* uses a heuristic estimation function
+to avoid going through all nodes. An empty graph $G$ is thus
+initialized and nodes and arcs are built only when necessary. A
+successor operator needs to be defined for this purpose.
+
+\begin{figure}
+  \centering
+      {\includegraphics[width = \linewidth]{src/chap1-path-optimization/elliptic-constraint.pdf}}
+      \caption{The rectangulat bounding box speed vector $v$ is bounded inside the
+        hashed area defined by the speed constraint $C$. The area is
+        bounded by the union of two half-ellipsoids.}
+      \label{fig:elliptic-constraint}
+\end{figure}
+
+\paragraph{The Successor operator $\Gamma(q_n^{state_n})$:}
+\noindent Its value for any node $q_n^{state_n}$ is a set
+$\{(q_{n+1}^{state_{n+1}},~c_{n,n+1})\}$, where
+$q_{n+1}^{state_{n+1}}$ denotes a successor node, and $c_{n,n+1}$ is
+the cost of going from $q_n^{state_n}$ to $q_{n+1}^{state_{n+1}}$. The
+cost $c_{n,n+1}$ is defined to be the distance
+$D(q_n^{state_n},~q_{n+1}^{state_{n+1}})$ between two nodes of $G$; it
+computes the walk time from $q_n^{state_n}$ to
+$q_{n+1}^{state_{n+1}}$. The speed constraint $C$ is defined as:
+\begin{equation}
+C = \left\{
+\begin{array}{l l l}
+  (\frac{v^{f}}{v_{max}^{f}})^2 +
+  (\frac{v^{lat}}{v_{max}^{lat}})^2 - 1
+  \quad \text{if } v^f >= 0 \\
+
+  \\
+
+  (\frac{v^{f}}{v_{min}^{f}})^2 +
+  (\frac{v^{lat}}{v_{max}^{lat}})^2 - 1
+  \quad \text{if } v^f < 0
+\end{array} \right.
+\end{equation}
+where $v^{f}$ and $v^{lat}$ are respectively the frontal and lateral
+speed, and $v_{min}^f$ $v_{max}^{f}$ and $v_{max}^{lat}$ their minimum
+and maximum values (See
+\autoref{fig:elliptic-constraint}).$D(q_n^{state_n},~q_{n+1}^{state_{n+1}})$
+can be then computed by integrating this speed constraint along it.
+
+Having expressed the successor operator, which allows the optimizer to
+choose wich node to expand at each iteration, the A* evaluation
+function can be defined.
+
+\paragraph{The Evaluation Function $\hat{f}(q_n^{state})$:}
+\noindent It is the estimated cost of an optimal path going through
+$q_n^{state}$ from $q_s$ to $q_g$ and can be written as:
+\begin{equation}
+  \hat{f}(q_n^{state}) = \hat{g}(q_n^{state}) + \hat{h}(q_n^{state})
+\end{equation}
+where $\hat{g}(q_n^{state})$ is the estimated cost of the optimal path
+from $q_s$ to $q_n^{state}$ and $\hat{h}(q_n^{state})$ is a heuristic
+function giving the estimated cost of the optimal path from
+$q_n^{state}$ to $q_g$.
+
+$\hat{h}(q_n^{state})$ must verify $\hat{h}(q_n^{state}) \leq
+h(q_n^{state})$ to ensure that the algorithm is admissible, i.e. the
+path from $q_s$ to $q_g$ is optimal. Since the robot is fastest while
+walking straight forward in the absence of obstacles,
+$\hat{h}(q_n^{state})$ is defined as:
+\begin{equation}
+  \begin{split}
+  \hat{h}(q_n^{state}) &= D(q_n^{state},~q_{n+1}^{front}) \\
+  &+ \sum_{k=1}^{N_{sample}-n-2} D(q_{n+k}^{front},~q_{n+k+1}^{front}) \\
+  &+ D(q_{n+1}^{front},~q_g)
+  \end{split}
+\end{equation}
+where $N_{sample}$ is the total number of initial sample
+configurations in $P$ including $q_s$ and
+$q_g$. $\hat{h}(q_n^{state})$ thus sums the cost of walking along $P$
+while staying tangential to the path with the start and
+end transition costs from $q_n^{state}$ and to $q_g$.
+
+Now that the A* functions are fully defined, a search algorithm can be
+run to compute an optimal path $P_{opt}$ by changing the orientation
+of each sample node. An example is shown in
+\autoref{fig:hash-direct-path}.
+
+\begin{figure}
+  \centering
+      {\includegraphics[width = \linewidth]{src/chap1-path-optimization/hash-direct-path.pdf}}
+      \caption{Local paths are regularly sampled (light grey) and each
+        sample configuration is reoriented (dark) while considering
+        obstacles $O_1$ and $O_2$.}
+      \label{fig:hash-direct-path}
+\end{figure}
+
+\subsection{Motion Generation for a Humanoid Robot}
+
+A collision-free path $P$ for the 3-DoF bounding box can be found
+using RRT-Connect and RO. The regular sampling optimization (RSO),
+which is the subject of this paper, is then applied on the path and
+produces a path $P_{opt}$ that gives priority to nonholonomic motion.
+
+Once the bounding box trajectory is computed, the robot has to walk
+along it. A footstep sequence is thus generated along $P_{opt}$ by
+geometric decomposition of the path, and the pattern generator cited
+in \autoref{subsec:humanoid-walk-planning} then produces the robot
+whole-body trajectory.
+
+\section{\uppercase{Examples}}
+\label{examples}
+
+\begin{table*}[t]
+\caption{Columns 1 to 5: Computational time (ms) of each planning stage
+  for the presented scenarios. Columns 6 and 7: Humanoid robot walk
+  time (s) for the presented scenarios using RO alone and a RO-RSO
+  combination.}
+\label{tab:computation-time}
+\centering
+\begin{tabular}{c|c|c|c|c|c||c|c|}
+  \cline{2-8}
+  & RRT-Connect & RO & RSO & Robot Trajectory & Total & RO & RO+RSO\\
+  \hline
+  \multicolumn{1}{|c|}{Chairs} & $3,968$ & $1,887$ & $2,144$ & $66,140$ & $74,140$ & $40$ & $35$\\
+  \hline
+  \multicolumn{1}{|c|}{Galton} & $91.69$ & $2,497$ & $237.8$ & $65,730$ & $68,560$ & $66$ & $57$\\
+  \hline
+  \multicolumn{1}{|c|}{Apartment} & $1,212$ & $2,425$ & $2,412$ & $222,800$ & $228,800$  & $200$ & $120$\\
+  \hline
+\end{tabular}
+\vspace{-0.3cm}
+\end{table*}
+
+\begin{figure}
+  \centering
+      {\includegraphics[width = \linewidth]{src/chap1-path-optimization/chairs-hash-optim-perspective-hrp2.png}}
+      \caption{Perspective view of the simulated HRP-2 trajectory on
+        the final optimized path passing between two chairs.}
+      \label{fig:chairs-hash-optim-perspective-hrp2}
+\end{figure}
+
+\noindent This section presents experimental results of the path
+optimizer after it has been inserted in the previously described walk
+planning scheme. Distance parameters $v_{max}^f$,
+$v_{max}^{lat}$, $v_{min}^f$ are set to 0.5, 0.1, and 0.25
+respectively. $d_{sample}$ is equal to $\frac{h}{6}$, where $h$
+is the humanoid's height.  Tests are performed on a 2.13 GHz Intel Core
+2 Duo PC with 2 GB RAM.
+
+Simulations of the humanoid robot HRP-2 are run in three scenarios.
+The first one is a small environment where HRP-2 has to pass between
+two chairs. The second environment is uncluttered with few obstacles
+lying around, while the last one is a bigger apartment environment
+where the robot has to move from one room to another while passing
+through doors. The chairs scenario motion is also replayed on the real
+robot HRP-2 (See \autoref{fig:hrp2-chairs}). Videos for all scenarios
+can be viewed at \url{http://humanoid-walk-planning.blogspot.com/}
+
+\autoref{tab:computation-time} shows computation times for each stage
+of the planning scheme: RRT-Connect, RO, RSO, and the whole-body robot
+trajectory generation. In order to show the optimizer contribution,
+robot walk times are also measured by creating a trajectory directly
+after RO, and comparing it with a trajectory where the RSO was added.
+
+\subsection{``Chairs'' Scenario}
+\noindent \autoref{fig:bb-plan-optim} shows the bounding box RRT path
+and the RO path for the chairs scenario. It is obvious that RO creates
+a shorter path, but the bounding box starts rotating from the
+beginning of the path even though the two chairs are still far. This
+causes the robot trajectory to be unrealistic on one hand and, since
+walking sideways takes a longer time than walking straight, to also
+not be time-optimal.
+
+\begin{figure}
+  \centering
+      {\includegraphics[width = \linewidth]{src/chap1-path-optimization/galton-hash-optim-perspective-hrp2.png}}
+      \caption{Perspective view of HRP-2 optimized trajectory in the
+        Galton board scenario.}
+      \label{fig:galton-hash-optim-perspective-hrp2}
+\end{figure}
+
+However, after applying RSO, it is clear that the bounding box stays
+oriented towards the front and rotates only when it reaches the
+chairs. \autoref{fig:chairs-hash-optim-perspective-hrp2} and
+\autoref{tab:computation-time} show that the walk time is shorter by 5
+s and the final trajectory for HRP-2 is more realistic. Note that the
+RSO takes 2,144 ms to be executed on the chairs path, which is less
+than 3\% of the total computation time.
+
+\subsection{``Galton'' Scenario}
+\noindent An uncluttered environment is considered in this case, and
+it can be seen that RRT-Connect and RSO computation times are very low
+compared to other environments. This can be explained by the fact that
+a tree connecting start and goal configurations is easier to find, and
+that the frontal orientation state is valid for all considered samples
+on the path (See \autoref{fig:galton-hash-optim-perspective-hrp2}).
+
+\subsection{``Apartment'' Scenario}
+\noindent The planning scheme is finally applied in the apartment
+scenario. In \autoref{fig:apartment-hash-optim-perspective-hrp2}, it
+is evident that HRP-2 walks facing forward through the doors. As with
+previous scenarios, the trajectory is more realistic than a trajectory
+where RSO is not used. The added computation time for RSO is 2,412 ms,
+which is insignificant compared to the 228 s it takes for the whole
+planning scheme.
+
+Additionally, since the environment is significantly larger and more
+constrained than the previous ones, the walk time difference is more
+striking: \autoref{tab:computation-time} shows that it takes the robot
+80 s less to cross the apartment when an RO-RSO combination is used.
+
+\begin{figure}
+  \centering
+      {\includegraphics[width = \linewidth]{src/chap1-path-optimization/apartment-hash-optim-perspective-hrp2.png}}
+      \caption{Perspective view of HRP-2 optimized trajectory in the
+        apartment scenario.}
+      \label{fig:apartment-hash-optim-perspective-hrp2}
+\end{figure}
+
+\section{Conclusion}
+\noindent In this paper, a novel simple optimization method is
+presented for humanoid walk planning that relies on a decoupling
+between trajectory and robot orientations. It uses an A* search that
+takes as input a path for the robot bounding box, and produces a path
+where a discrete set of configurations have been reoriented to generate
+a realistic time-optimal walk trajectory. Results show that new
+trajectories are more satisfactory while the added computation time is
+insignificant compared to the whole planning time.
+
+Of course, this approach can be used in other fields such as graphical
+animation for digital actors to adapt the body orientation with respect
+to the goal during locomotion. With a motion capture library
+containing pre-recorded nonholonomic and holonomic walk behaviors, it
+is possible to lay this behavior on the actor trajectory and produce
+realistic movements.
