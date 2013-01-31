@@ -1,20 +1,9 @@
-\documentclass[a4paper,twoside,openright]{book}
+\documentclass[a4paper,twoside,openright,11pt]{book}
 
-%AMS Math + UTF8 mapping of ams symbols
-%------------------------------------------------------
-%\usepackage{amsmath}
-\usepackage{mathtools}
-\usepackage{amssymb} % I load it after Fourier else I have more incorrect utf8 mapping (with \geqslant for example)
-%Correct UTF8 mapping for ams fonts
-\ifdefined\pdffontattr% \ifdefined is part of the e-TeX extension, which is part of any modern LaTeX compiler.
-    \immediate\pdfobj stream file {umsa.cmap}
-    {\usefont{U}{msa}{m}{n}\pdffontattr\font{/ToUnicode \the\pdflastobj\space 0 R}}
-    \immediate\pdfobj stream file {umsb.cmap}
-    {\usefont{U}{msb}{m}{n}\pdffontattr\font{/ToUnicode \the\pdflastobj\space 0 R}}
-\fi
+\usepackage{setspace}
 
-% Other packages.
-\usepackage[USenglish]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
 
 \usepackage{array}
 \usepackage{amsthm}
@@ -25,7 +14,6 @@
 \usepackage{url}
 \usepackage{epigraph}
 \usepackage{hyperref}
-\usepackage{natbib}
 
 \usepackage{fancyhdr}
 
@@ -37,10 +25,6 @@
 \usepackage{color}
 \usepackage{colortbl}
 \usepackage{placeins}
-
-\usepackage[overlap,CJK]{ruby}    % Furigana support
-\renewcommand{\rubysize}{0.5}     % Furigana size
-\renewcommand{\rubysep}{-0.3ex}   % Spacing between Furigana and Kanji
 
 \usepackage{multirow}
 
@@ -72,8 +56,8 @@
 % Setup pdf meta-data.
 \hypersetup{ % Modifiez la valeur des champs suivants
 pdfauthor = {Antonio El Khoury},
-pdftitle = {Optimisation num\'erique pour la robotique et ex\'ecution de trajectoires r\'ef\'erenc\'ees capteurs},
-pdfsubject = {Optimisation num\'erique pour la robotique et ex\'ecution de trajectoires r\'ef\'erenc\'ees capteurs},
+pdftitle = {FIXME},
+pdfsubject = {FIXME},
 pdfkeywords = {Motion Planning, Optimal Control, Humanoid Robot},
 pdfcreator = {Antonio El Khoury},
 pdfproducer = {Antonio El Khoury}
@@ -118,31 +102,49 @@ pdfproducer = {Antonio El Khoury}
 \pagestyle{headings}
 \setlength{\headheight}{25pt}
 
+% Align bibliography left and add some padding
+\makeatletter
+\renewcommand{\@biblabel}[1]{[#1]\hfill\hspace{0.25cm}}
+\makeatother
+
 % Custom commands.
 \newcommand{\transformation}[2]{%
 \ensuremath{{}^{#1}\!\text{M}_{#2}}}
 
 \newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
 
+\newcommand{\config}[1]{$\mathbf{q_{#1}}$}
+\newcommand{\espace}{$\mathbb R^n$}
+\newcommand{\wspace}{$\mathcal{WS}$}
+\newcommand{\cspace}{$\mathcal{CS}$}
+\newcommand{\cfree}{$\mathcal{CS}_{free}$}
+\newcommand{\cobs}{$\mathcal{CS}_{obs}$}
+\newcommand{\robot}{$\mathcal{R}$}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% DOCUMENT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 \begin{document}
 \bibliographystyle{these}
+
+%\doublespacing
+%\onehalfspacing
 %
 \author{Antonio El Khoury}
-\title{Optimisation numérique pour la robotique et exécution de trajectoires référencées capteurs}
-\date{Juillet 2012}
+\title{Awesome Title}
+\date{Juin 2013}
 %
-\thispagestyle{empty}
-\begin{tikzpicture}[remember picture, overlay]
- \node[inner sep=0pt] at (current page.center) {%
-  \includegraphics[width=\paperwidth,height=\paperheight]{couverture}%
-};
-\end{tikzpicture}
+%% \thispagestyle{empty}
+%% \begin{tikzpicture}[remember picture, overlay]
+%%  \node[inner sep=0pt] at (current page.center) {
+%%   \includegraphics[width=\paperwidth,height=\paperheight]{couverture}
+%% };
+%% \end{tikzpicture}
 %
-\frontmatter
-\tableofcontents{\thispagestyle{headings}}
+%\frontmatter
+%\tableofcontents{\thispagestyle{headings}}
 %
-\mainmatter
-\pagestyle{empty}
+%\mainmatter
+%\pagestyle{empty}
 %\include{src/remerciements}
 %\include{src/publis}
 
@@ -158,22 +160,23 @@ pdfproducer = {Antonio El Khoury}
 %\include{src/chap0-introduction/chap0-introduction}
 \include{src/chap1-path-optimization/chap1-path-optimization}
 
-\backmatter
+%% \backmatter
 
-\addcontentsline{toc}{chapter}{Liste of figures}
-\listoffigures
-\addcontentsline{toc}{chapter}{Liste of tables}
-\listoftables
+%% \addcontentsline{toc}{chapter}{Liste of figures}
+%% \listoffigures
+%% \addcontentsline{toc}{chapter}{Liste of tables}
+%% \listoftables
 
 %
 % Bibliography
+\begin{singlespace}
 \addcontentsline{toc}{chapter}{Bibliography}
-\nocite{*}
 \bibliography{thesis}
 %
 % Index
-\cleardoublepage
-\addcontentsline{toc}{chapter}{Index}
-\printindex
+%% \cleardoublepage
+%% \addcontentsline{toc}{chapter}{Index}
+%% \printindex
+\end{singlespace}
 %
 \end{document}
