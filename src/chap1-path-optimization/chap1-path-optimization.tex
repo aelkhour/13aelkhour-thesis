@@ -43,6 +43,7 @@ validated in various scenarios on the humanoid robot HRP-2.
 \label{sec:chap1-related-work}
 
 \subsection{Motion Planning in the Configuration Space}
+\label{subsec:chap1-motion-planning}
 
 The problem of motion planning is now well formalized in robotics and
 several books present the various approaches
@@ -65,28 +66,51 @@ is it?
 \subsubsection{Deterministic Algorithms}
 \label{subsubsec:chap1-deterministic algorithms}
 
-One possible way of answering it is through the use of deterministic
-algorithms; for a given number of tries, such algorithms will always
-compute the same valid path $P$. One approach , detailed in
-\cite{khat85}, consists of assigning artificial attractive potentials
-on the goals, and repulsive ones around the start configuration and
-the obstacles. The device is then subject to forces that will direct
-it from the start configuration towards the goal configuration.
+This question can be answered through the use of deterministic
+algorithms; for a given number of tries, they will always compute the
+same valid path $P$.
 
-While these algorithms work well for solving path planning problems
-in a low-dimensional configuration space, their computational cost
-becomes penalizing in high-dimensional configuration spaces. In fact
-constructing \cfree requires finding its frontiers, and computation
-time is exponential with regards to the space's dimension. Another
-drawback comes from the fact that, because of the locality of the
-planner, a path may be computed while not being a solution to the
-path planning problem. This can happen in a maze-like environment
-when a stable equilibrium point other than the goal configuration
-is found (see Figure \autoref{fig:deterministic-algorithm}).
+One class of algorithms, mainly developed in the past 30 years, relies
+on representing \cobs explicitly in order to build a graph, also
+called roadmap, that represents the connectivity of \cfree. Solving
+the motion planning problem then boils down to a graph exploration to
+connect \config{s} to \config{g}. A non-exhaustive list of these
+methods includes cellular decomposition, Voronoi diagrams, visibility
+graphs, and Canny's algorithm \cite{good04}.
 
-add Figure after fixing labels.
+Such algorithms offer the nice property of completeness, i.e. they can
+always give a full answer to the motion planning problem as defined
+previously. But while they work well for solving path planning
+problems in a low-dimensional configuration spaces, their
+computational cost becomes penalizing in high-dimensional
+configuration spaces. In fact building \cfree requires finding its
+frontiers, and computation time is at best exponential with respect to
+the dimension of \cspace.
 
-add references to other cell decomposition from sebastien thesis.
+Other approaches are inspired from real-time motion generation
+techniques, such as the one detailed in \cite{khat85}, which consists
+of assigning artificial attractive potentials on the goals, and
+repulsive ones around the start configuration and the obstacles. The
+robot is then subject to forces that will direct it from the start
+configuration towards the goal configuration. However, because of the
+locality of the planner, a path may be computed while not being a
+solution to the path planning problem. This can happen in a maze-like
+environment when a stable equilibrium point other than the goal
+configuration is found (see Figure
+\ref{fig:chap1-deterministic-algorithm}).
+
+\begin{figure}
+  \centering
+      {\includegraphics[width = \linewidth]
+        {src/chap1-path-optimization/deterministic-algorithm.pdf}}
+      \caption{Left: A valid path is computed by the deterministic
+        algorithm. Arrows show the attractive and repulsive potential
+        fields. Thin lines show the potential lines. Right: Example of
+        problem where the stable local minimum does not coincide with
+        the goal configuration. $P$ is hence not a solution to the
+        path planning problem.}
+      \label{fig:chap1-deterministic-algorithm}
+\end{figure}
 
 \subsubsection{Sampling-based Algorithms}
 \label{subsubsec:chap1-sampling-algorithms}
@@ -104,27 +128,101 @@ Instead of trying to build an explicit representation of \cfree,
 sampling-based algorithms rely and on approximating the connectivity
 of \cfree through rejection sampling: random configurations
 \config{rand} are sampled in \cspace, and efficient Boolean collision
-detection techniques reject configurations that produce collisions.
+detection techniques \cite{vand97, huds97, gott96} reject
+configurations that produce collisions, keeping only configurations
+\config{} $\in$ \cfree.
 
-add reference to collision detection technique.
+The classic RRT algorithm, as presented in \cite{kuff00}, relies on
+the Voronoi bias to efficiently explore \cfree and grow a random tree
+in it. Each iteration of the algorithm attempts to extend the tree by
+adding new vertices in the direction of a randomly selected
+configuration \config{rand}. Algorithm~\ref{alg:chap1-rrt} shows the
+pseudo-code of the RRT algorithm. It takes as input an initial
+configuration \config{s} and grows a tree \ctree rooted in \config{s}.
+
+\begin{algorithm}
+\caption{RRT(\config{s})}
+\label{alg:chap1-rrt}
+\begin{algorithmic}
+\STATE \ctree$.$Init$($\config{s}$)$
+\FOR{$i$ = 1 to $K$}
+\STATE \config{rand} $ \leftarrow $ Rand$($\cspace$)$
+\STATE \config{near}$ \leftarrow $ Nearest$($\config{rand}$,$\ctree$)$
+\STATE Extend$($\ctree$,$\config{near}$,$\config{rand}$)$
+\ENDFOR
+\end{algorithmic}
+\end{algorithm}
+
+One way to make the RRT algorithm more efficient is to grow trees from
+both the initial and goal configurations, see Figure
+\ref{fig:chap1-rrt}. This was first proposed in \cite{kuff00}
+
+\begin{figure}
+  \centering
+      {\includegraphics[width = 0.8\linewidth]
+        {src/chap1-path-optimization/rrt.pdf}}
+      \caption{A valid path (in green) computed with a bidirectional
+        RRT planner. $q_{start}$ and $q_{goal}$ are the roots of the
+        trees $\mathcal{T}_{1}$and $\mathcal{T}_{2}$ respectively. The
+        algorithm keeps diffusing the two trees until they can be
+        connected together with an edge (in dashed green).}
+      \label{fig:chap1-rrt}
+\end{figure}
 
 While not being resolution complete (i.e. they cannot tell whether a
 solution exists or not), sampling-based algorithms have the less
 strong property of probabilistic completeness: if a solution path
-exists, the algorithm will be able to compute it when time reaches
-infinity. This may seem like a very weak property -- and a long time
-to wait for -- but in practice these algorithms can compute a path in
-a reasonable time for complex real-life environments and have been
-used to solve problems for systems with large numbers of Degrees of
-Freedom (DoF)
+exists, the algorithm will be able to compute it with a probability of
+$1$ when the number of iterations $K$ reaches infinity. This may seem
+like a very weak property -- and a long time to wait for -- but in
+practice these algorithms can compute paths in complex real-life
+environments in a reasonable time on regular computers and have been
+used to solve problems for various systems, ranging from 6-DoF
+floating objects, 50-DoF anthropomorphic systems, to 1000-DoF
+proteins.
 
-Grasping the topology of the configuration space
+\subsection{Path Optimization}
+\label{subsec:chap1-path-optimization}
+
+As shown in Figure \ref{fig:chap1-rrt}, RRT returns the shortest path
+$P$ inside the graph that connects \config{s} to \config{g}. Due to
+the probabilistic nature of RRT, it is clear that $P$ is not optimal
+in terms of length. Path optimization methods take a valid,
+i.e. collision-free path as input and try to shorten while making sure
+the output path that is still valid.
+
+\subsubsection{Greedy Optimizer}
+
+A greedy optimizer, such as the one shown in Figure
+\ref{fig:chap1-optimizers}, uses the greedy approach to shorten and
+smooth a path. It first tries to connect directly \config{s} to
+\config{g}; if the path is collision-free, it tries to connect
+\config{s} to the node preceding \config{g}, and so on until it
+reaches \config{s}. This process is then restarted similarly on the
+following nodes.
+
+\subsubsection{Random Optimization}
+
+In the case of the greedy optimizer, the nodes that are in the
+optimized path are also nodes of the input path. The Random Optimizer
+(RO) tries to bypass some nodes and keeps the rest. While this simple
+method runs very fast, it does not always gives the best path
+possible. A different shortcut strategy can be run in a loop: at each
+iteration, two random configurations are sampled on the path, and the
+optimizer tries to connect \config{s} to the first, the first one to
+the second one, and the second one to \config{g}. The local paths that
+are still collision-free are then kept to make a shorter path, as
+shown in Figure \ref{fig:chap1-optimizers}.
 
 \begin{figure}
   \centering
-  \input{src/chap1-path-optimization/rrt}
-  \caption{FIXME: RRT, discard collision node and edges}
-  \label{fig:chap1-rrt}
+      {\includegraphics[width = \linewidth]
+        {src/chap1-path-optimization/optimizers.pdf}}
+      \caption{Left: The path $P$ (in dashed green) is optimized with
+        a greedy optimizer. Right: The optimized path $P_{opt}$ (in
+        continuous green) after several iterations of random
+        optimization (RO).}
+      \label{fig:chap1-optimizers}
 \end{figure}
 
 \subsection{Humanoid Walk Planning}
@@ -154,7 +252,7 @@ computational cost of footstep planning by using an RRT planning
 algorithm.
 
 FIXME: cite also nicolas perrin works on both discrete and
-continuous.
+continuous, at least wafr, TRO.
 
 \subsection{Divide and Conquer}
 \label{subsec:chap1-bounding-box}
@@ -194,7 +292,7 @@ so-called "cart-table" simplified model \cite{kaji03}. Based
 on this model, planning a trajectory for the ZMP is reduced to
 planning a trajectory for the Center of Mass (CoM) of the robot.
 Given a trajectory of the CoM and footprint positions, inverse
-kinematics solvers can animate the whole set of DoFs of the robot to
+kinematics solvers can animate the whole set of DoF of the robot to
 generate a dynamically balanced walk trajectory.
 
 The model of a walking robot with a point mass at a fixed height is
@@ -238,7 +336,7 @@ Many preview control methods, describe Preview control by Kajita
   \label{fig:chap1-zmp}
 \end{figure}
 
-\subsection{Holonomic vs Nonholomic Walking Motion}
+\subsection{Holonomic vs Nonholonomic Walking Motion}
 \label{subsec:chap1-holonomic}
 
 Another important issue is the notion of holonomic motion: while
@@ -263,16 +361,11 @@ through narrow spaces. These results suggest that a good combination
 of both nonholonomic and holonomic motions can be used to achieve
 realistic walking.
 
-\subsection{Path Optimization}
-\label{subsec:chap1-path-optimization}
-
-Shortcut optimization, numerical methods (), A*, RRT* (or chapter 3?)
-
 \subsection{Contribution: Regular Sampling Optimization}
 \label{subsec:chap1-contribution}
-The work of \cite{moul10} solves the walk planning problem
-in a natural way, i.e. it uses numerical optimization to minimize the
-robot walking along the path while following speed and obstacle
+The work of \cite{moul10} solves the walk planning problem in a
+natural way, i.e. it uses numerical optimization to minimize the robot
+walking time along the path while following speed and obstacle
 distance constraints. After having tried this approach, it was
 empirically concluded that achieving successful numerical optimization
 in any kind of environment is a difficult and computationally

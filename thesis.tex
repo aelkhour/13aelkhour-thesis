@@ -1,6 +1,9 @@
 \documentclass[a4paper,twoside,openright,11pt]{book}
 
 \usepackage{setspace}
+\usepackage{layout}
+\usepackage{geometry}
+\geometry{bindingoffset=1cm}
 
 \usepackage{amsmath}
 \usepackage{amssymb}
@@ -47,7 +50,6 @@
 
 \usepackage{tikz, pgfplots}
 \usepackage{tikz-qtree}
-
 \usetikzlibrary{patterns}
 
 \renewcommand{\algorithmicrequire}{\textbf{Input:}}
@@ -100,7 +102,7 @@ pdfproducer = {Antonio El Khoury}
 
 % Please fancyhdr.
 \pagestyle{headings}
-\setlength{\headheight}{25pt}
+\setlength{\headheight}{26pt}
 
 % Align bibliography left and add some padding
 \makeatletter
@@ -120,12 +122,14 @@ pdfproducer = {Antonio El Khoury}
 \newcommand{\cfree}{$\mathcal{CS}_{free}$}
 \newcommand{\cobs}{$\mathcal{CS}_{obs}$}
 \newcommand{\robot}{$\mathcal{R}$}
+\newcommand{\ctree}{$\mathcal{T}$}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% DOCUMENT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
 \bibliographystyle{these}
-
+%
+%\layout
 %\doublespacing
 %\onehalfspacing
 %
