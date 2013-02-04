@@ -39,32 +39,29 @@ search algorithm. A pattern generator is then used to generate a
 trajectory that is realistic and time-optimal. This method is
 validated in various scenarios on the humanoid robot HRP-2.
 
-\section{Related Work}
-\label{sec:chap1-related-work}
-
-\subsection{Motion Planning in the Configuration Space}
-\label{subsec:chap1-motion-planning}
+\section{Motion Planning in the Configuration Space}
+\label{sec:chap1-motion-planning}
 
 The problem of motion planning is now well formalized in robotics and
 several books present the various approaches
 \cite{lato91,chos05,lava06}. One particularly useful concept is the
 one of configuration space (denoted by \cspace) \cite{loza83}, which
-is the set of all configurations \config{} of a robot \robot; \config{} is
-a vector comprised of the $n$ independent degrees of freedom (DoF)
-that are sufficient to know the full state of the robot at each
-instant. \cspace defines then a submanifold of \espace. Some of the
-robot body positions can generate (self-)collisions; the equivalent
-configurations will be said to be in collision, and the set of all
-configurations in collision is denoted by \cobs $\subset$ \cspace. Its
-complementary is denoted by \cfree and is called the collision-free
-configuration space. Using these notations, we can redefine the motion
-planning problem as the answer to the following question: is there a
-continuous path $P: [0,1] \rightarrow$ \cfree that connects a start
-configuration \config{s} to a goal configuration \config{g}, and what
-is it?
+is the set of all configurations \config{} of a robot \robot;
+\config{} is a vector comprised of the $n$ independent degrees of
+freedom (DoF) that are sufficient to know the full state of the robot
+at each instant. \cspace defines then a submanifold of \espace. Some
+of the robot body positions can generate (self-)collisions; the
+equivalent configurations will be said to be in collision, and the set
+of all configurations in collision is denoted by \cobs
+$\subset$ \cspace. Its complementary is denoted by \cfree and is
+called the free configuration space. Using these notations, we can
+redefine the motion planning problem as the answer to the following
+question: is there a continuous path $P: [0,1] \rightarrow$ \cfree
+that connects a start configuration \config{s} to a goal configuration
+\config{g}, and what is it?
 
-\subsubsection{Deterministic Algorithms}
-\label{subsubsec:chap1-deterministic algorithms}
+\subsection{Deterministic Algorithms}
+\label{subsec:chap1-deterministic algorithms}
 
 This question can be answered through the use of deterministic
 algorithms; for a given number of tries, they will always compute the
@@ -81,15 +78,14 @@ graphs, and Canny's algorithm \cite{good04}.
 Such algorithms offer the nice property of completeness, i.e. they can
 always give a full answer to the motion planning problem as defined
 previously. But while they work well for solving path planning
-problems in a low-dimensional configuration spaces, their
-computational cost becomes penalizing in high-dimensional
-configuration spaces. In fact building \cfree requires finding its
-frontiers, and computation time is at best exponential with respect to
-the dimension of \cspace.
+problems in low-dimensional configuration spaces, their computational
+cost becomes penalizing in high-dimensional configuration spaces. In
+fact building \cfree requires finding its frontiers, and computation
+time is at best exponential with respect to the dimension of \cspace.
 
 Other approaches are inspired from real-time motion generation
 techniques, such as the one detailed in \cite{khat85}, which consists
-of assigning artificial attractive potentials on the goals, and
+in assigning artificial attractive potentials on the goals, and
 repulsive ones around the start configuration and the obstacles. The
 robot is then subject to forces that will direct it from the start
 configuration towards the goal configuration. However, because of the
@@ -112,8 +108,8 @@ configuration is found (see Figure
       \label{fig:chap1-deterministic-algorithm}
 \end{figure}
 
-\subsubsection{Sampling-based Algorithms}
-\label{subsubsec:chap1-sampling-algorithms}
+\subsection{Sampling-based Algorithms}
+\label{subsec:chap1-sampling-algorithms}
 
 Deterministic algorithms rapidly reach their limits when the
 configuration space's dimension rises above 4. Computation speed plays
@@ -191,7 +187,7 @@ in terms of length. Path optimization methods take a valid,
 i.e. collision-free path as input and try to shorten while making sure
 the output path that is still valid.
 
-\subsubsection{Greedy Optimizer}
+\subsubsection{Greedy Optimization}
 
 A greedy optimizer, such as the one shown in Figure
 \ref{fig:chap1-optimizers}, uses the greedy approach to shorten and
@@ -204,7 +200,7 @@ following nodes.
 \subsubsection{Random Optimization}
 
 In the case of the greedy optimizer, the nodes that are in the
-optimized path are also nodes of the input path. The Random Optimizer
+optimized path are also nodes of the input path. Random Optimization
 (RO) tries to bypass some nodes and keeps the rest. While this simple
 method runs very fast, it does not always gives the best path
 possible. A different shortcut strategy can be run in a loop: at each
@@ -225,63 +221,102 @@ shown in Figure \ref{fig:chap1-optimizers}.
       \label{fig:chap1-optimizers}
 \end{figure}
 
-\subsection{Humanoid Walk Planning}
-\label{subsec:chap1-humanoid-walk-planning}
+\section{Anthropomorphic Systems}
+\label{sec:chap1-anthropomorphic-systems}
 
-The motion planning problem is certainly a complex one in the case of
-humanoid robots, which are high-DoF redundant systems that have to
-verify bipedal stability constraints. Various planning strategies can
-be found in literature.
+We focus in this work on humanoid robots and digital actors, which are
+anthropomorphic systems. Such systems have a high number of DoF, and
+are capable of accomplishing human-like tasks: locomotion -- e.g
+walking, running and parkour -- manipulation, or both. Due to these
+tasks complexity, anthropomorphic systems are both underactuated and
+highly-redundant systems.
 
-One category relies on whole-body task planning: kinematic redundancy
-is used to accomplish tasks with different orders of priorities
-\cite{khat04,kano09}. Static (FIXME dynamic?) balance and obstacle
-avoidance can thus be defined as tasks that the algorithm has to
-respect.
+In the remainder of this work, we will refer indifferently to
+anthropomorphic systems, humanoid robots and digital actors.
 
-FIXME: prone to local minima, cite nicolas mansard, layale,
-oscar.
+\subsection{Underactuated Systems}
+\label{subsec:chap1-underactuated-systems}
 
-Works of \cite{kuff01,ches05} describe in particular humanoid footstep
-planning schemes. Starting from an initial footstep placement, they
-use an A* graph search \cite{hart68} to explore a discrete set of
-footstep transitions. The search stops when the neighborhood of the
-goal footstep placement is reached. This approach is not practical in
-some environments with narrow passages, and \cite{xia09} reduced the
-computational cost of footstep planning by using an RRT planning
-algorithm.
-
-FIXME: cite also nicolas perrin works on both discrete and
-continuous, at least wafr, TRO.
-
-\subsection{Divide and Conquer}
-\label{subsec:chap1-bounding-box}
-
-Another strategy consists of dividing a high-dimensional problem into
-smaller problems and solving them successively \cite{zhan09}. The idea
-of dividing the problem into a two-stage scheme is described in
-\cite{yosh08}: A 36-DoF humanoid robot is reduced to a 3-DoF bounding
-box. Using the robot simplified model, the PRM algorithm solves the
-path planning problem and generates a feasible path for the bounding
-box. A geometric decomposition of the path places footsteps on it, and
-a walk pattern generator based on \cite{kaji03} finally produces the
-whole-body trajectory for the robot. In \cite{moul10}, this two-stage
-approach is also used; numerical optimization of the bounding box path
-produces a time-optimal trajectory that is constrained by foot speed
-and distance to obstacles.
-
-FIXME: cite also pettre, claudia, cf sebastien thesis.
+Robots \robot are usually composed of a set of rigid bodies \body{i},
+$i \in 0..N_B$, and a set of joints \joint{i}, $i \in 1..N_J$, which
+constrain the body positions. A rigid body has a mass, an inertia, and
+a given geometry. We use the kinematic tree formalism proposed in
+\cite{feat08} to model a full robot: a node of the tree represents a
+body of the robot, while an arc (or edge) represents a joint \joint{i}
+of the robot which constrains the motion of the successor body
+\body{i} with respect to its parent body \body{\lambda_{i}}, see
+Figure \ref{fig:chap1-robot-kinematic-tree}. Note that in the tree
+representation, each body has one and exactly one parent body, except
+for the root body which has no parents; this means that additional
+constraints have to be added later on in order to correctly model
+robots with closed kinematic chains such as parallel robots.
 
 \begin{figure}
   \centering
-      {\includegraphics[width = 0.6\linewidth]
-        {src/robot.pdf}}
-      \caption{FIXME: humanoid robot, kinematic tree, bodies, joints}
-      \label{fig:chap1-robot}
+      {\def\svgwidth{0.8\linewidth}
+        \subimport*{src/chap1-path-optimization/}
+                   {robot-kinematic-tree.pdf_tex}}
+      \caption{Left: schematic view of a humanoid robot: bodies
+        are connected with joints (yellow circles) which represent the
+        actuators. A fictitious 6-DoF joint, or floating joint (purple
+        circle), is added to move the robot in \segroup. Right: A
+        kinematic tree view of the same robot, where bodies and joints
+        are represented by nodes and joints respectively.}
+      \label{fig:chap1-robot-kinematic-tree}
 \end{figure}
 
-\subsection{Walk Pattern Generation}
-\label{subsec:chap1-pattern-generator}
+Joints usually correspond to the actuators on the physical robot. Each
+type of actuator will then have an equivalent type of joint
+(prismatic, revolute, etc). A configuration \config{} of such a robot
+can then be defined as the concatenation of all joint DoF values, and
+the set of all configurations is called the actuated configuration
+space \actcspace. This is however not sufficient in the particular
+case of anthropomorphic systems, which rely on making and breaking
+contact with their environment -- the floor for instance -- in order
+to move in their workspace. Additional information in the
+configuration vector is needed to model the general position of the
+system, and not only its actuators. Hence, anthropomorphic systems are
+said to be unactuated systems.
+
+We therefore introduce a 6-DoF floating joint, which we attach to the
+root of the existing kinematic tree containing the actuated
+joints. The successor body of the floating joint will be called the
+floating base. Note that any body of the kinematic tree can be chosen
+to be the floating base; in Figure
+\ref{fig:chap1-robot-kinematic-tree}, the floating base is the
+``waist'' of the robot. Hence, a full configuration \config{} of the
+robot \robot is an element of the configuration space \cspace $=$
+\segroup $\times$ \actcspace.
+ 
+\subsection{Kinematic Redundancy}
+\label{subsec:chap1-kinematic-redundancy}
+
+\begin{figure}
+  \centering
+      {\def\svgwidth{0.8\linewidth}
+        \subimport*{src/chap1-path-optimization/}
+                   {robot-redundancy.pdf_tex}}
+      \caption{Anthropomorphic systems are highly-redundant
+        systems. For a desired Cartesian position (in blue) of the end
+        effector \body{r}, there exists more than one configuration
+        \config{} that accomplishes this task. Left and right: two
+        possible solution configurations.}
+      \label{fig:chap1-robot-redundancy}
+\end{figure}
+
+We briefly introduce here the concept of kinematic redundancy. Figure
+\ref{fig:chap1-robot-redundancy} shows that for a same target
+Cartesian position of the end effector \body{e}, there exists more
+than one configuration of \robot that allows \body{e} to reach the
+target. The robot \robot is therefore kinematically redundant with
+respect to the task of reaching the object. One could imagine
+assigning multiple tasks to be accomplished at the same time, or even
+exploring \cspace while continuously accomplishing one or more
+tasks. This will be discussed in more deeply in Chapter
+\ref{chap2-FIXME}.
+
+\section{Walk Pattern Generation}
+\label{sec:chap1-pattern-generator}
 
 Another field of humanoid robotics research is the generation of
 dynamically balanced walk patterns. Since the introduction of the ZMP
@@ -326,6 +361,8 @@ a preview controller returns the corresponding CoM trajectory
 FIXME:read sebastien dalibard thesis.
 cart-table model (from dalibard thesis?) + equations (from IJRR)
 
+Static balance vs dynamic balance.
+
 Many preview control methods, describe Preview control by Kajita
 (description from IJRR).
 
@@ -336,33 +373,137 @@ Many preview control methods, describe Preview control by Kajita
   \label{fig:chap1-zmp}
 \end{figure}
 
+\section{Humanoid Walk Planning}
+\label{sec:chap1-humanoid-walk-planning}
+
+The motion planning problem is certainly a complex one in the case of
+humanoid robots, which are high-DoF redundant systems that have to
+verify bipedal stability constraints. Various planning strategies can
+be found in literature.
+
+\subsection{Footstep Planning}
+\label{subsec:chap1-footstep-planning}
+
+One possible way of addressing humanoid walk planning is by reasoning
+on the footstep level. Works of \cite{kuff01,ches05} describe humanoid
+footstep planning schemes. Starting from an initial footstep
+placement, they use an A* graph search \cite{hart68} to explore a
+discrete set of footstep transitions. The search stops when the
+neighborhood of the goal footstep placement is reached. This approach
+is not practical in some environments with narrow passages, and
+\cite{xia09, perr11a} reduced the computational cost of footstep
+planning by adapting RRT planning algorithm and efficiently exploring
+the discrete footstep space. In their most recent work, \cite{perr11b,
+  perr12} give an elegant proof of the equivalence between discrete
+footstep planning and a continuous motion planning, which enables the
+use of off-the-shelf planning algorithms such as RRT.
+
+\subsection{Constraints-Based Motion Generation}
+\label{subsec:chap1-constraints-motion-generation}
+
+Another category relies on prioritized whole-body task planning:
+kinematic redundancy is used to accomplish tasks with different orders
+of priorities \cite{khat04, saab11}. Dynamic balance and obstacle
+avoidance can then be defined as unilateral constraints that the
+algorithm has to verify during the whole motion. The trajectory is
+then generated by specifying a set of goal tasks -- which could be a
+goal configuration -- and let this set act as an attractor, in a way
+similar to the simpler example shown in
+\ref{subsec:chap1-deterministic algorithms}. Using such as scheme,
+\cite{kano09} defines a robot augmented with a sequence of footprints
+and formulates the problem of locomotion planning as an optimization
+problem. Such as scheme works well in the presence of simple
+obstacles, but is prone to falling and local minima failing to find
+solutions in more complex environments.
+
+\subsection{Constrained Motion Planning}
+\label{subsec:chap1-constrained-motion-planning}
+
+More recently, sampling-based motion planning algorithms were adapted
+to efficiently explore a constraint submanifold of \cspace. In
+\cite{bret06, haus10}, this strategy is used to plan on a union of
+submanifolds, where each manifold is defined by a contact limb
+position and static balance constraints, producing statically balanced
+locomotions for hexapods and humanoid robots on uneven
+terrain. Constrained motion planning will be further discussed in
+Chapter \ref{chap2-FIXME}, where a new dynamically-balanced locomotion
+planner is introduced.
+
+\subsection{Multi-Contact Planning}
+\label{subsec-chap1-multi-contact-planning}
+
+It is interesting to note that while collision avoidance is a
+requirement in motion planning, some features of the environment can
+in fact be useful to solve the problem, especially in the case of
+underactuated systems. \cite{esca06, bouy12} propose a
+multiple-contact-point stance planner that looks for authorized
+contacts in order to help the robot reach its goal.
+
+\subsection{Decoupled Planning}
+\label{subsec:chap1-bounding-box}
+
+Finally, Another strategy consists of dividing a high-dimensional
+problem into smaller problems and solving them successively
+\cite{zhan09}. The idea of dividing the problem into a two-stage
+scheme is described in \cite{yosh08}: A 36-DoF humanoid robot is
+reduced to a 3-DoF bounding box. Using the robot simplified model, the
+PRM algorithm solves the path planning problem and generates a valid
+path for the bounding box. A geometric decomposition of the path
+places footsteps on it, and the walk pattern generator described in
+\ref{sec:chap1-pattern-generator} finally produces the whole-body
+trajectory for the robot. In \cite{moul10}, this two-stage approach is
+also used; numerical optimization of the bounding box path produces a
+time-optimal trajectory that is constrained by foot speed and distance
+to obstacles.
+
 \subsection{Holonomic vs Nonholonomic Walking Motion}
 \label{subsec:chap1-holonomic}
 
-Another important issue is the notion of holonomic motion: while
-wheeled robots always remain tangent to their path, thus following a
-nonholonomic constraint, legged robots can also move sideways, and
-their motion can be described as holonomic. The path planning scheme
-in \cite{yosh08} is designed to this end; a PRM algorithm first builds
-a roadmap with Dubins curves \cite{dubi57}; but such curves impose a
-nonholonomic constraint and narrow passages cannot be crossed. The
-roadmap is therefore enriched with linear local paths. As a result
-this planning scheme generates motion such that the robot remains
-tangent to its path most of the time and uses sidestepping only in
-narrow passages.
+An important notion on humanoid walk planning is the one of holonomic
+motion.
+A \emph{holonomic} \emph{constraint}, is given by:
+\begin{eqnarray} C(\mathbf{q}) & = & 0,
+  \label{eq:holonomic_constraint}
+\end{eqnarray}
+with \config{} the configuration vector. When a constraint of the form
+\begin{eqnarray}
+  C(\mathbf{q,}\overset{.}{\mathbf{q}}) & = & 0,
+\end{eqnarray}
+with $\mathbf{\overset{.}{\mathbf{q}}=}\frac{d\mathbf{q}}{dt}$, cannot
+be integrated into a form similar to \ref{eq:holonomic_constraint},
+this constraint is called \emph{nonholonomic}.
 
-Furthermore, \cite{momb10} conducted a series of walking experiments
-that allowed them to build a model of human walking trajectories; if a
-human being walks long distances, his body tends to be tangential to
-his path, while holonomic motion is used over smaller distances. This
-is an attractive property for computed paths if a realistic motion is
-to be achieved, and holonomic motion can as well be used to pass
-through narrow spaces. These results suggest that a good combination
-of both nonholonomic and holonomic motions can be used to achieve
-realistic walking.
+Practically, a nonholonomic constraint implies that a device's
+velocity vector cannot take an arbitrary direction. For instance, you
+cannot drive a car sideways (what makes life harder for us when
+parking), and therefore it has a nonholonomic constraint. On the other
+hand, a spherical ball can roll in any direction, which means it has a
+holonomic constraint.
 
-\subsection{Contribution: Regular Sampling Optimization}
-\label{subsec:chap1-contribution}
+So is there a particular constraint that governs human gait? Studies,
+like the one described in \cite{momb10}, established a model that
+presents trajectory planning as an optimization problem of a cost
+function. Basically, it is shown that for small distances and small
+orientation variations between the start and goal configurations,
+motion obeys a holonomic constraint, and sidestepping is allowed.
+However for greater distances and orientation variations, a
+nonholonomic constraint rules human gait, and sidestepping is
+forbidden, i.e. the human's direction is always tangent to its path.
+But one should note that this model is only applicable in the case of
+the absence of any obstacles, and it is clear that in the presence of
+narrow passages, a human would be forced to adopt holonomic motion in
+order to walk sideways.
+
+The path planning scheme in \cite{yosh08} is designed to this end; a
+PRM algorithm first builds a roadmap with Dubins curves \cite{dubi57};
+but such curves impose a nonholonomic constraint and narrow passages
+cannot be crossed. The roadmap is therefore enriched with linear local
+paths. As a result this planning scheme generates motion such that the
+robot remains tangent to its path most of the time and uses
+sidestepping only in narrow passages.
+
+\section{Contribution: Regular Sampling Optimization}
+\label{sec:chap1-contribution}
 The work of \cite{moul10} solves the walk planning problem in a
 natural way, i.e. it uses numerical optimization to minimize the robot
 walking time along the path while following speed and obstacle
@@ -594,7 +735,7 @@ produces a path $P_{opt}$ that gives priority to nonholonomic motion.
 Once the bounding box trajectory is computed, the robot has to walk
 along it. A footstep sequence is thus generated along $P_{opt}$ by
 geometric decomposition of the path, and the pattern generator cited
-in \autoref{subsec:chap1-humanoid-walk-planning} then produces the robot
+in \autoref{sec:chap1-humanoid-walk-planning} then produces the robot
 whole-body trajectory.
 
 \section{Examples}
@@ -751,5 +892,6 @@ containing prerecorded nonholonomic and holonomic walk behaviors, it
 is possible to lay this behavior on the actor trajectory and produce
 realistic movements.
 
-Discussion about drawback, possible improvements, transition to next
-chapter.
+Discussion about drawback, possible improvements.
+
+Transition to next chapter.

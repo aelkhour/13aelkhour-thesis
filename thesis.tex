@@ -52,6 +52,8 @@
 \usepackage{tikz-qtree}
 \usetikzlibrary{patterns}
 
+\usepackage{import}
+
 \renewcommand{\algorithmicrequire}{\textbf{Input:}}
 \renewcommand{\algorithmicensure}{\textbf{Output:}}
 
@@ -121,8 +123,12 @@ pdfproducer = {Antonio El Khoury}
 \newcommand{\cspace}{$\mathcal{CS}$}
 \newcommand{\cfree}{$\mathcal{CS}_{free}$}
 \newcommand{\cobs}{$\mathcal{CS}_{obs}$}
-\newcommand{\robot}{$\mathcal{R}$}
 \newcommand{\ctree}{$\mathcal{T}$}
+\newcommand{\segroup}{$SE(3)$}
+\newcommand{\actcspace}{$\mathcal{Q}$}
+\newcommand{\robot}{$R$}
+\newcommand{\body}[1]{$B_{#1}$}
+\newcommand{\joint}[1]{$J_{#1}$}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% DOCUMENT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -145,7 +151,7 @@ pdfproducer = {Antonio El Khoury}
 %% \end{tikzpicture}
 %
 %\frontmatter
-%\tableofcontents{\thispagestyle{headings}}
+\tableofcontents{\thispagestyle{headings}}
 %
 %\mainmatter
 %\pagestyle{empty}
