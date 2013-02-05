@@ -298,7 +298,7 @@ robot \robot is an element of the configuration space \cspace $=$
                    {robot-redundancy.pdf_tex}}
       \caption{Anthropomorphic systems are highly-redundant
         systems. For a desired Cartesian position (in blue) of the end
-        effector \body{r}, there exists more than one configuration
+        effector \body{e}, there exists more than one configuration
         \config{} that accomplishes this task. Left and right: two
         possible solution configurations.}
       \label{fig:chap1-robot-redundancy}
@@ -318,24 +318,46 @@ tasks. This will be discussed in more deeply in Chapter
 \section{Walk Pattern Generation}
 \label{sec:chap1-pattern-generator}
 
-Another field of humanoid robotics research is the generation of
-dynamically balanced walk patterns. Since the introduction of the ZMP
-\cite{vukobratovic1969contribution}, several methods have been
-proposed to generate walking motions efficiently.  One way to deal
-with the complexity of a humanoid robot kinematic tree is to use the
-so-called "cart-table" simplified model \cite{kaji03}. Based
-on this model, planning a trajectory for the ZMP is reduced to
-planning a trajectory for the Center of Mass (CoM) of the robot.
-Given a trajectory of the CoM and footprint positions, inverse
-kinematics solvers can animate the whole set of DoF of the robot to
-generate a dynamically balanced walk trajectory.
+An important field of humanoid robotics research is the generation of
+dynamically balanced walk patterns. Since the introduction of the
+Zero-Moment Point (ZMP) \cite{vukobratovic1969contribution}, several
+methods have been proposed to generate walking motions efficiently.
 
-The model of a walking robot with a point mass at a fixed height is
-known in the literature as the cart-table model
-\cite{kaji03}.  The equations giving the ZMP horizontal
-coordinates $(p_x,p_y)$ as functions of CoM horizontal coordinates
-$(x,y)$ in the cart-table model were presented in
-\cite{kaji03}:
+\subsection{Zero-Moment Point (ZMP)}
+\label{subsec:chap1-zmp}
+
+We assume here that the robot \robot is walking on a flat horizontal
+floor. We also assume that the robot is always making contact with the
+floor, i.e. that there are no jumps, and that all contacts are
+non-sliding. \robot is then subject to its weight and to contact
+forces.
+
+Under these assumptions, \cite{vukobratovic1969contribution} define
+the Zero-Moment Point (ZMP) as the point on the floor where the
+horizontal components of the sum of moments applied to \robot are
+zero. It is also established that \robot will not tilt around its foot
+edges as long as the ZMP lies inside the support polygon, i.e. the
+convex hull of all contact points, which are coplanar due to the
+previous assumptions. This is known as the condition of dynamic
+balance, and the robot \robot is then said to be dynamically
+balanced. We will discuss more the complete ZMP formulation in Chapter
+\ref{chap3-FIXME}.
+
+Note that in the particular case where speed and acceleration are
+zero, the ZMP will coincide with the CoM vertical projection on the
+floor; the robot \robot will then be said to be statically balanced if
+this projection lies inside the support polygon.
+
+\subsection{Cart-Table Model}
+\label{subsec:chap1-cart-table}
+
+The above formulation of ZMP is rather hard to control.  One way to
+deal with the complexity of a humanoid robot kinematic tree is to use
+the so-called "cart-table" simplified model, where the walking robot
+is modeled by a point mass at a fixed height.  The equations giving
+the ZMP horizontal coordinates $(p_x,p_y)$ as functions of the center
+of mass (CoM) horizontal coordinates $(x,y)$ in the cart-table model
+were presented in \cite{kaji03}:
 \begin{equation}
 \label{eq:walk-zmp}
 \left(
@@ -348,28 +370,40 @@ x - \frac{z_c}{g} \ddot{x}\\ y - \frac{z_c}{g} \ddot{y}
 \end{array}
 \right)
 \end{equation}
-where $z_c$ is  the constant height of the CoM and  $g$ is the gravity
-constant.    In    the    following    we    will    note    $\omega_0
+where $z_c$ is the constant height of the CoM and $g$ is the gravity
+constant.  In the following we will note $\omega_0
 =\sqrt{\frac{g}{z_c}}$.
 
-Given a statically balanced path $p$ verifying the cart-table model
-approximation constraints, we start by placing footprints
-corresponding to the nominal walk pattern of the robot. Given the
-footprints, we compute a ZMP trajectory, derive foot trajectories, and
-a preview controller returns the corresponding CoM trajectory
+\begin{figure}
+  \centering
+      {\def\svgwidth{0.5\linewidth}
+        \subimport*{src/chap1-path-optimization/}
+                   {robot-cart-table.pdf_tex}}
+      \caption{Simplified model of a cart on table. The cart can move
+        horizontally along one dimension on the table with a non-zero
+        acceleration and represents the robot CoM. The table foot
+        represents the contact surface of the robot. Note that in its
+        current state, the robot is dynamically balanced, as the ZMP
+        lies on the table foot. The CoM vertical projection, on the
+        other hand, doe not, and static balance is not ensured.}
+      \label{fig:chap1-robot-cart-table}
+\end{figure}
 
-FIXME:read sebastien dalibard thesis.
-cart-table model (from dalibard thesis?) + equations (from IJRR)
-
-Static balance vs dynamic balance.
-
-Many preview control methods, describe Preview control by Kajita
-(description from IJRR).
+Based on this model, planning a trajectory for the ZMP is reduced to
+planning a trajectory for CoM of the robot. Given a trajectory of the
+CoM and footprint positions, inverse kinematics solvers can animate
+the whole set of DoF of the robot to generate a dynamically balanced
+walk trajectory.
 
 \begin{figure}
   \centering
   \input{src/chap1-path-optimization/zmp}
-  \caption{FIXME: Footprints, zmp, com, keep bounding box?}
+  \caption{An illustration of the walking pattern generator: a desired
+    ZMP trajectory (in grey) connects footprints. During the
+    single-support phase, the ZMP stays under the support foot, and
+    switches feet during the double support phase. The cart-table
+    model is then used to produce the corresponding CoM trajectory (in
+    blue).}
   \label{fig:chap1-zmp}
 \end{figure}
 
@@ -454,7 +488,9 @@ places footsteps on it, and the walk pattern generator described in
 trajectory for the robot. In \cite{moul10}, this two-stage approach is
 also used; numerical optimization of the bounding box path produces a
 time-optimal trajectory that is constrained by foot speed and distance
-to obstacles.
+to obstacles. Optimization techniques will be discussed in detail in
+Chapter \ref{chap3-FIXME}, where we describe an optimal motion
+planning framework.
 
 \subsection{Holonomic vs Nonholonomic Walking Motion}
 \label{subsec:chap1-holonomic}
@@ -488,7 +524,7 @@ orientation variations between the start and goal configurations,
 motion obeys a holonomic constraint, and sidestepping is allowed.
 However for greater distances and orientation variations, a
 nonholonomic constraint rules human gait, and sidestepping is
-forbidden, i.e. the human's direction is always tangent to its path.
+forbidden, i.e. the human direction is always tangent to its path.
 But one should note that this model is only applicable in the case of
 the absence of any obstacles, and it is clear that in the presence of
 narrow passages, a human would be forced to adopt holonomic motion in
@@ -504,23 +540,24 @@ sidestepping only in narrow passages.
 
 \section{Contribution: Regular Sampling Optimization}
 \label{sec:chap1-contribution}
-The work of \cite{moul10} solves the walk planning problem in a
-natural way, i.e. it uses numerical optimization to minimize the robot
-walking time along the path while following speed and obstacle
-distance constraints. After having tried this approach, it was
-empirically concluded that achieving successful numerical optimization
-in any kind of environment is a difficult and computationally
-expensive task; in fact, it requires computing a large set of
-parameters to fully define the optimized path.
+
+The work of \cite{moul10} provides a sound way for generating nice
+walking trajectories, using numerical optimization to minimize the
+robot walking time along the path while following speed and obstacle
+distance constraints. However, after having tried this approach, we
+came to the conclusion that it was too computationally expensive given
+the simple nature of the robot model, with optimizations taking
+several minutes even for simple environments.
 
 While using the same two-stage approach of \cite{yosh08}, a simpler
-heuristic method that generates realistic time-optimal humanoid
+heuristic method that generates realistic near time-optimal humanoid
 trajectories is proposed. First the PRM algorithm and the Dubins local
 paths are replaced with an RRT-Connect algorithm and linear local
 paths. The path is then optimized by locally reorienting the robot
-bounding box on a discrete set of configurations of the path. Priority
-to nonholonomic motion is considered and holonomic motion is used only
-to pass in narrow passages and to avoid nearby obstacles.
+bounding box on a discrete set of configurations of the path. Our
+heuristic gives priority to nonholonomic motion, holonomic motion is
+used only to pass in narrow passages or avoid nearby obstacles, thus
+generating realistic walking trajectories.
 
 The following section presents this method and explains how it is
 integrated in the motion planning scheme. Examples of different
@@ -541,10 +578,10 @@ scenarios, including a real one with the HRP-2 platform, are shown in
       \label{fig:chap1-bb-plan-optim}
 \end{figure}
 
-Assuming full knowledge of the environment, the RRT
-algorithm produces a collision-free piecewise linear path $P_{RRT}$
-for the robot bounding box (in offline mode), i.e. the path consists
-of the concatenation of linear local paths $LP_{RRT}$.
+Assuming full knowledge of the environment, the RRT algorithm produces
+a collision-free piecewise linear path $P_{RRT}$ for the robot
+bounding box (in offline mode), i.e. the path consists of the
+concatenation of linear local paths $LP_{RRT}$.
 
 Due to the probabilistic nature of RRT, $P_{RRT}$ may not be optimal
 in terms of length, and a preliminary random shortcut optimization
@@ -629,14 +666,14 @@ evaluates with the evaluation function the cost of going through each
 different state, see \autoref{fig:chap1-A-star}.
 
 A graph $G$ is defined to be a set of nodes and arcs. A valid node
-$q_n^{state_n}$ is defined to be a configuration with no collisions, and a valid arc
-$q_n^{state_n}q_{n+1}^{state_{n+1}}$ is a collision-free local
-path. The whole graph $G$ could be built before running A* by testing
-all nodes and arcs and making sure they are collision-free. But
-collision tests are slow, and A* uses a heuristic estimation function
-to avoid going through all nodes. An empty graph $G$ is thus
-initialized and nodes and arcs are built only when necessary. A
-successor operator needs to be defined for this purpose.
+$q_n^{state_n}$ is defined to be a configuration with no collisions,
+and a valid arc $q_n^{state_n}q_{n+1}^{state_{n+1}}$ is a
+collision-free local path. The whole graph $G$ could be built before
+running A* by testing all nodes and arcs and making sure they are
+collision-free. But collision tests are slow, and A* uses a heuristic
+estimation function to avoid going through all nodes. An empty graph
+$G$ is thus initialized and nodes and arcs are built only when
+necessary. A successor operator needs to be defined for this purpose.
 
 \begin{figure}
   \centering
@@ -786,22 +823,37 @@ whole-body trajectory.
       \label{fig:chap1-chairs-hash-optim-perspective-hrp2}
 \end{figure}
 
-This section presents experimental results of the path
-optimizer after it has been inserted in the previously described walk
-planning scheme. Distance parameters $v_{max}^f$,
-$v_{max}^{lat}$, $v_{min}^f$ are set to 0.5, 0.1, and 0.25
-respectively. $d_{sample}$ is equal to $\frac{h}{6}$, where $h$
-is the humanoid height.  Tests are performed on a 2.13 GHz Intel Core
-2 Duo PC with 2 GB RAM.
+This section presents experimental results of the path optimizer after
+it has been inserted in the previously described walk planning
+scheme. Distance parameters $v_{max}^f$, $v_{max}^{lat}$, $v_{min}^f$
+are set to 0.5, 0.1, and 0.25 respectively. Note that these parameters
+give an idea of the robot walking speed and play a key role in giving
+priority to forward walking with respect to lateral and backwards
+walking, but do not hold any physical significance, hence the absence
+of units.
 
+Since the A* search only takes place over the graph of discretized
+configurations of the input path. It is important to choose a proper
+value of the sampling interval $d_{sample}$. If the value is too
+small, the search space will be much bigger, possibly leading to
+better trajectories, but leading to an explosion of the A* search
+time. If the value is too high, the A* search will be very fast in the
+small trajectory space, but we risk missing some optimizations on the
+trajectory. We found that setting $d_{sample}$ to be equal to
+$\frac{h}{6}$, where $h$ is the humanoid height provided a good
+comprise between computation time and trajectory quality: $d_{sample}$
+is then a broad approximation of the nominal human step length.
+
+Tests are performed on a 2.13 GHz Intel Core 2 Duo PC with 2 GB RAM.
 Simulations of the humanoid robot HRP-2 are run in three scenarios.
 The first one is a small environment where HRP-2 has to pass between
 two chairs. The second environment is uncluttered with few obstacles
 lying around, while the last one is a bigger apartment environment
 where the robot has to move from one room to another while passing
 through doors. The chairs scenario motion is also replayed on the real
-robot HRP-2 (See \autoref{fig:chap1-hrp2-chairs}). Videos for all scenarios
-can be viewed at \url{http://humanoid-walk-planning.blogspot.com/}
+robot HRP-2 (See \autoref{fig:chap1-hrp2-chairs}). Videos for all
+scenarios can be viewed at
+\url{http://humanoid-walk-planning.blogspot.com/}
 
 \begin{figure}
   \centering{
@@ -819,6 +871,8 @@ robot walk times are also measured by creating a trajectory directly
 after RO, and comparing it with a trajectory where the RSO was added.
 
 \subsection{``Chairs'' Scenario}
+\label{subsec:chap1-chairs}
+
 \autoref{fig:chap1-bb-plan-optim} shows the bounding box RRT path
 and the RO path for the chairs scenario. It is obvious that RO creates
 a shorter path, but the bounding box starts rotating from the
@@ -853,9 +907,9 @@ that the frontal orientation state is valid for all considered samples
 on the path (See \autoref{fig:chap1-galton-hash-optim-perspective-hrp2}).
 
 \subsection{``Apartment'' Scenario}
-The planning scheme is finally applied in the apartment
-scenario. In \autoref{fig:chap1-apartment-hash-optim-perspective-hrp2}, it
-is evident that HRP-2 walks facing forward through the doors. As with
+The planning scheme is finally applied in the apartment scenario. In
+\autoref{fig:chap1-apartment-hash-optim-perspective-hrp2}, it is
+evident that HRP-2 walks facing forward through the doors. As with
 previous scenarios, the trajectory is more realistic than a trajectory
 where RSO is not used. The added computation time for RSO is 2,412 ms,
 which is insignificant compared to the 228 s it takes for the whole
@@ -885,13 +939,32 @@ a realistic time-optimal walk trajectory. Results show that new
 trajectories are more satisfactory while the added computation time is
 insignificant compared to the whole planning time.
 
-Of course, this approach can be used in other fields such as graphical
-animation for digital actors to adapt the body orientation with respect
-to the goal during locomotion. With a motion capture library
-containing prerecorded nonholonomic and holonomic walk behaviors, it
-is possible to lay this behavior on the actor trajectory and produce
-realistic movements.
+This approach can be used in other fields such as graphical animation
+for digital actors to adapt the body orientation with respect to the
+goal during locomotion. With a motion capture library containing
+prerecorded nonholonomic and holonomic walk behaviors, it is possible
+to lay this behavior on the actor trajectory and produce realistic
+movements.
 
-Discussion about drawback, possible improvements.
+Achieving humanoid walk planning using the bounding box approach is
+both simple and efficient; it allows using off-the shelf
+sampling-based planners to efficiently explore the configurations
+space, thus removing the need to take into account additional
+kinematic and stability constraints when planning for the whole
+articulated robot. But it has one main drawback: in order to have a
+sound framework that always produces collision-free walking
+trajectories, the bounding box must contain all the robot geometries
+and take into account the robot swaying motion during walking. It is
+thus a rather conservative method, which will not succeed in finding
+collision-free trajectories in cluttered environments. If we go back
+to the chairs example in \ref{subsec:chap1-chairs}, we can show that
+the lateral walking motion could have been avoided if the HRP-2 lifted
+its arms over the two chairs. Besides leading to an even faster
+motion, walking forward could be necessary if vision systems were
+needed to achieve robot localization and/or environment mapping.
 
-Transition to next chapter.
+In the next chapter, we introduce an efficient and sound whole-body
+motion planning algorithm that allows planning collision-free walking
+trajectories for the fully articulated humanoid robot, hence releasing
+it from its bounding box constraint and increasing its accessible
+workspace.
