@@ -2,42 +2,42 @@
 \label{chap:path-optim}
 
 The problem of humanoid motion planning can be defined as the
-following: given a starting configuration -- say a position -- we
-would like an anthropomorphic system -- say a humanoid robot or a
-digital actor -- to reach a goal configuration if it is
-possible. Obviously such a system cannot move instantaneously, so it
-will have to travel continuously in the environment surrounding it to
-reach its goal. The environment will usually not be empty, as it will
-contain at least the floor that supports the system. It might also
-contain entities, moving or static, against which we do not want the
-system to collide to avoid damaging either the entities or the system,
-or both. Additionally, we want to avoid self-collisions between the
-different limbs of the system. Hence, finding a solution the problem
-of humanoid walk planning consists in finding a continuous motion
-connecting the start configuration to the goal configuration, such
-that the anthropomorphic system is never in collision with the
+following: given a starting configuration, say a position, we would
+like an anthropomorphic system, say a humanoid robot or a digital
+actor, to reach a goal configuration if it is possible. Obviously such
+a system cannot move instantaneously, so it will have to travel
+continuously in the environment surrounding it to reach its goal. The
+environment will usually not be empty, as it will contain at least the
+floor that supports the system. It might also contain entities, moving
+or static, against which we do not want the system to collide in order
+to avoid damaging either the entities or the system, or
+both. Additionally, we want to avoid self-collisions between the
+different limbs of the system. Hence, finding a solution to the
+problem of humanoid walk planning consists in finding a continuous
+motion connecting the start configuration to the goal configuration,
+such that the anthropomorphic system is never in collision with the
 environment or itself when executing this motion.
 
 While the found solution is guaranteed to be collision-free, we still
-know nothing about its quality. Let us assume we want to minimize the
-duration of the system motion when traveling from a configuration to
-another. We could then solve the same motion planning problem, i.e. a
-problem with the same start and goal configurations and the same
-environment, by finding either a collision-free fast motion or another
-motion that takes a very long time to reach the goal
+know nothing about its quality. Let us assume that we want to minimize
+the duration of the system motion when traveling from a configuration
+to another. We could then solve the same motion planning problem,
+i.e. a problem with the same start and goal configurations and the
+same environment, by finding either a collision-free fast motion or
+another motion that takes a very long time to reach the goal
 configuration. Hence, we would like to impose more constraints on the
 humanoid motion planning problem in order to find motions that are
 both collision-free and ``nice''.
 
 This chapter deals with path optimization for humanoid walk planning
-in cluttered environments. Under the assumption the humanoid robot
-will walk on a flat floor in a perfectly modeled static environment,
-it presents a heuristic and efficient optimization method that takes
-as input a path computed for the humanoid bounding box, and produces a
-path where a discrete set of configurations is reoriented using an A*
-search algorithm. A pattern generator is then used to generate a
-trajectory that is realistic and time-optimal. This method is
-validated in various scenarios on the humanoid robot HRP-2.
+in cluttered environments. Under the assumption that the humanoid
+robot will walk on a flat floor in a perfectly modeled static
+environment, it presents a heuristic and efficient optimization method
+that takes as input a path computed for the humanoid bounding box, and
+produces a path where a discrete set of configurations is reoriented
+using an A* search algorithm. A pattern generator is then used to
+generate a trajectory that is realistic and time-optimal. This method
+is validated in various scenarios on the humanoid robot HRP-2.
 
 \section{Motion Planning in the Configuration Space}
 \label{sec:chap1-motion-planning}
@@ -103,25 +103,24 @@ configuration is found (see Figure
         algorithm. Arrows show the attractive and repulsive potential
         fields. Thin lines show the potential lines. Right: Example of
         problem where the stable local minimum does not coincide with
-        the goal configuration. $P$ is hence not a solution to the
-        path planning problem.}
+        the goal configuration. $P$ is thus not a solution to the path
+        planning problem.}
       \label{fig:chap1-deterministic-algorithm}
 \end{figure}
 
 \subsection{Sampling-based Algorithms}
 \label{subsec:chap1-sampling-algorithms}
 
-Deterministic algorithms rapidly reach their limits when the
-configuration space's dimension rises above 4. Computation speed plays
-a big part in choosing which algorithm to use for path planning
-problems, as many applications require -- or at least aim for --
-real-time resolution. In this perspective, sampling-based algorithms,
-such as Probabilistic Roadmaps (PRM) \cite{kavr96} or
-Rapidly-exploring Random Trees (RRT) \cite{kuff00}, were developed in
-the past 15 years.
+Deterministic algorithms rapidly reach their limit when the
+configuration space dimension rises above 4. Computation speed plays a
+big part in choosing which algorithm to use for path planning
+problems, as many applications require, or at least aim for, real-time
+resolution. In this perspective, sampling-based algorithms, such as
+Probabilistic Roadmaps (PRM) \cite{kavr96} or Rapidly-exploring Random
+Trees (RRT) \cite{kuff00}, were developed in the past fifteen years.
 
 Instead of trying to build an explicit representation of \cfree,
-sampling-based algorithms rely and on approximating the connectivity
+sampling-based algorithms rely on approximating the connectivity
 of \cfree through rejection sampling: random configurations
 \config{rand} are sampled in \cspace, and efficient Boolean collision
 detection techniques \cite{vand97, huds97, gott96} reject
@@ -151,7 +150,7 @@ configuration \config{s} and grows a tree \ctree rooted in \config{s}.
 
 One way to make the RRT algorithm more efficient is to grow trees from
 both the initial and goal configurations, see Figure
-\ref{fig:chap1-rrt}. This was first proposed in \cite{kuff00}
+\ref{fig:chap1-rrt}. This was first proposed in \cite{kuff00}.
 
 \begin{figure}
   \centering
@@ -160,7 +159,7 @@ both the initial and goal configurations, see Figure
       \caption{A valid path (in green) computed with a bidirectional
         RRT planner. $q_{start}$ and $q_{goal}$ are the roots of the
         trees $\mathcal{T}_{1}$and $\mathcal{T}_{2}$ respectively. The
-        algorithm keeps diffusing the two trees until they can be
+        algorithm keeps diffusing both trees until they can be
         connected together with an edge (in dashed green).}
       \label{fig:chap1-rrt}
 \end{figure}
@@ -170,12 +169,11 @@ solution exists or not), sampling-based algorithms have the less
 strong property of probabilistic completeness: if a solution path
 exists, the algorithm will be able to compute it with a probability of
 $1$ when the number of iterations $K$ reaches infinity. This may seem
-like a very weak property -- and a long time to wait for -- but in
-practice these algorithms can compute paths in complex real-life
-environments in a reasonable time on regular computers and have been
-used to solve problems for various systems, ranging from 6-DoF
-floating objects, 50-DoF anthropomorphic systems, to 1000-DoF
-proteins.
+like a very weak property, but in practice these algorithms can
+compute paths in complex real-life environments in a reasonable time
+on regular computers and have been used to solve problems for various
+systems, ranging from 6-DoF floating objects, 50-DoF anthropomorphic
+systems, to 1000-DoF proteins.
 
 \subsection{Path Optimization}
 \label{subsec:chap1-path-optimization}
@@ -184,14 +182,14 @@ As shown in Figure \ref{fig:chap1-rrt}, RRT returns the shortest path
 $P$ inside the graph that connects \config{s} to \config{g}. Due to
 the probabilistic nature of RRT, it is clear that $P$ is not optimal
 in terms of length. Path optimization methods take a valid,
-i.e. collision-free path as input and try to shorten while making sure
-the output path that is still valid.
+i.e. collision-free, path as input and try to shorten while making
+sure that the output path is still valid.
 
 \subsubsection{Greedy Optimization}
 
 A greedy optimizer, such as the one shown in Figure
 \ref{fig:chap1-optimizers}, uses the greedy approach to shorten and
-smooth a path. It first tries to connect directly \config{s} to
+smooth a path. First, it tries to connect directly \config{s} to
 \config{g}; if the path is collision-free, it tries to connect
 \config{s} to the node preceding \config{g}, and so on until it
 reaches \config{s}. This process is then restarted similarly on the
@@ -202,8 +200,8 @@ following nodes.
 In the case of the greedy optimizer, the nodes that are in the
 optimized path are also nodes of the input path. Random Optimization
 (RO) tries to bypass some nodes and keeps the rest. While this simple
-method runs very fast, it does not always gives the best path
-possible. A different shortcut strategy can be run in a loop: at each
+method runs very fast, it does not always give the best possible
+path. A different shortcut strategy can be run in a loop: at each
 iteration, two random configurations are sampled on the path, and the
 optimizer tries to connect \config{s} to the first, the first one to
 the second one, and the second one to \config{g}. The local paths that
@@ -226,26 +224,26 @@ shown in Figure \ref{fig:chap1-optimizers}.
 
 We focus in this work on humanoid robots and digital actors, which are
 anthropomorphic systems. Such systems have a high number of DoF, and
-are capable of accomplishing human-like tasks: locomotion -- e.g
-walking, running and parkour -- manipulation, or both. Due to these
-tasks complexity, anthropomorphic systems are both underactuated and
-highly-redundant systems.
+are capable of accomplishing human-like tasks: locomotion(such as
+walking, running and parkour), manipulation, or both. These tasks can
+be accomplished thanks to the fact that anthropomorphic systems are
+both underactuated and highly-redundant.
 
-In the remainder of this work, we will refer indifferently to
+In the remainder of this work, we will refer indistinguishably to
 anthropomorphic systems, humanoid robots and digital actors.
 
 \subsection{Underactuated Systems}
 \label{subsec:chap1-underactuated-systems}
 
-Robots \robot are usually composed of a set of rigid bodies \body{i},
-$i \in 0..N_B$, and a set of joints \joint{i}, $i \in 1..N_J$, which
+A robot \robot usually composed of a set of rigid bodies \body{i}, $i
+\in 0..N_B$, and a set of joints \joint{i}, $i \in 1..N_J$, which
 constrain the body positions. A rigid body has a mass, an inertia, and
 a given geometry. We use the kinematic tree formalism proposed in
 \cite{feat08} to model a full robot: a node of the tree represents a
 body of the robot, while an arc (or edge) represents a joint \joint{i}
 of the robot which constrains the motion of the successor body
-\body{i} with respect to its parent body \body{\lambda_{i}}, see
-Figure \ref{fig:chap1-robot-kinematic-tree}. Note that in the tree
+\body{i} with respect to its parent body \body{\lambda_{i}} (see
+Figure \ref{fig:chap1-robot-kinematic-tree}). Note that in the tree
 representation, each body has one and exactly one parent body, except
 for the root body which has no parents; this means that additional
 constraints have to be added later on in order to correctly model
@@ -275,8 +273,8 @@ case of anthropomorphic systems, which rely on making and breaking
 contact with their environment -- the floor for instance -- in order
 to move in their workspace. Additional information in the
 configuration vector is needed to model the general position of the
-system, and not only its actuators. Hence, anthropomorphic systems are
-said to be unactuated systems.
+system, and not only its actuators. Anthropomorphic systems are
+therefore said to be unactuated systems.
 
 We therefore introduce a 6-DoF floating joint, which we attach to the
 root of the existing kinematic tree containing the actuated
@@ -284,7 +282,7 @@ joints. The successor body of the floating joint will be called the
 floating base. Note that any body of the kinematic tree can be chosen
 to be the floating base; in Figure
 \ref{fig:chap1-robot-kinematic-tree}, the floating base is the
-``waist'' of the robot. Hence, a full configuration \config{} of the
+``waist'' of the robot. Thus, a full configuration \config{} of the
 robot \robot is an element of the configuration space \cspace $=$
 \segroup $\times$ \actcspace.
  
@@ -312,7 +310,7 @@ target. The robot \robot is therefore kinematically redundant with
 respect to the task of reaching the object. One could imagine
 assigning multiple tasks to be accomplished at the same time, or even
 exploring \cspace while continuously accomplishing one or more
-tasks. This will be discussed in more deeply in Chapter
+tasks. This will be discussed in more thoroughly in Chapter
 \ref{chap2-FIXME}.
 
 \section{Walk Pattern Generation}
