@@ -14,6 +14,7 @@
 \usepackage{mathtools}
 \usepackage{makeidx}
 \usepackage[pdftex]{graphicx}
+\usepackage{epstopdf}
 \usepackage{url}
 \usepackage{epigraph}
 \usepackage{hyperref}
@@ -87,15 +88,6 @@ pdfproducer = {Antonio El Khoury}
   }}
 \makeatother
 
-\newcommand\vect[1]{\textbf{#1}}
-\newcommand\moment[2]{{\cal M}_{#2}^{#1}}
-\def\crossprod{\times}
-
-\def\vi{\vect{v}_{i}}
-\def\vG{\vect{v}_{G}}
-\def\gammai{\gamma_{i}}
-\def\gammaG{\gamma_{G}}
-
 % Enforce math style.
 \everymath{\displaystyle}
 
@@ -129,6 +121,11 @@ pdfproducer = {Antonio El Khoury}
 \newcommand{\robot}{$R$}
 \newcommand{\body}[1]{$B_{#1}$}
 \newcommand{\joint}[1]{$J_{#1}$}
+
+\newtheorem{theorem}{Theorem}
+\renewcommand{\labelitemi}{$-$}
+\newcommand\manifold{\mathcal{M}}
+\newcommand\goalmanifold{\mathcal{M}_{g}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% DOCUMENT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -168,7 +165,8 @@ pdfproducer = {Antonio El Khoury}
 \fancyhead[RO]{\thepage} % Page number on right odd pages
 
 %\include{src/chap0-introduction/chap0-introduction}
-\include{src/chap1-path-optimization/chap1-path-optimization}
+%\include{src/chap1-path-optimization/chap1-path-optimization}
+\include{src/chap2-wholebody-planning/chap2-wholebody-planning}
 
 %% \backmatter
 
