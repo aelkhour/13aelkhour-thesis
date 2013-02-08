@@ -97,6 +97,7 @@ pdfproducer = {Antonio El Khoury}
 % Please fancyhdr.
 \pagestyle{headings}
 \setlength{\headheight}{26pt}
+\setlength{\footskip}{120pt}
 
 % Align bibliography left and add some padding
 \makeatletter
@@ -163,6 +164,11 @@ pdfproducer = {Antonio El Khoury}
 \fancyhead[RE]{\thepage} % Page number on right even pages
 \fancyhead[LO]{\rightmark} % Section name on left odd pages
 \fancyhead[RO]{\thepage} % Page number on right odd pages
+\fancyfoot[RO]{\includegraphics[height=60px]
+  {src/romeo-walk-\intcalcMod{\intcalcInc
+      {\intcalcDiv{\thepage}{2}}}{10}.png}} % Romeo on right odd pages
+                                            % footer
+\fancyfootoffset[RO]{\marginparwidth - \marginparsep}
 
 %\include{src/chap0-introduction/chap0-introduction}
 %\include{src/chap1-path-optimization/chap1-path-optimization}
