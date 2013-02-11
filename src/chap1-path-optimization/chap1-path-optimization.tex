@@ -35,7 +35,7 @@ robot will walk on a flat floor in a perfectly modeled static
 environment, it presents a heuristic and efficient optimization method
 that takes as input a path computed for the humanoid bounding box, and
 produces a path where a discrete set of configurations is reoriented
-using an A* search algorithm. A pattern generator is then used to
+using an A$^{*}$ search algorithm. A pattern generator is then used to
 generate a trajectory that is realistic and time-optimal. This method
 is validated in various scenarios on the humanoid robot HRP-2.
 
@@ -311,7 +311,7 @@ respect to the task of reaching the object. One could imagine
 assigning multiple tasks to be accomplished at the same time, or even
 exploring \cspace while continuously accomplishing one or more
 tasks. This will be discussed in more thoroughly in Chapter
-\ref{chap2-FIXME}.
+\ref{chap:wholebody-planning}.
 
 \section{Walk Pattern Generation}
 \label{sec:chap1-pattern-generator}
@@ -339,7 +339,7 @@ convex hull of all contact points, which are coplanar due to the
 previous assumptions. This is known as the condition of dynamic
 balance, and the robot \robot is then said to be dynamically
 balanced. We will discuss more the complete ZMP formulation in Chapter
-\ref{chap3-FIXME}.
+\ref{chap:optimal-motion-planning}.
 
 Note that in the particular case where speed and acceleration are
 zero, the ZMP will coincide with the CoM vertical projection on the
@@ -357,7 +357,7 @@ the ZMP horizontal coordinates $(p_x,p_y)$ as functions of the center
 of mass (CoM) horizontal coordinates $(x,y)$ in the cart-table model
 were presented in \cite{kaji03}:
 \begin{equation}
-\label{eq:walk-zmp}
+\label{eq:chap1-walk-zmp}
 \left(
 \begin{array}{c}
 p_x\\ p_y
@@ -419,7 +419,7 @@ be found in literature.
 One possible way of addressing humanoid walk planning is by reasoning
 on the footstep level. Works of \cite{kuff01,ches05} describe humanoid
 footstep planning schemes. Starting from an initial footstep
-placement, they use an A* graph search \cite{hart68} to explore a
+placement, they use an A$^{*}$ graph search \cite{hart68} to explore a
 discrete set of footstep transitions. The search stops when the
 neighborhood of the goal footstep placement is reached. This approach
 is not practical in some environments with narrow passages, and
@@ -458,7 +458,7 @@ submanifolds, where each manifold is defined by a contact limb
 position and static balance constraints, producing statically balanced
 locomotions for hexapods and humanoid robots on uneven
 terrain. Constrained motion planning will be further discussed in
-Chapter \ref{chap2-FIXME}, where a new dynamically-balanced locomotion
+Chapter \ref{chap:wholebody-planning}, where a new dynamically-balanced locomotion
 planner is introduced.
 
 \subsection{Multi-Contact Planning}
@@ -487,8 +487,8 @@ trajectory for the robot. In \cite{moul10}, this two-stage approach is
 also used; numerical optimization of the bounding box path produces a
 time-optimal trajectory that is constrained by foot speed and distance
 to obstacles. Optimization techniques will be discussed in detail in
-Chapter \ref{chap3-FIXME}, where we describe an optimal motion
-planning framework.
+Chapter \ref{chap:optimal-motion-planning}, where we describe an
+optimal motion planning framework.
 
 \subsection{Holonomic vs Nonholonomic Walking Motion}
 \label{subsec:chap1-holonomic}
@@ -497,14 +497,14 @@ An important notion on humanoid walk planning is the one of holonomic
 motion.
 A \emph{holonomic} \emph{constraint}, is given by:
 \begin{eqnarray} C(\mathbf{q}) & = & 0,
-  \label{eq:holonomic_constraint}
+  \label{eq:chap1-holonomic_constraint}
 \end{eqnarray}
 with \config{} the configuration vector. When a constraint of the form
 \begin{eqnarray}
   C(\mathbf{q,}\overset{.}{\mathbf{q}}) & = & 0,
 \end{eqnarray}
 with $\mathbf{\overset{.}{\mathbf{q}}=}\frac{d\mathbf{q}}{dt}$, cannot
-be integrated into a form similar to \ref{eq:holonomic_constraint},
+be integrated into a form similar to \ref{eq:chap1-holonomic_constraint},
 this constraint is called \emph{nonholonomic}.
 
 Practically, a nonholonomic constraint implies that a device's
@@ -599,7 +599,7 @@ bounding box position in the horizontal plane, and $\theta$ gives its
 orientation.  The optimizer reorients the bounding box along $P$ by
 changing $\theta$ while retaining the value of $\mathbf{X}$.
 
-For this purpose, an A* search algorithm is executed; first $P$ is
+For this purpose, an A$^{*}$ search algorithm is executed; first $P$ is
 regularly sampled. Using a discrete set of possible orientations for
 each sample configuration and an adequate heuristic estimation
 function, the bounding box orientation is then modified along $P$. An
@@ -623,7 +623,7 @@ ends starting from $q_s$, and is denoted by $q_n^{init}$.
       {\includegraphics[width = 0.75\linewidth]
         {src/chap1-path-optimization/A-star.pdf}}
       \caption{Each initial sample configuration can be rotated and be
-        in one of four states. Starting from $q_s$, the A* search
+        in one of four states. Starting from $q_s$, the A$^{*}$ search
         algorithm searches the graph $G$ that contains only valid
         nodes and arcs to produce an optimized path $P_{opt}$.}
       \label{fig:chap1-A-star}
@@ -651,14 +651,14 @@ remain in their initial state.  Ideally, the algorithm should be able
 in the frontal state, create a new path $P_{opt}$ and generate a
 time-optimal trajectory for the robot.
 
-An A* search is run to achieve this goal; the algorithm functions are
+An A$^{*}$ search is run to achieve this goal; the algorithm functions are
 described in the following section.
 
-\subsubsection{A* Function Definition}
+\subsubsection{A$^{*}$ Function Definition}
 \label{sec:chap1-A-star}
-An A* search algorithm can find an optimal path in a graph
+An A$^{*}$ search algorithm can find an optimal path in a graph
 as long as a graph and an evaluation function are correctly
-defined. Starting from $q_s$, A* expands in each iteration the
+defined. Starting from $q_s$, A$^{*}$ expands in each iteration the
 possible transitions from one sample to the next one in the graph and
 evaluates with the evaluation function the cost of going through each
 different state, see \autoref{fig:chap1-A-star}.
@@ -667,8 +667,8 @@ A graph $G$ is defined to be a set of nodes and arcs. A valid node
 $q_n^{state_n}$ is defined to be a configuration with no collisions,
 and a valid arc $q_n^{state_n}q_{n+1}^{state_{n+1}}$ is a
 collision-free local path. The whole graph $G$ could be built before
-running A* by testing all nodes and arcs and making sure they are
-collision-free. But collision tests are slow, and A* uses a heuristic
+running A$^{*}$ by testing all nodes and arcs and making sure they are
+collision-free. But collision tests are slow, and A$^{*}$ uses a heuristic
 estimation function to avoid going through all nodes. An empty graph
 $G$ is thus initialized and nodes and arcs are built only when
 necessary. A successor operator needs to be defined for this purpose.
@@ -713,7 +713,7 @@ and maximum values (See
 can be then computed by integrating this speed constraint along it.
 
 Having expressed the successor operator, which allows the optimizer to
-choose which node to expand at each iteration, the A* evaluation
+choose which node to expand at each iteration, the A$^{*}$ evaluation
 function can be defined.
 
 \paragraph{The Evaluation Function $\hat{f}(q_n^{state})$:}
@@ -745,7 +745,7 @@ $q_g$. $\hat{h}(q_n^{state})$ thus sums the cost of walking along $P$
 while staying tangential to the path with the start and
 end transition costs from $q_n^{state}$ and to $q_g$.
 
-Now that the A* functions are fully defined, a search algorithm can be
+Now that the A$^{*}$ functions are fully defined, a search algorithm can be
 run to compute an optimal path $P_{opt}$ by changing the orientation
 of each sample node. An example is shown in
 \autoref{fig:chap1-hash-direct-path}.
@@ -830,12 +830,12 @@ priority to forward walking with respect to lateral and backwards
 walking, but do not hold any physical significance, hence the absence
 of units.
 
-Since the A* search only takes place over the graph of discretized
+Since the A$^{*}$ search only takes place over the graph of discretized
 configurations of the input path. It is important to choose a proper
 value of the sampling interval $d_{sample}$. If the value is too
 small, the search space will be much bigger, possibly leading to
-better trajectories, but leading to an explosion of the A* search
-time. If the value is too high, the A* search will be very fast in the
+better trajectories, but leading to an explosion of the A$^{*}$ search
+time. If the value is too high, the A$^{*}$ search will be very fast in the
 small trajectory space, but we risk missing some optimizations on the
 trajectory. We found that setting $d_{sample}$ to be equal to
 $\frac{h}{6}$, where $h$ is the humanoid height provided a good
@@ -930,7 +930,7 @@ striking: \autoref{tab:chap1-computation-time} shows that it takes the robot
 \section{Conclusion}
 In this chapter, a novel simple optimization method is
 presented for humanoid walk planning that relies on a decoupling
-between trajectory and robot orientations. It uses an A* search that
+between trajectory and robot orientations. It uses an A$^{*}$ search that
 takes as input a path for the robot bounding box, and produces a path
 where a discrete set of configurations have been reoriented to generate
 a realistic time-optimal walk trajectory. Results show that new
@@ -948,12 +948,12 @@ Achieving humanoid walk planning using the bounding box approach is
 both simple and efficient; it allows using off-the shelf
 sampling-based planners to efficiently explore the configurations
 space, thus removing the need to take into account additional
-kinematic and stability constraints when planning for the whole
-articulated robot. But it has one main drawback: in order to have a
-sound framework that always produces collision-free walking
+kinematic and balance constraints when planning for the whole
+articulated robot. But it has one major drawback: in order to have a
+sound framework which always produces collision-free walking
 trajectories, the bounding box must contain all the robot geometries
 and take into account the robot swaying motion during walking. It is
-thus a rather conservative method, which will not succeed in finding
+thus a rather conservative method, and it might not succeed in finding
 collision-free trajectories in cluttered environments. If we go back
 to the chairs example in \ref{subsec:chap1-chairs}, we can show that
 the lateral walking motion could have been avoided if the HRP-2 lifted
@@ -961,8 +961,7 @@ its arms over the two chairs. Besides leading to an even faster
 motion, walking forward could be necessary if vision systems were
 needed to achieve robot localization and/or environment mapping.
 
-In the next chapter, we introduce an efficient and sound whole-body
-motion planning algorithm that allows planning collision-free walking
-trajectories for the fully articulated humanoid robot, hence releasing
-it from its bounding box constraint and increasing its accessible
-workspace.
+In the next chapter, we introduce a sound whole-body motion planning
+algorithm that allows planning collision-free walking trajectories for
+the fully articulated humanoid robot, hence releasing it from its
+bounding box constraint and increasing its accessible workspace.
