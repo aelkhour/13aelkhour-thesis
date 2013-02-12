@@ -100,7 +100,7 @@ i.e. fast convergence and low failure rate. These values are kept
 constant for all scenarios in this work.
 
 \begin{algorithm}
-\caption{\texttt{SolveConstraints}(\config{}, f, $\epsilon$): find
+\caption{\texttt{SolveConstraints}(\config{}, \mathbf{f}, $\epsilon$): find
   \config{} such that $\mathbf{f}(\mathbf{q}) = 0$}
 \label{algo:newton}
 \begin{algorithmic}
@@ -260,8 +260,9 @@ the classic extend function, and Figure~\ref{fig:gikrrt} illustrates
 this extension. The idea is to first project \config{rand} on the
 tangent space to $\manifold$ at \config{rand}. Let us call the
 projected configuration \config{rand}$'$. Let \config{rand}$''$ be the
-result of a call to $\texttt{SolveConstraints}($\config{rand}$',f,\epsilon)$.
-It is the projection of \config{rand}$'$ on $\manifold$. Instead of
+result of a call to
+$\texttt{SolveConstraints}($\config{rand}$',\mathbf{f},\epsilon)$.  It
+is the projection of \config{rand}$'$ on $\manifold$. Instead of
 extending the tree from \config{rand} towards \config{rand}, the
 algorithm tries to extend from \config{rand} towards \config{rand}$''$
 while remaining on $\manifold$. While extending the tree, the
