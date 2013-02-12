@@ -26,7 +26,7 @@ the HRP-2 robot.
 
 Sampling-based planners, such as the ones presented in Section
 \ref{subsec:chap1-sampling-algorithms}, have encountered wide success
-in genereting collision-free paths in high-dimension configuration
+in generating collision-free paths in high-dimension configuration
 spaces. When using sampling techniques on a humanoid robot, a major
 difficulty is to take into account balance constraints, i.e. to
 generate random configurations on zero volume submanifolds
@@ -1216,13 +1216,22 @@ trajectory following during plan execution.
 
 \section{Conclusion}
 
-In this chapter, we have presented a simple algorithm for constrained
-motion planning and used it within a novel, well-grounded strategy for
-humanoid whole-body manipulation planning including locomotion. The
-locomotion algorithm is based on a formal small-space controllability
-property of humanoid robots. An important point is that this strategy
-only holds for dynamic walking robots, and not for quasi-static
-walking ones. We have used our motion planner on different challenging
-examples, and validated the generated motions on a real platform. We
-have discussed the limits and potential extensions of our method, and
-we plan to address them in future work.
+In this chapter, we have used a simple algorithm for constrained
+motion planning within a novel, well-grounded strategy for humanoid
+whole-body manipulation planning including locomotion. The locomotion
+algorithm is based on a formal small-space controllability property of
+humanoid robots. An important point is that this strategy only holds
+for dynamic walking robots, and not for quasi-static walking ones. We
+have used our motion planner on different challenging examples, and
+validated the generated motions on a real platform. We have discussed
+the limits and potential extensions of our method, and we plan to
+address them in future work.
+
+\bigskip
+
+This motion planning algorithm helps us achieve global planning in
+complex environments, but it still cannot provide us with the ``best''
+possible trajectories with respect to a given cost function. In the
+next chapter, we focus on planning dynamic optimal motions for
+humanoid robots in complex environments, such that the generated
+trajectories solve both motion planning and optimal control problems.
