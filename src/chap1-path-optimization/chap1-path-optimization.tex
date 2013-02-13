@@ -776,7 +776,6 @@ whole-body trajectory.
 \label{sec:chap1-examples}
 
 \begin{table}
-\label{tab:chap1-computation-time}
 \centering
 \begin{tabular}{c|c|c|c|c|c|}
   \cline{2-6}
@@ -791,10 +790,10 @@ whole-body trajectory.
 \end{tabular}
 \caption{Computational time (s) of each planning stage for the
   presented scenarios.}
+\label{tab:chap1-computation-time}
 \end{table}
 
 \begin{table}
-\label{tab:chap1-walk-time}
 \centering
 \begin{tabular}{c|c|c|}
   \cline{2-3}
@@ -809,6 +808,7 @@ whole-body trajectory.
 \end{tabular}
 \caption{Humanoid robot walk time (s) for the presented scenarios
   using RO alone and a RO-RSO combination.}
+\label{tab:chap1-walk-time}
 \end{table}
 
 \begin{figure}
@@ -848,9 +848,7 @@ two chairs. The second environment is uncluttered with few obstacles
 lying around, while the last one is a bigger apartment environment
 where the robot has to move from one room to another while passing
 through doors. The chairs scenario motion is also replayed on the real
-robot HRP-2 (See \autoref{fig:chap1-hrp2-chairs}). Videos for all
-scenarios can be viewed at
-\url{http://humanoid-walk-planning.blogspot.com/}
+robot HRP-2 (See Figure \ref{fig:chap1-hrp2-chairs}).
 
 \begin{figure}
   \centering{
@@ -861,11 +859,12 @@ scenarios can be viewed at
   \label{fig:chap1-hrp2-chairs}
 \end{figure}
 
-\autoref{tab:chap1-computation-time} shows computation times for each stage
-of the planning scheme: RRT-Connect, RO, RSO, and the whole-body robot
-trajectory generation. In order to show the optimizer contribution,
-robot walk times are also measured by creating a trajectory directly
-after RO, and comparing it with a trajectory where the RSO was added.
+\ref{tab:chap1-computation-time} shows computation times for each
+stage of the planning scheme: RRT-Connect, RO, RSO, and the whole-body
+robot trajectory generation. In order to show the optimizer
+contribution, robot walk times are also measured by creating a
+trajectory directly after RO, and comparing it with a trajectory where
+the RSO was added, see \autoref{tab:chap1-walk-time}.
 
 \subsection{``Chairs'' Scenario}
 \label{subsec:chap1-chairs}
@@ -890,7 +889,7 @@ not be time-optimal.
 However, after applying RSO, it is clear that the bounding box stays
 oriented towards the front and rotates only when it reaches the
 chairs. \autoref{fig:chap1-chairs-hash-optim-perspective-hrp2} and
-\autoref{tab:chap1-computation-time} show that the walk time is shorter by 5
+\autoref{tab:chap1-walk-time} show that the walk time is shorter by 5
 s and the final trajectory for HRP-2 is more realistic. Note that the
 RSO takes 2,144 ms to be executed on the chairs path, which is less
 than 3\% of the total computation time.
@@ -914,7 +913,7 @@ planning scheme.
 
 Additionally, since the environment is significantly larger and more
 constrained than the previous ones, the walk time difference is more
-striking: \autoref{tab:chap1-computation-time} shows that it takes the robot
+striking: \autoref{tab:chap1-walk-time} shows that it takes the robot
 80 s less to cross the apartment when an RO-RSO combination is used.
 
 \begin{figure}
