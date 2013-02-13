@@ -1,7 +1,7 @@
 \chapter{Optimal Motion Planning for Humanoid Robots}
 \label{chap:optimal-motion-planning}
 
-This paper aims at combining state of the art developments of path
+This chapter aims at combining state of the art developments of path
 planning and optimal control and to create the algorithmic foundations
 to tackle optimal control problems in cluttered environments. Our
 contribution is three-fold: first, we describe a simple method to
@@ -14,7 +14,6 @@ complex robots. This framework is successfully applied to generate
 optimal collision-free trajectories both in simulation and on the
 humanoid robot HRP-2.
 
-\section{Introduction}
 The generation of the best possible trajectory that does not violate
 any constraints imposed by the environment is an ubiquitous task in
 both industrial and humanoid robotics. Numerous examples of successful
@@ -23,51 +22,14 @@ control can be encountered in literature and industry. Very few
 however, if none, consider the more general problem of optimal motion
 planning for complex robots evolving in complex environments.
 
-This paper aims at combining state of the art developments of these
-two domains and to create the algorithmic foundations to tackle
-optimal control problems in cluttered environments.
-
-\section{Related Work}
 There are two established but still quite separate research areas that
 both address a part of the optimal motion planning problem, namely
-path planning and numerical optimal control.
-
-\subsection{Path Planning}
-Let the configuration \config{} be a vector containing the generalized
-coordinates of a robot, and let \cspace\enspace be the set of all
-possible configurations \config{}. Path planning is mainly interested
-in the determination of a feasible path $P$ connecting a start
-configuration \config{s} to a goal configuration \config{g} in
-\cspace. $P$ is said to be feasible iff for all \config{} $\in
-P$, \config{} is valid with respect to both geometric constraints,
-e.g. (self-)collision avoidance, and kinematic constraints of the
-robot, e.g. joint limits.
+path planning and optimal control.
 
 Sampling-based algorithms, such as Rapidly-exploring Random Trees
 (RRT) \cite{kuff00}, are particularly powerful when it comes to
 solving path planning problems in high-dimension \cspace\thinspace and
-cluttered environments. In its simplest form, this algorithm expands a
-tree \ctree rooted in \config{s} by first sampling a random
-configuration \config{rand} in \cspace, then extending a valid edge
-from the nearest configuration \config{near} in \ctree towards
-\config{rand}. This process is repeated until \ctree and \config{g}
-can be connected.
-
-%% Keep for next paragraph
-%% Such is the case for robots with a floating base, i.e. the
-%% configuration contains an unactuated part that can be changed only
-%% through maintaining contact with the environment.
-
-It is interesting to note that all nodes and edges of the final tree
-\ctree lie in \cspace. This can lead to infeasible paths if the robot
-must respect additional kinematic constraints. \cite{dali09,
-  berenson09, stilman2007tcm} propose variants of RRT where the
-extension phase produces an edge that lies in its entirety on a
-manifold $\manifold$ of \cspace. $\manifold$ is defined by kinematic
-constraints, each defined by a feature value in the operational space,
-e.g. end-effector position and orientation. The constrained RRT
-algorithm produces a path $P$ such that for all \config{} $\in P$,
-\config{} lies on the manifold $\manifold$.
+cluttered environments.
 
 An important feature of sampling-based algorithms is their
 probabilistic completeness, i.e. their capacity to avoid falling into
@@ -84,7 +46,10 @@ stop at each waypoint or to leave the planned path around waypoints.
 Additional processing is thus needed to provide a reshaped
 collision-free trajectory that can be executed on the robot.
 
-\subsection{Numerical Optimal Control}
+FIXME: rearrange introduction.
+
+\section{Optimal Control in Robotics}
+
 Given a dynamic model, let:
 \begin{itemize}
 \item $t$ be the time variable,
@@ -95,31 +60,62 @@ Given a dynamic model, let:
 \item \dfcn{} be the differential equation of the model,
 \item \eqcstr{} be the equality constraint vector function,
 \item \ineqcstr{} be the inequality constraint vector function,
-%\item \bndcstr{} be the boundary conditions vector function. 
+\item \bndcstr{} be the boundary conditions vector function. 
 \end{itemize}
 
 An optimal control problem can be written as follows:
 
 \label{OCP}
 \begin{equation}
-  \min_{x (\cdot), u (\cdot), t_f} \ \ 
-  \int_{0}^{t_{f}}\phi (x(t), u(t))dt
+  \min_{\mathbf{x} (\cdot), \mathbf{u} (\cdot), t_f} \ \ 
+  \int_{0}^{t_{f}}\phi (\mathbf{x}(t), \mathbf{u}(t))dt
   \label{OCP:Obj}
 \end{equation}
 \ \ \ subject to:
 
 \begin{equation}
   \begin{array}{rcl}
-  \dot{x} (t) & = & f(t, x(t), u(t)) \label{OCP:Model}
+  \dot{\mathbf{x}} (t) & = & \mathbf{f}(t, \mathbf{x}(t), \mathbf{u}(t)) \label{OCP:Model}
   \\
-  g(t, x(t), u(t)) & = & 0,
+  \mathbf{g}(t, \mathbf{x}(t), \mathbf{u}(t)) & = & \mathbf{0},
   \\
-  h(t, x(t), u(t)) & \ge & 0%,
+  \mathbf{h}(t, \mathbf{x}(t), \mathbf{u}(t)) & \ge & \mathbf{0}%,
   \\
-  %% r (x (0), x (t_{f})) & = & 0.
-  %% \\
+  \mathbf{r} (\mathbf{x}(0), \mathbf{x}(t_{f})) & = & \mathbf{0}.
+  \\
   \end{array}
 \end{equation} 
+
+FIXME: elaborate definition.
+
+\subsection{Probabilistic Optimal Control Solvers}
+
+Shortcut (cf chapter 1)
+Sampling-Based Optimal Motion Planning: RRT$^*$
+
+Recently \cite{Karaman2011} introduced RRT*, a new variant of RRT that
+has the property of asymptotically converging towards the \emph{global}
+minimum solution path. This is a very interesting approach as only one
+algorithm is needed to achieve optimal motion planning. But if we want
+to generate an optimal trajectory, we need to explore not only the
+configuration space \cspace, but the whole state space
+\sspace\thinspace where an element of \sspace\enspace is \state{} =
+$[$\config{}$,$ \dotconfig{}$]^T$. This doubles the dimension of the
+problem. Another problem arises from choosing the correct metric and
+local optimal policy. \cite{Perez2012} propose a variant uses local
+linearization of a system to derive a coherent extension
+method. Results have so far been only obtained on simple systems, and
+this method has yet to be tested on complex ones.
+
+STOMP
+
+\subsection{Jacobian-Based Optimal Control Solvers}
+
+SQP
+IPOPT
+CHOMP (different than other?)
+
+\emph{local}
 
 Starting from an initial value of \state{} and \control{}, numerical
 optimal control techniques are capable of iteratively converging
@@ -143,8 +139,6 @@ by the use of non gradient-based solvers such as STOMP
 to simple trajectory optimization problems where obstacle and torque
 constraints were integrated in the cost function.
 
-%, which can be a non-trivial task in complex environments,
-
 Optimal control techniques have been successfully applied on humanoid
 figures \cite{Schultz2010} and humanoid robots \cite{Toussaint2007,
   Lengagne2010}. The problems take into account complex robot dynamics
@@ -158,7 +152,18 @@ bodies of the robot. Hence, initial trajectory generation and
 collision avoidance have yet to be treated properly in the optimal
 control formulation.
 
-\subsection{(Self-)Collision Avoidance Constraints}
+\section{Humanoid Robot Dynamics}
+
+RNEA
+ZMP
+Torques
+Contact Forces
+
+\section{(Self-)Collision Avoidance Constraints}
+
+Faverjon Tournassoud
+Elaborate.
+
 There are several ways to express collision avoidance constraints
 between two bodies; one can express the constraint with the exact
 distance between the exact polyhedral geometries such as in
@@ -179,23 +184,9 @@ avoidance in real-time control of a humanoid robot
 self-collision constraints are expressed as the distance between
 bounding capsules, i.e. cylinders capped by half-spheres.
 
-\subsection{Sampling-Based Optimal Motion Planning}
-
-Recently \cite{Karaman2011} introduced RRT*, a new variant of RRT that
-has the property of asymptotically converging towards the global
-minimum solution path. This is a very interesting approach as only one
-algorithm is needed to achieve optimal motion planning. But if we want
-to generate an optimal trajectory, we need to explore not only the
-configuration space \cspace, but the whole state space
-\sspace\thinspace where an element of \sspace\enspace is \state{} =
-$[$\config{}$,$ \dotconfig{}$]^T$. This doubles the dimension of the
-problem. Another problem arises from choosing the correct metric and
-local optimal policy. \cite{Perez2012} propose a variant uses local
-linearization of a system to derive a coherent extension
-method. Results have so far been only obtained on simple systems, and
-this method has yet to be tested on complex ones.
-
 \section{Contribution}
+Idea not new, but application is. cf ICRA reviews
+
 To the authors' best knowledge there is no available algorithmic
 approach that addresses the problem of optimal motion planning for
 complex robot systems in cluttered environments.
@@ -824,7 +815,7 @@ framework would then always succeed in generating optimal
 trajectories.
 
 \section{Conclusion}
-In this paper we propose a novel approach to tackle optimal control
+In this chapter we propose a novel approach to tackle optimal control
 problems in cluttered environments. Our approach combines, in a
 two-stage framework, a constrained path planning algorithm and an
 optimal control problem solver. We generate optimal feasible
@@ -835,3 +826,5 @@ Our framework can benefit from improvements to increase its
 usability. Future work will consider non-coplanar contacts, as well as
 release the robot from its fixed support constraints in order to
 accomplish optimal locomotion planning.
+
+FIXME: add transition towards general conclusion.
