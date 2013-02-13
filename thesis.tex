@@ -11,6 +11,7 @@
 \usepackage{array}
 \usepackage{amsthm}
 \usepackage{amsfonts}
+\usepackage{amstext}
 \usepackage{mathtools}
 \usepackage{makeidx}
 \usepackage[pdftex]{graphicx}
@@ -31,6 +32,8 @@
 \usepackage{placeins}
 
 \usepackage{multirow}
+\usepackage[small]{caption}
+\usepackage{subcaption}
 
 \usepackage{titlesec}
 \titleformat{\chapter}[display]
@@ -132,6 +135,18 @@ pdfproducer = {Antonio El Khoury}
 \newcommand{\manifold}{\mathcal{M}}
 \newcommand{\goalmanifold}{\mathcal{M}_{g}}
 
+\newcommand{\state}[1]{$\mathbf{x_{#1}}$}
+\newcommand{\sspace}{$\mathcal{SS}$}
+\newcommand{\dotstate}[1]{$\mathbf{\dot{x}_{#1}}$}
+\newcommand{\control}[1]{$\mathbf{u_{#1}}$}
+\newcommand{\dfcn}[1]{$\mathbf{f_{#1}}$}
+\newcommand{\eqcstr}[1]{$\mathbf{g_{#1}}$}
+\newcommand{\ineqcstr}[1]{$\mathbf{h_{#1}}$}
+\newcommand{\bndcstr}[1]{$\mathbf{r_{#1}}$}
+\newcommand{\dotconfig}[1]{$\mathbf{\dot{q}_{#1}}$}
+\newcommand{\ddotconfig}[1]{$\mathbf{\ddot{q}_{#1}}$}
+\newcommand{\dddotconfig}[1]{$\mathbf{\dddot{q}_{#1}}$}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% DOCUMENT %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \begin{document}
@@ -176,8 +191,8 @@ pdfproducer = {Antonio El Khoury}
 
 %\include{src/chap0-introduction/chap0-introduction}
 %\include{src/chap1-path-optimization/chap1-path-optimization}
-\include{src/chap2-wholebody-planning/chap2-wholebody-planning}
-%\include{src/chap3-optimal-motion-planning/chap3-optimal-motion-planning}
+%\include{src/chap2-wholebody-planning/chap2-wholebody-planning}
+\include{src/chap3-optimal-motion-planning/chap3-optimal-motion-planning}
 %\include{src/chap4-conclusion/chap4-conclusion}
 
 %\appendices
