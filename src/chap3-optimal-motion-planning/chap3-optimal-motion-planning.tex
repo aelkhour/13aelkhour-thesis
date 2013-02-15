@@ -1,19 +1,6 @@
 \chapter{Optimal Motion Planning for Humanoid Robots}
 \label{chap:optimal-motion-planning}
 
-This chapter aims at combining state of the art developments of path
-planning and optimal control and to create the algorithmic foundations
-to tackle optimal control problems in cluttered environments. Our
-contribution is three-fold: first, we describe a simple method to
-automatically generate minimum bounding capsules around exact robot
-body geometries represented by meshes. Second, we use the bounding
-capsules to implement distance constraints for an optimal control
-problem solver and achieve (self-)collision avoidance. Finally, we
-propose a complete two-stage framework for optimal motion planning on
-complex robots. This framework is successfully applied to generate
-optimal collision-free trajectories both in simulation and on the
-humanoid robot HRP-2.
-
 The generation of the best possible trajectory that does not violate
 any constraints imposed by the environment is an ubiquitous task in
 both industrial and humanoid robotics. Numerous examples of successful
@@ -26,27 +13,45 @@ There are two established but still quite separate research areas that
 both address a part of the optimal motion planning problem, namely
 path planning and optimal control.
 
+This chapter aims at combining state of the art developments of path
+planning and optimal control and to create the algorithmic foundations
+to tackle optimal control problems in cluttered environments. We first
+describe a simple method to automatically generate minimum bounding
+capsules around exact robot body geometries represented by
+meshes. Second, we use the bounding capsules to implement distance
+constraints for an optimal control problem solver and achieve
+(self-)collision avoidance. Finally, we propose a complete two-stage
+framework for optimal motion planning on complex robots. This
+framework is successfully applied to generate optimal collision-free
+trajectories both in simulation and on the humanoid robot HRP-2.
+
+\section{Path Planning}
+
 Sampling-based algorithms, such as Rapidly-exploring Random Trees
-(RRT) \cite{kuff00}, are particularly powerful when it comes to
-solving path planning problems in high-dimension \cspace\thinspace and
-cluttered environments.
+(RRT) which were presented in Section
+\ref{subsec:chap1-sampling-algorithms}, are particularly powerful when
+it comes to solving path planning problems in
+high-dimension \cspace\thinspace and cluttered environments. In this
+chapter, we rely on the same constrained RRT alogrithm that was
+described in Chapter \ref{subsec:chap2-constraint-motion-planning} in
+order to generate statically balanced paths on a submanifold
+of \cspace.
 
-An important feature of sampling-based algorithms is their
-probabilistic completeness, i.e. their capacity to avoid falling into
-local minima and to find a solution path if it exists. They present
-however three drawbacks. First, due to their sampling nature, the
-configuration \config{} might move in a random fashion along the path
-$P$, which could lead to unnecessarily long and unnatural
-paths. Second, we still need to apply a time parametrization in order
-to transform the path into a trajectory. This is a non-trivial task in
-the particular case of a humanoid robot, as we must ensure its dynamic
-balance along the trajectory. Third, the resulting paths are
-continuous but not $C^1$. The time-parametrized motion thus needs to
-stop at each waypoint or to leave the planned path around waypoints.
-Additional processing is thus needed to provide a reshaped
-collision-free trajectory that can be executed on the robot.
-
-FIXME: rearrange introduction.
+Let us recall that an important feature of sampling-based algorithms
+is their probabilistic completeness, i.e. their capacity to avoid
+falling into local minima and to find a solution path if it
+exists. They present however three drawbacks. First, due to their
+sampling nature, the configuration \config{} might move in a random
+fashion along the path $P$, which could lead to unnecessarily long and
+unnatural paths. Second, we still need to apply a time parametrization
+in order to transform the path into a trajectory. This is a
+non-trivial task in the particular case of a humanoid robot, as we
+must ensure its dynamic balance along the trajectory. Third, the
+resulting paths are continuous but not $C^1$. The time-parametrized
+motion thus needs to stop at each waypoint or to leave the planned
+path around waypoints. Additional processing is thus needed to provide
+a reshaped collision-free trajectory that can be executed on the
+robot.
 
 \section{Optimal Control in Robotics}
 
@@ -88,27 +93,6 @@ An optimal control problem can be written as follows:
 
 FIXME: elaborate definition.
 
-\subsection{Probabilistic Optimal Control Solvers}
-
-Shortcut (cf chapter 1)
-Sampling-Based Optimal Motion Planning: RRT$^*$
-
-Recently \cite{Karaman2011} introduced RRT*, a new variant of RRT that
-has the property of asymptotically converging towards the \emph{global}
-minimum solution path. This is a very interesting approach as only one
-algorithm is needed to achieve optimal motion planning. But if we want
-to generate an optimal trajectory, we need to explore not only the
-configuration space \cspace, but the whole state space
-\sspace\thinspace where an element of \sspace\enspace is \state{} =
-$[$\config{}$,$ \dotconfig{}$]^T$. This doubles the dimension of the
-problem. Another problem arises from choosing the correct metric and
-local optimal policy. \cite{Perez2012} propose a variant uses local
-linearization of a system to derive a coherent extension
-method. Results have so far been only obtained on simple systems, and
-this method has yet to be tested on complex ones.
-
-STOMP
-
 \subsection{Jacobian-Based Optimal Control Solvers}
 
 QP full
@@ -133,14 +117,6 @@ implemented in the \textsc{MUSCOD-II} software \cite{Leineweber2003},
 is a powerful tool that allows solving large-scale optimal control
 problems thanks to a specially tailored SQP.
 
-Note that for all gradient-based solvers, the objective and constraint
-functions can be nonlinear, but they must be at least $C^1$,
-i.e. continuously differentiable. This requirement can be alleviated
-by the use of non gradient-based solvers such as STOMP
-\cite{Kalakrishnan2011}, but this method has so far been only applied
-to simple trajectory optimization problems where obstacle and torque
-constraints were integrated in the cost function.
-
 Optimal control techniques have been successfully applied on humanoid
 figures \cite{Schultz2010} and humanoid robots \cite{Toussaint2007,
   Lengagne2010}. The problems take into account complex robot dynamics
@@ -153,6 +129,35 @@ trajectory without any collisions with either the environment or
 bodies of the robot. Hence, initial trajectory generation and
 collision avoidance have yet to be treated properly in the optimal
 control formulation.
+
+\subsection{Probabilistic Optimal Control Solvers}
+
+Note that for all gradient-based solvers, the objective and constraint
+functions can be nonlinear, but they must be at least $C^1$,
+i.e. continuously differentiable. This requirement can be alleviated
+by the use of non gradient-based solvers
+
+Shortcut (cf chapter 1)
+Sampling-Based Optimal Motion Planning: RRT$^*$
+
+Recently \cite{Karaman2011} introduced RRT*, a new variant of RRT that
+has the property of asymptotically converging towards the \emph{global}
+minimum solution path. This is a very interesting approach as only one
+algorithm is needed to achieve optimal motion planning. But if we want
+to generate an optimal trajectory, we need to explore not only the
+configuration space \cspace, but the whole state space
+\sspace\thinspace where an element of \sspace\enspace is \state{} =
+$[$\config{}$,$ \dotconfig{}$]^T$. This doubles the dimension of the
+problem. Another problem arises from choosing the correct metric and
+local optimal policy. \cite{Perez2012} propose a variant uses local
+linearization of a system to derive a coherent extension
+method. Results have so far been only obtained on simple systems, and
+this method has yet to be tested on complex ones.
+
+STOMP, multi-objective function and soft constraints.
+\cite{Kalakrishnan2011}, but this method has so far been only applied
+to simple trajectory optimization problems where obstacle and torque
+constraints were integrated in the cost function. 
 
 \section{Humanoid Robot Dynamics}
 
@@ -167,6 +172,8 @@ Faverjon Tournassoud
 Elaborate.
 
 abder + ehwa paper
+
+signed distance field
 
 There are several ways to express collision avoidance constraints
 between two bodies; one can express the constraint with the exact
@@ -318,7 +325,18 @@ the IPOPT solver \cite{Biegler2009} in less than 5s. Figure
 \ref{hrp2-capsule} shows the best fitting bounding capsules
 superimposed on the robot geometries.
 
+Add figure 2 capsules with distance.
+
 FIXME: Add figure with romeo, kuka, hrp2.
+
+Add computation times for poly to capsule, vs poly to convex hull to
+capsule.
+
+%%  & number of bodies & mean number of vertices per body & computation time without convex hull (s) & computation time with convex hull (s)
+%% hrp2 & 41 & ? & 46.8 & 7.50
+%% romeo & 46 & ? & 410 & 27.6
+
+Add figure poly, convex hull, capsule (superimposed?)
 
 \begin{figure}
   \centering
@@ -326,6 +344,58 @@ FIXME: Add figure with romeo, kuka, hrp2.
                   {src/chap3-optimal-motion-planning/figure/hrp2-capsule-transparent.png}
   \caption{Best fitting capsules for HRP-2}
   \label{hrp2-capsule}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \begin{subfigure}{0.32\columnwidth}
+    \centering
+    \includegraphics[width = \columnwidth]
+                    {src/chap3-optimal-motion-planning/figure/hrp2-full-mesh.png}
+    \caption{Initial invalid path.}
+    \label{simple-path}
+  \end{subfigure}
+  \begin{subfigure}{0.32\columnwidth}
+    \centering
+    \includegraphics[width = \columnwidth]
+                    {src/chap3-optimal-motion-planning/figure/hrp2-convex-hull.png}
+    \caption{RRT path.}
+    \label{simple-path-sol}
+  \end{subfigure}
+  \begin{subfigure}{0.32\columnwidth}
+    \centering
+    \includegraphics[width = \columnwidth]
+                    {src/chap3-optimal-motion-planning/figure/hrp2-capsule.png}
+    \caption{Shortcut path.}
+    \label{simple-path-sol-shortcut}
+  \end{subfigure}
+  \caption{Paths for the test case.}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \begin{subfigure}{0.32\columnwidth}
+    \centering
+    \includegraphics[width = \columnwidth]
+                    {src/chap3-optimal-motion-planning/figure/romeo-full-mesh.png}
+    \caption{Initial invalid path.}
+    \label{simple-path}
+  \end{subfigure}
+  \begin{subfigure}{0.32\columnwidth}
+    \centering
+    \includegraphics[width = \columnwidth]
+                    {src/chap3-optimal-motion-planning/figure/romeo-convex-hull.png}
+    \caption{RRT path.}
+    \label{simple-path-sol}
+  \end{subfigure}
+  \begin{subfigure}{0.32\columnwidth}
+    \centering
+    \includegraphics[width = \columnwidth]
+                    {src/chap3-optimal-motion-planning/figure/romeo-capsule.png}
+    \caption{Shortcut path.}
+    \label{simple-path-sol-shortcut}
+  \end{subfigure}
+  \caption{Paths for the test case.}
 \end{figure}
 
 \subsection{Distance computation}
