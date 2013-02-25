@@ -11,19 +11,20 @@ planning for complex robots evolving in complex environments.
 
 There are two established but still quite separate research areas that
 both address a part of the optimal motion planning problem, namely
-path planning and optimal control.
-
-This chapter aims at combining state of the art developments of path
-planning and optimal control and to create the algorithmic foundations
-to tackle optimal control problems in cluttered environments. We first
+path planning and optimal control. This chapter aims at combining
+state of the art developments of path planning and optimal control and
+to create the algorithmic foundations to tackle optimal control
+problems in cluttered environments. We thus propose a two-stage
+framework for optimal motion planning on complex robots, where a
+quasi-statically feasible path is first planned then optimized in
+order to produce a dynamically feasible trajectory. We additionally
 describe a simple method to automatically generate minimum bounding
-capsules around exact robot body geometries represented by
-meshes. Second, we use the bounding capsules to implement distance
-constraints for an optimal control problem solver and achieve
-(self-)collision avoidance. Finally, we propose a complete two-stage
-framework for optimal motion planning on complex robots. This
-framework is successfully applied to generate optimal collision-free
-trajectories both in simulation and on the humanoid robot HRP-2.
+capsules around exact robot body geometries represented by meshes; the
+capsules are used to implement distance constraints for an optimal
+control problem solver and achieve (self-)collision avoidance. The
+whole framework is successfully applied to generate optimal
+collision-free trajectories both in simulation and on the humanoid
+robot HRP-2.
 
 \section{Path Planning}
 
@@ -53,7 +54,155 @@ path around waypoints. Additional processing is thus needed to provide
 a reshaped collision-free trajectory that can be executed on the
 robot.
 
-\section{Optimal Control in Robotics}
+\section{Jacobian-Based Optimal Control}
+
+Focus on jacobian-based optimal control
+
+\subsection{Unconstrained Optimization}
+
+\subsubsection{Steepest Descent Line Search}
+
+\begin{figure}
+  \centering
+      {\def\svgwidth{0.9\linewidth}
+        {\footnotesize
+          \subimport*{src/chap3-optimal-motion-planning/figure/}
+                     {unconstrained-steepest-descent.pdf_tex}
+        }
+      }
+      \caption{FIXME}
+      \label{fig:chap3-unconstrained-steepest-descent}
+\end{figure}
+
+\begin{figure}
+  \centering
+  \begin{subfigure}{0.9\columnwidth}
+    \centering
+        {\def\svgwidth{\linewidth}
+          {\footnotesize
+            \subimport*{src/chap3-optimal-motion-planning/figure/}
+                       {unconstrained-steepest-descent-wolfe.pdf_tex}
+          }
+        }
+        \caption{FIXME}
+        \label{fig:chap3-unconstrained-steepest-descent-wolfe}
+  \end{subfigure}
+  \begin{subfigure}{0.9\columnwidth}
+    \centering
+        {\def\svgwidth{\linewidth}
+          {\footnotesize
+            \subimport*{src/chap3-optimal-motion-planning/figure/}
+                       {unconstrained-steepest-descent-wolfe-zoom.pdf_tex}
+          }
+        }
+        \caption{FIXME}
+        \label{fig:chap3-unconstrained-steepest-descent-wolfe-zoom}
+  \end{subfigure}
+  \caption{FIXME}
+\end{figure}
+
+steepest descent + wolfe
+
+\subsubsection{Newton Line Search}
+
+\begin{figure}
+  \centering
+  \begin{subfigure}{0.9\columnwidth}
+    \centering
+        {\def\svgwidth{\linewidth}
+          {\footnotesize
+            \subimport*{src/chap3-optimal-motion-planning/figure/}
+                       {unconstrained-newton-wolfe.pdf_tex}
+          }
+        }
+        \caption{FIXME}
+        \label{fig:chap3-unconstrained-newton-wolfe}
+  \end{subfigure}
+  \begin{subfigure}{0.9\columnwidth}
+    \centering
+        {\def\svgwidth{\linewidth}
+          {\footnotesize
+            \subimport*{src/chap3-optimal-motion-planning/figure/}
+                       {unconstrained-newton-wolfe-quad.pdf_tex}
+          }
+        }
+        \caption{FIXME}
+        \label{fig:chap3-unconstrained-newton-wolfe-quad}
+  \end{subfigure}
+  \caption{FIXME}
+\end{figure}
+
+newton wolfe, quadratic approximation leads to minimum directlyx
+
+\subsubsection{Quasi-Newton Line Search}
+
+\begin{figure}
+  \centering
+      {\def\svgwidth{0.9\linewidth}
+        {\footnotesize
+          \subimport*{src/chap3-optimal-motion-planning/figure/}
+                     {unconstrained-quasi-newton-wolfe.pdf_tex}
+        }
+      }
+      \caption{FIXME}
+      \label{fig:chap3-unconstrained-quasi-newton-wolfe}
+\end{figure}
+
+quasi-newtion + bfgs
+
+\subsection{Quadratic Programming}
+
+\subsubsection{Equality Constraints}
+
+\begin{figure}
+  \centering
+      {\def\svgwidth{0.9\linewidth}
+        {\footnotesize
+          \subimport*{src/chap3-optimal-motion-planning/figure/}
+                     {qp-equality.pdf_tex}
+        }
+      }
+      \caption{FIXME}
+      \label{fig:chap3-qp-equality}
+\end{figure}
+
+quadratic with equality + langrange multiplier (paper boyd?)
+
+\subsubsection{Inequality Constraints}
+
+\begin{figure}
+  \centering
+      {\def\svgwidth{0.9\linewidth}
+        {\footnotesize
+          \subimport*{src/chap3-optimal-motion-planning/figure/}
+                     {qp-inequality.pdf_tex}
+        }
+      }
+      \caption{FIXME}
+      \label{fig:chap3-qp-inequality}
+\end{figure}
+
+quadratic eq + ineq: active set (mention interior point here?)
+
+\subsection{Non-Linear Programming}
+
+\begin{figure}
+  \centering
+      {\def\svgwidth{0.9\linewidth}
+        {\footnotesize
+          \subimport*{src/chap3-optimal-motion-planning/figure/}
+                     {sqp.pdf_tex}
+        }
+      }
+      \caption{FIXME}
+      \label{fig:chap3-sqp}
+\end{figure}
+
+NLP: SQP, mention interior point
+
+$\mathbf{x}^\star$
+
+optimal control problem
 
 Given a dynamic model, let:
 \begin{itemize}
@@ -93,10 +242,21 @@ An optimal control problem can be written as follows:
 
 FIXME: elaborate definition.
 
-\subsection{Jacobian-Based Optimal Control Solvers}
+use of multiple shooting
 
-QP full
-SQP full + active set
+semi-infinite programmin? make sure, talk about reducing to a finite
+dimension search space: sub-optimal but still ok if chosen properly.
+
+\section{Optimal Control in Robotics}
+
+\subsection{Applications}
+
+\subsection{Non Jacobian-Based Applications}
+shortcut
+stomp
+rrt*
+
+\subsection{Jacobian-Based Optimal Control Solvers}
 
 IPOPT
 CHOMP (different than other?)
@@ -161,10 +321,22 @@ constraints were integrated in the cost function.
 
 \section{Humanoid Robot Dynamics}
 
+\subsection{Inverse Dynamics}
+
 RNEA
-ZMP
 Torques
 Contact Forces
+
+\subsection{Forward Dynamics}
+
+CRBA+ABA
+
+\subsection{Dynamic Balance Constraints}
+
+ZMP vs contact forces
+
+inverse dynamics -> enforce free-flyer torques to 0
+forward dynamics -> ?
 
 \section{(Self-)Collision Avoidance Constraints}
 
