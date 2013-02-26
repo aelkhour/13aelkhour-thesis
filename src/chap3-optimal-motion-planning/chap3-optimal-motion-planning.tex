@@ -58,25 +58,185 @@ robot.
 
 Focus on jacobian-based optimal control
 
+Following section largely based on Nocedal.
+
 \subsection{Unconstrained Optimization}
+
+$f:\mathbb R^n \rightarrow \mathbb R$
+
+Problem:
+\begin{equation}
+\min_\mathbf{x}f(\mathbf{x}), \mathbf{x} \in \mathbb R^n
+\end{equation}
+
+Global minimizer:
+\begin{equation}
+f(\argmin{x}) \le f(\mathbf{x})~\forall \mathbf{x} \in \mathbb R^n
+\end{equation}
+
+local minimizer: $\exists$ a neighborhood $\mathcal{N}$ of
+$\argmin{x}$ such that:
+\begin{equation}
+  f(\argmin{x} \le f(\mathbf{x})~\forall \mathbf{x} \in \mathcal{N}
+\end{equation}
+
+How to find a minimizer?
+
+First-order nevessary conditions:
+$\argmin{x}$ is a local minimizer, f continuously differentiable
+($C^1$) in an open neighborhood of $\argmin{x} \Rightarrow
+\nabla f(\argmin{x}) = \mathbf{0}$.
+
+All points $\argmin{x}$ which satisfy $\nabla f(\argmin{x})$ are called
+stationary points. Stationary points can correspond to minimizers,
+maximizers, or saddle points of $f$. The second-order conditions are
+then necessary to distinguish local minimizers:
+
+$\argmin{x}$ is a local minimizer, f twice continuously differentiable
+($C^2$) in an open neighborhood of $\argmin{x} \Rightarrow \nabla
+f(\argmin{x}) = \mathbf{0}$ and $\nabla^2 f(\argmin{x})$ is positive
+semi-definite.
+
+Note that if $F$ is convex and $C^1$, $\nabla f(x)$ is positive
+definite $\forall~\mathbf{x}$, and it can be shown that anu stationary
+point is a global minimizer.
+
+One way of finding a minimizer of $f$ is to look for a stationary
+point starting from an initial point $\arginit{x}$, and produce a
+sequence of iterates $\{\mathbf{x}_k\}_{k=0}^{\infty}$ that terminates
+when a termination condition is reached; this condition corresponds to
+the point $\argmin{x}$ where no more progress can be made, up to a
+specified tolerance $\epsilon > 0$.
+
+Given an iterate $\mathbf{x_k}$, the next iterate $\mathbf{x_{k+1}}$
+can be chosen based on information about f at $\mathbf{x_k}$ so that
+$f(\mathbf{x_{k+1}})<f(\mathbf{x_k})$. There exist two main strategies
+to do so:
+
+\begin{enumerate}
+\item Line search strategy: a direction $\mathbf{p_k}$ is first
+  chosen, then a step length $\alpha_k > 0$ is computed such that it
+  approximately solves the 1D minimization problem: $\min_{\alpha>0}
+  f(\mathbf{x_k}+\alpha_k\mathbf{p}_k)$.
+\item Trust region strategy: a local model $m_k$ of $f$ is
+  constructed, and a direction $p_k$ is chosen inside a fixed-size
+  trust region such that it approximately solves the minimization
+  problem: $\min_\mathbf{p_k} m_k(\mathbf{x}_k+\mathbf{p}_k)$.
+\end{enumerate}
+
+Note that these two strategies are very similar as they try find
+approximate solutions to simple optimization problems, which leads to
+good performance. They mainly differ in the order in which the step
+length and search direction are chosen. In the following section, we
+will describe some of the most common line search strategies.
+
+In what follows, $f_k$ denotes $f(\mathbf{x}_k)$ $\forall~k > 0$.
+
+We introduce as an example the Rosenbrock function, or banana
+function, defined as:
+
+\begin{equation}
+\mathbf{x} = (x,y) \in \mathbb R^2 r(\mathbf{x}) =
+(1-x^2)+100(y-x^2)^2
+\end{equation}
+
+$r$ has only one minimizer $\argmin{x} = (1~1)$ and is commonly
+used for benchmarking optimization algorithms.
 
 \subsubsection{Steepest Descent Line Search}
 
-\begin{figure}
+Using a first-order Taylor approximation of $f$, it can be proved that:
+\begin{equation}
+\mathbf{p_k} = -\nabla f_k
+\end{equation}
+is the steepest descent direction, i.e. it is the direction along
+which $f$ decreases locally around $\mathbf{x}_k$.
+
+Add convergence rate:linear and explain.
+
+Figure \ref{fig:chap3-unconstrained-steepest-descent} shows an example
+of minimizing the Rosenbrock function. We show the first 20 iterates
+when using a steepest descent line search and setting $\alpha_k$ to
+1. The search direction $\mathbf{p_k}$ is always orthogonal to the
+function contour line, as it is the direction that allows to decrease
+$r$ quickly. Unfortunately, as the iterates reach the basin, keeping a
+constant step size leads to a strong oscillation and convergence is
+not achieved. This motivates the need for a good step size computation
+method that will ensure a decrease of the function at each iteration.
+
+\begin{figure}[h!]
   \centering
-      {\def\svgwidth{0.9\linewidth}
+      {\def\svgwidth{0.8\linewidth}
         {\footnotesize
           \subimport*{src/chap3-optimal-motion-planning/figure/}
                      {unconstrained-steepest-descent.pdf_tex}
         }
       }
-      \caption{FIXME}
+      \caption{Contour lines show the Rosenbrock function
+        $r$. Starting from $\arginit{x}=(-0.6~-0.6)$, a steepest
+        descent line search is used with a constant step size
+        $\alpha_k=1$. The minimizer basin is reached very quickly,
+        but large values of the step size then prevent minimizing the
+        function. Note that the steepest descent direction is
+        orthogonal to the contour lines of $r$.}
       \label{fig:chap3-unconstrained-steepest-descent}
 \end{figure}
 
+The Wolfe conditions offer the theoretical means and an easily
+verifiable way to compute suitable step lengths. They are defined as:
+
+\begin{equation}
+\label{eq:chap3-wolfe-1}
+f(\mathbf{x}_k + \alpha_k\mathbf{p}_k) \le
+f(\mathbf{x_k}+c_1\alpha_k\nabla f_k^{\top}\mathbf{p_k}),
+\end{equation}
+\begin{equation}
+\label{eq:chap3-wolfe-2}
+\nabla f(\mathbf{x_k} + \alpha_k
+\mathbf{p}_k)^{\top}\mathbf{p_k} \ge c_2 \nabla f_k^{\top}\mathbf{p_k},
+\end{equation}
+
+where $0 < c_1 < c_2 < 1$. Equation \ref{eq:chap3-wolfe-1} is called
+the \emph{sufficient decrease} or \emph {Armijo condition}; it rejects
+too small decreases in $f$. Equation \ref{eq:chap3-wolfe-2} is called
+the \emph{curvature condition}, and it rejects too negative slopes
+which might slow down convergence. In practice, $c_1$ is very small
+and set to $10^{-4}$, while $c_2$ is set to a value ranging from $0.1$
+to $0.9$.
+
+The Wolfe conditions can be used to write a simple step length
+computation algorithm, as described in Algorithm
+\ref{alg:chap3-line-search-wolfe}. The idea is to start with a large
+value of $\alpha_k$ and decrease it until the Wolfe conditions are
+satisfied.
+
+\begin{algorithm}
+\caption{StepLengthWolfe($f$, $\mathbf{x}_k$, $\mathbf{p}_k$,
+  $\alpha_k$, $\rho$, $it\_max$)}
+\label{alg:chap3-line-search-wolfe}
+\begin{algorithmic}
+\STATE $it$ $\leftarrow$ $0$
+\WHILE{Wolfe conditions are not verified \& $it < it\_max$}
+\STATE {\color{red} // $\rho < 1$}
+\STATE $\alpha_k$ $\leftarrow$ $\rho \alpha_k$ 
+\STATE $it$ $\leftarrow$ $it + 1$
+\ENDWHILE
+\RETURN $\alpha_k$
+\end{algorithmic}
+\end{algorithm}
+
+Figure \ref{fig:chap3-unconstrained-steepest-descent-wolfe} shows the
+solution to the same problem as in Figure
+\ref{fig:chap3-unconstrained-steepest-descent} with the Wolfe
+conditions enforced at each iteration. The minimizer
+$\argmin{x}=(1~1)$ is reached after around 5000 iterations. Such a
+high number is mainly due to the zigzagging behavior which prevents
+quickly reaching the minimizer, as shown in Figure
+\ref{fig:chap3-unconstrained-steepest-descent-wolfe-b}.
+
 \begin{figure}
   \centering
-  \begin{subfigure}{0.9\columnwidth}
+  \begin{subfigure}{0.8\columnwidth}
     \centering
         {\def\svgwidth{\linewidth}
           {\footnotesize
@@ -85,9 +245,9 @@ Focus on jacobian-based optimal control
           }
         }
         \caption{FIXME}
-        \label{fig:chap3-unconstrained-steepest-descent-wolfe}
+        \label{fig:chap3-unconstrained-steepest-descent-wolfe-a}
   \end{subfigure}
-  \begin{subfigure}{0.9\columnwidth}
+  \begin{subfigure}{0.8\columnwidth}
     \centering
         {\def\svgwidth{\linewidth}
           {\footnotesize
@@ -96,18 +256,34 @@ Focus on jacobian-based optimal control
           }
         }
         \caption{FIXME}
-        \label{fig:chap3-unconstrained-steepest-descent-wolfe-zoom}
+        \label{fig:chap3-unconstrained-steepest-descent-wolfe-b}
   \end{subfigure}
   \caption{FIXME}
+  \label{fig:chap3-unconstrained-steepest-descent-wolfe}
 \end{figure}
-
-steepest descent + wolfe
 
 \subsubsection{Newton Line Search}
 
+Assuming that $f$ is $C^2$ and using a second-order Taylor
+approximation at $\mathbf{x}_k$, we can derive the Newton direction:
+\begin{equation}
+\mathbf{p_k} = -\nabla^2 f_k^{-1} \nabla f_k;
+\end{equation}
+$\mathbf{x}_{k+1}=\mathbf{x_k}+\mathbf{p_k}$ is then the minimizer of
+the local quadratic approximation of $f$. The Newton direction has a
+natural step length $\alpha_k=1$. Nevertheless the Wolfe conditions
+still need to be verified to make sure that there is an actual
+decrease of the exact function $f$. Figure
+\ref{fig:chap3-unconstrained-newton-wolfe} shows the sequence of
+iterates when applying a Newton line search to find the minimizer of
+the Rosenbrock function. It is clear in Figure
+\ref{fig:chap3-unconstrained-newton-wolfe-quad} how the next iterate
+is the minimizer of the local quadratic approximation of the objective
+function.
+
 \begin{figure}
   \centering
-  \begin{subfigure}{0.9\columnwidth}
+  \begin{subfigure}{0.8\columnwidth}
     \centering
         {\def\svgwidth{\linewidth}
           {\footnotesize
@@ -116,9 +292,9 @@ steepest descent + wolfe
           }
         }
         \caption{FIXME}
-        \label{fig:chap3-unconstrained-newton-wolfe}
+        \label{fig:chap3-unconstrained-newton-wolfe-a}
   \end{subfigure}
-  \begin{subfigure}{0.9\columnwidth}
+  \begin{subfigure}{0.8\columnwidth}
     \centering
         {\def\svgwidth{\linewidth}
           {\footnotesize
@@ -130,11 +306,56 @@ steepest descent + wolfe
         \label{fig:chap3-unconstrained-newton-wolfe-quad}
   \end{subfigure}
   \caption{FIXME}
+  \label{fig:chap3-unconstrained-newton-wolfe}
 \end{figure}
 
-newton wolfe, quadratic approximation leads to minimum directlyx
+The Newton line search is very efficient and exhibits quadratic
+convergence. However, besides knowing how to compute the Jacobian of
+$f$, we need to know how to compute the Hessian of $f$ and this is not
+always a trivial task.
 
 \subsubsection{Quasi-Newton Line Search}
+
+Instead of relying on the Hessian, a quasi-Newton line search relies
+on using an approximation of $\nabla^2 f$ when it is not possible to
+compute it. The search direction is then given by:
+\begin{equation}
+p_k=-\mathbf{B}_k^{-1}\nabla f_k,
+\end{equation}
+where $\mathbf{B}_k\approx\nabla^2 f$ is a symmetric nonsingular
+matrix.
+
+Several algorithms for deriving approximates $\mathbf{B_k}$ exist, the
+best one being the Broyden-Fletcher-Goldfarb-Shanno (BFGS) method, as
+described in Algorithm \ref{alg:chap3-bfgs}. It relies on updating the
+$\mathbf{H}_k = \mathbf{B}_k^{-1}$ while the iterative optimization is
+taking place. As an initial value $\mathbf{H}_0=\mathbf{I}$ is given,
+the line search behaves like a steepest descent line search for the
+first iterations, converging towards a Newton line search as the
+optimization advances and as the approximation is closer to the real
+Hessian. The BFGS line search exhibits then super linear convergence.
+
+limited memory version for large-squcale problems.
+
+\begin{algorithm}
+\caption{BFGS ($\arginit{x}$, $\epsilon$)}
+\label{alg:chap3-bfgs}
+\begin{algorithmic}
+\STATE $\mathbf{H}_0$ $\leftarrow$ $\mathbf{I}$, $k$ $\leftarrow$ $0$
+\WHILE{$||\nabla f_k|| > \epsilon$}
+\STATE {\color{red} // Search direction}
+\STATE $\mathbf{p}_k$ $\leftarrow$ $-\mathbf{H}_k\nabla f_k$
+\STATE {\color{red} // Line search with Wolfe conditions}
+\STATE $\mathbf{x}_{k+1}$ $\leftarrow$ $\mathbf{x}_k + \alpha_k\mathbf{p}_k$
+\STATE $\mathbf{s}_k$ $\leftarrow$ $\mathbf{x}_{k+1} - \mathbf{x}_k$
+\STATE $\mathbf{y}_k$ $\leftarrow$ $\nabla f_{k+1} - \nabla f_k$
+\STATE $\rho_k$ $\leftarrow$ $\frac{1}{\mathbf{y}_k^{\top}\mathbf{s}_k}$
+\STATE {\color{red} // BFGS update of the Hessian inverse}
+\STATE $\mathbf{H}_{k+1}$ $\leftarrow$ $(\mathbf{I}-\rho_k\mathbf{s}_k\mathbf{y}_k^{\top})\mathbf{H}_k(\mathbf{I}-\rho_k\mathbf{y}_k\mathbf{s}_k^{\top})+\rho_k\mathbf{s}_k\mathbf{s}_k^{\top}$
+\STATE $k$ $\leftarrow$ $k + 1$
+\ENDWHILE
+\end{algorithmic}
+\end{algorithm}
 
 \begin{figure}
   \centering
@@ -148,9 +369,20 @@ newton wolfe, quadratic approximation leads to minimum directlyx
       \label{fig:chap3-unconstrained-quasi-newton-wolfe}
 \end{figure}
 
-quasi-newtion + bfgs
+FIXME commenter figure.
 
 \subsection{Quadratic Programming}
+
+\begin{equation}
+\min_{\mathbf{x} \in \mathbb R^n}
+q(\mathbf{x})=\frac{1}{2}\mathbf{x}^{\top}\mathbf{G}\mathbf{x}+\mathbf{c}^{\top}\mathbf{x},~\mathbf{G}\text{ symmetric, such that}
+\end{equation}
+\begin{equation}
+\left\{\begin{array}{cc}
+\mathbf{a}_i^{\top}\mathbf{x} = b_i, & i \in \mathcal{E} \\
+\mathbf{a}_i^{\top}\mathbf{x} \ge b_i, & i \in \mathcal{I}
+\end{array}\right.
+\end{equation}
 
 \subsubsection{Equality Constraints}
 
@@ -199,6 +431,9 @@ quadratic eq + ineq: active set (mention interior point here?)
 \end{figure}
 
 NLP: SQP, mention interior point
+
+first-order conditions
+second-order conditions
 
 $\mathbf{x}^\star$
 
