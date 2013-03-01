@@ -632,6 +632,9 @@ example: $l_1$ merit function
       \label{fig:chap3-sqp}
 \end{figure}
 
+Iterates can be infeasible. Only final solution is guaranteed to be
+feasible.
+
 \subsubsection{Interior-Point Methods for Nonlinear Programming}
 
 We introduce briefly \emph{interior-point methods}, also known as
@@ -712,40 +715,50 @@ Write algorithm? inner loop: quadratic approximations to find
 $\mathbf{x}^\star(\mu)$, outer loop: decrease $\mu$. Confirm with
 Nicolas.
 
-at each approximation:
+move along central path $\{\mathbf{x}^\star(\mu)\}_k$: solution always
+feasible
+
+\subsubsection{Conclusion}
+
+SQP and IP methods equally efficient for solving large-scale NLP
+problems.
 
 SQP: a large number of inexpensive steps (small linear systems with
-only active constraints, but active-search method runs a lot of times)
+only active constraints, but active-search method runs a lot of
+times), intermediate iterates might not be feasible. Easy to
+warm-start
 
-IP: a small number of expensive steps (larger
-linear system)
+IP: a small number of expensive steps (larger linear system), iterates
+all feasible. Harder to warm-start.
 
 \section{Optimal Control}
 
 Given a dynamic model, let:
 \begin{itemize}
-\item $t$ be the time variable,
-\item \state{} be the state vector, 
-\item \control{} be the control vector,
-\item $t_f$ be the trajectory duration,
-\item $\phi$ be the scalar objective function to minimize,
-\item \dfcn{} be the differential equation of the model,
-\item \eqcstr{} be the equality constraint vector function,
-\item \ineqcstr{} be the inequality constraint vector function,
-\item \bndcstr{} be the boundary conditions vector function. 
+\item $t$ denotes the time variable,
+\item \state{} denotes the state vector,
+\item \control{} denotes the control vector,
+\item $T$ denotes the trajectory duration,
+\item $L$ denotes the Lagrangian term (also cost rate) of the
+  objective function,
+\item $\Phi$ denotes the Mayer term (also terminal cost?) of the
+  objective function,
+\item \dfcn{} denotes the \emph{ordinary differential equation (ODE)}
+  of the model,
+\item \eqcstr{} denotes the equality constraint vector function,
+\item \ineqcstr{} denotes the inequality constraint vector function,
+\item \bndcstr{} denotes the boundary conditions vector function.
 \end{itemize}
 
 An optimal control problem can be written as follows:
 
 \label{OCP}
 \begin{equation}
-  \min_{\mathbf{x} (\cdot), \mathbf{u} (\cdot), t_f} \ \ 
-  \int_{0}^{t_{f}}\phi (\mathbf{x}(t), \mathbf{u}(t))dt
+  \min_{\mathbf{x} (\cdot), \mathbf{u} (\cdot), T} \ \ 
+  J(\mathbf{x}(t),\mathbf{u}(T),T) = \int_{0}^{T}L (\mathbf{x}(t), \mathbf{u}(t))dt + \Phi(\mathbf{x}(T))
   \label{OCP:Obj}
 \end{equation}
 \ \ \ subject to:
-
-FIXME: Add Lagrange and Mayer terms
 
 \begin{equation}
   \begin{array}{rcl}
@@ -754,23 +767,77 @@ FIXME: Add Lagrange and Mayer terms
   \\
   \mathbf{g}(t, \mathbf{x}(t), \mathbf{u}(t)) & = & \mathbf{0},
   \\
-  \mathbf{h}(t, \mathbf{x}(t), \mathbf{u}(t)) & \ge & \mathbf{0}%,
+  \mathbf{h}(t, \mathbf{x}(t), \mathbf{u}(t)) & \succeq & \mathbf{0}%,
   \\
-  \mathbf{r} (\mathbf{x}(0), \mathbf{x}(t_{f})) & = & \mathbf{0}.
+  \mathbf{r} (\mathbf{x}(0), \mathbf{x}(T)) & = & \mathbf{0}.
   \\
   \end{array}
 \end{equation} 
 
-\emph{Ordinary Differential Equation (ODE)}
-\emph{Differential-Algebraic Equation (DAE)}
+FIXME: add interval [0,T] next to constraint validity (with explanation?)
+
+\begin{figure}
+  \centering
+      {\def\svgwidth{0.9\linewidth}
+        \subimport*{src/chap3-optimal-motion-planning/figure/}
+                   {optimal-control-problem.pdf_tex}
+      }
+      \caption{Optimal control problem}
+      \label{fig:chap3-optimal-control-problem}
+\end{figure}
 
 \subsection{Hamilton-Jacobi-Bellman Equation}
 
-Tabulation in State Space
+continuous extension of dynamic programming.
+
+Richard Bellman's \emph{Optimality principle}
+
+Optimal control for the unconstrained case
+
+\emph{Hamilton Jacobi Bellman (HJB) partial differential equation}:
+
+$v = J(\mathbf{x}(t),\mathbf{u}(t),T)$
+
+\begin{equation}
+\label{eq:chap3-hjb}
+\dot{v} + \min_{\mathbf{x} (\cdot), \mathbf{u} (\cdot),
+  T}(\nabla_{\mathbf{x}} v^{\top}f(t, \mathbf{x}(t), \mathbf{u}(t)) +
+L (\mathbf{x}(t), \mathbf{u}(t)) = 0
+\end{equation}
+
+$v$ is also called the value function.
+
+Equation \ref{eq:chap3-hjb} can be solved backwards in time, just as
+in discrete-time dynamic programming, starting from $t=T$ and ending
+at $ t=0$.
+
+curse of dimensionality (cf todorov).
 
 \subsection{Indirect Methods,Pontryagin}
 
-Solve Boundary Value Problem
+\emph{Maximum (or Minimum) principle}
+
+Minimize the \emph{Hamiltonion} $\mathcal{H}$ defined as:
+
+\begin{equation}
+\mathcal{H}(\mathbf{x}(t),\mathbf{u}(t),T) = \nabla_{\mathbf{x}}
+v^{\top}f(t, \mathbf{x}(t), \mathbf{u}(t)) + L (\mathbf{x}(t),
+\mathbf{u}(t))
+\end{equation}
+
+continuous extension to Lagrange multipliers.
+
+define hamiltonian as objective function defined in HJB equation.
+
+remarkable: Turn PDE to ODE by defining costate variable as
+$\nabla_{\mathbf{x}} v$.
+
+Solve Boundary Value Problem: very easy especially when controls
+appear linearly in dynamics and quadratically in cost rate.
+
+complexity linear with state dimension.
+
+How to handle constrained case?
 
 \subsection{Direct Methods}
 
@@ -787,14 +854,50 @@ Can treat inequality constraints and multipoint constraints much
 easier.
 
 Cons:
-sub-optimal/approximate solution but still ok if chosen properly.
+suboptimal/approximate solution but still ok if chosen properly.
 
 Nowadays most commonly used methods due to their easy
 applicability and robustness.
 
+FIXME: state (and not control) parametrization: where does it fall?:
+not collocation, not single-shooting, not
+multiple-shooting. Trajectory is C2 by design, no need to add
+additional constraints as in multiple shooting. works for problems
+where the final solution (such as the input controls) can be easily
+derived from the state. \cite{sirinesa1981}
+
+Add figures in inkscape? or as Martin?
+
 \subsubsection{Direct Single-Shooting}
 
+\cite{hicks1971approximation,sargent1978development}
+
+Discretize controls $\mathbf{u}(t)$ on a fixed grid
+$0=t_0<t_1<\ldots<t_N=T$. States $\mathbf{x}(t)$ are regarder as
+dependent variables on $[0,T]$; numerical integration is used in order
+to obtain state as function $\mathbf{x}(t,\mathbf{q})$ of finitely
+many control parameters
+$\mathbf{q}=(\mathbf{q}_0,\mathbf{q}_1,\ldots,\mathbf{q}_{N-1})$.
+
+discretized controls: piecewise constant, piecewise linear, continuous
+piecewise linear, etc
+
+After control discretization and numerical ODE solution, obtain
+finite-dimension NLP:
+
+FIXME: add NLP
+
 \emph{Sequential} simulation and optimization.
+
+\begin{figure}
+  \centering
+      {\def\svgwidth{0.9\linewidth}
+        \subimport*{src/chap3-optimal-motion-planning/figure/}
+                   {optimal-control-problem-single-shoot.pdf_tex}
+      }
+      \caption{Optimal control problem}
+      \label{fig:chap3-optimal-control-problem-single-shoot}
+\end{figure}
 
 Only discretized controls in NLP
 
@@ -812,6 +915,45 @@ problems).
 
 \subsubsection{Direct Collocation}
 
+\cite{tsang1975optimal}
+
+Discretize controls and states on \emph{fine} grid with node values
+$\mathbf{s}_i\approx\mathbf{t_i}$.
+
+Replace infinite ODE by finitely many equality constraints and
+approximate Lagrangian term in objective function. Using forward
+differentiation for instance would give:
+
+\begin{equation}
+  \begin{array}{rcl}
+    \dot{\mathbf{x}}(t) -
+    \mathbf{f}(\mathbf{x}(t)),\mathbf{u}(t)) & = & \mathbf{0}, \qquad t\in[0,T] \\
+    & \Downarrow  & \text{\scriptsize forward differentiation}\\
+    \frac{\mathbf{s}_{i+1}-\mathbf{s}_i}{t_{i+1}-t_i} -
+    \mathbf{f}\left(\frac{\mathbf{s}_{i}+\mathbf{s}_{i+1}}{2},
+    \mathbf{q_i}\right) & = & \mathbf{0}, \qquad i=0,1,\ldots,N-1
+  \end{array}
+\end{equation}
+
+and
+
+\begin{equation}
+  \begin{array}{c}
+    \int_{0}^{T}L (\mathbf{x}(t), \mathbf{u}(t))dt \\ 
+    \Downarrow \\
+    \sum_{i=0}^{N-1}L\left(\frac{\mathbf{s}_{i}+\mathbf{s}_{i+1}}{2},
+    \mathbf{q_i}\right)(t_{i+1}-t_i)
+  \end{array}
+\end{equation}
+
+After discretization obtain large scale but sparse NLP:
+
+FIXME: add sparse NLP
+
+FIXME: Add sparse block structure to explain?
+
+Solve with SQP method for sparse problems, or interior point methods.
+
 Simultaneous simulation and optimization.
 
 Discretized controls and states in NLP
@@ -823,9 +965,23 @@ Pros
 + Robust handling of path and terminal constraints.
 
 Cons
-- Adaptivity needs new grid, changes NLP dimensions.
+- Adaptivity (for ODE/DAE solvers) needs new grid, changes NLP dimensions.
 
 \subsubsection{Direct Multiple-Shooting}
+
+\cite{Bock1984}
+
+FIXME: \cite{leineweber2003efficient1,leineweber2003efficient2} ? 
+
+\begin{figure}
+  \centering
+      {\def\svgwidth{0.9\linewidth}
+        \subimport*{src/chap3-optimal-motion-planning/figure/}
+                   {optimal-control-problem-multiple-shoot.pdf_tex}
+      }
+      \caption{Optimal control problem}
+      \label{fig:chap3-optimal-control-problem-multiple-shoot}
+\end{figure}
 
 \emph{Simultaneous} simulation and optimization.
 
@@ -833,7 +989,7 @@ Controls and node start values in NLP
 
 Pros:
 uses \emph{adaptive} ODE/DAE solvers.
-NLP has ﬁxed dimensions.
+NLP has \emph{ﬁxed} dimensions.
 can use knowledge of x in initialization.
 can treat unstable systems well.
 robust handling of path and terminal constraints.
@@ -926,9 +1082,10 @@ There exists several classes of optimization solvers, among which
 gradient-based methods such as interior point optimizers implemented
 notably in IPOPT \cite{Biegler2009}, and Sequential Quadratic Program
 (SQP) solvers. Particularly, multiple shooting optimization,
-implemented in the \textsc{MUSCOD-II} software \cite{Leineweber2003},
-is a powerful tool that allows solving large-scale optimal control
-problems thanks to a specially tailored SQP.
+implemented in the \textsc{MUSCOD-II} software
+\cite{leineweber2003efficient1, leineweber2003efficient2}, is a
+powerful tool that allows solving large-scale optimal control problems
+thanks to a specially tailored SQP.
 
 \subsection{Non Jacobian-Based Applications - Probabilistic Optimal Control Solvers}
 
@@ -1229,7 +1386,7 @@ trajectories.
 
 The objective function can then be written as:
 \begin{equation}
-  J = \int_{0}^{t_{f}}\mathbf{\dddot{q}}(t)^T\mathbf{\dddot{q}}(t) dt
+  J = \int_{0}^{T}\mathbf{\dddot{q}}(t)^T\mathbf{\dddot{q}}(t) dt
   \label{objective-function}
 \end{equation}
 
@@ -1266,7 +1423,7 @@ balance constraint using the Zero-Moment Point (ZMP)
 \cite{Vukobratovic2004zero}, which has to remain inside the robot
 support polygon defined by its feet.
 
-These constraints can be written as for any $t\in[0,t_{f}]$:
+These constraints can be written as for any $t\in[0,T]$:
 \begin{equation}
   \begin{array}{rcl}
     \mathbf{p_{lf}}(\mathbf{q}(t)) & = & \mathbf{p_{lf}}(\mathbf{q}(0)) \\
