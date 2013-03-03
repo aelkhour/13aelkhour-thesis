@@ -23,8 +23,7 @@ capsules around exact robot body geometries represented by meshes; the
 capsules are used to implement distance constraints for an optimal
 control problem solver and achieve (self-)collision avoidance. The
 whole framework is successfully applied to generate optimal
-collision-free trajectories both in simulation and on the humanoid
-robot HRP-2.
+collision-free trajectories on the humanoid robot HRP-2.
 
 \section{Path Planning}
 
@@ -33,7 +32,7 @@ Sampling-based algorithms, such as Rapidly-exploring Random Trees
 \ref{subsec:chap1-sampling-algorithms}, are particularly powerful when
 it comes to solving path planning problems in
 high-dimension \cspace\thinspace and cluttered environments. In this
-chapter, we rely on the same constrained RRT alogrithm that was
+chapter, we rely on the same constrained RRT algorithm which was
 described in Chapter \ref{subsec:chap2-constraint-motion-planning} in
 order to generate statically balanced paths on a submanifold
 of \cspace.
@@ -42,64 +41,97 @@ Let us recall that an important feature of sampling-based algorithms
 is their probabilistic completeness, i.e. their capacity to avoid
 falling into local minima and to find a solution path if it
 exists. They present however three drawbacks. First, due to their
-sampling nature, the configuration \config{} might move in a random
-fashion along the path $P$, which could lead to unnecessarily long and
-unnatural paths. Second, we still need to apply a time parametrization
-in order to transform the path into a trajectory. This is a
-non-trivial task in the particular case of a humanoid robot, as we
-must ensure its dynamic balance along the trajectory. Third, the
-resulting paths are continuous but not $C^1$. The time-parametrized
-motion thus needs to stop at each waypoint or to leave the planned
-path around waypoints. Additional processing is thus needed to provide
-a reshaped collision-free trajectory that can be executed on the
-robot.
+random sampling nature, the configuration \config{} might move in a
+random fashion along the path $P$, which could lead to unnecessarily
+long and unnatural paths. Second, we still need to apply a time
+parametrization in order to transform the path into a trajectory. This
+is a non-trivial task in the particular case of a humanoid robot, as
+we must ensure its dynamic balance along the trajectory. Third, the
+resulting paths are continuous but not $C^1$; to enforce this
+constraint, he time-parametrized motion would need to stop at each
+waypoint, or would leave the planned path around waypoints. Additional
+processing is thus needed to provide a reshaped collision-free
+trajectory that can be executed on the robot.
 
 \section{Numerical Optimization}
 
-Focus on jacobian-based optimal control
-
-Following section largely based on Nocedal.
+We give here an overview of the most successful numerical optimization
+techniques that can be found in literature. We focus on Jacobian-based
+methods, i.e. methods that use information given by the
+\emph{variations} of the function we want to minimize to find its
+minimizer. As this section is largely based on
+\cite{nocedal1999numerical}, we invite the interested reader to refer
+to it for more details.
 
 \subsection{Unconstrained Optimization}
 
-$f:\mathbb R^n \rightarrow \mathbb R$
+Given a scalar \emph{objective function} $f:\mathbb R^n \rightarrow
+\mathbb R$, we would like to solve the following problem:
 
-Problem:
 \begin{equation}
-\min_{\mathbf{x}}f(\mathbf{x}), \mathbf{x} \in \mathbb R^n
+\min_{\mathbf{x}\in\mathbb R^n}f(\mathbf{x})
 \end{equation}
 
-Global minimizer:
+This is a problem of \emph{unconstrained optimization}; it consists of
+finding one ore more solutions $\argmin{x}$, which we call
+\emph{minimizers}. A minimizer is said to be \emph{global} if and only
+if:
+
 \begin{equation}
-f(\argmin{x}) \le f(\mathbf{x})~\forall \mathbf{x} \in \mathbb R^n
+f(\argmin{x}) \le f(\mathbf{x})~\forall \mathbf{x} \in \mathbb R^n,
 \end{equation}
 
-local minimizer: $\exists$ a neighborhood $\mathcal{N}$ of
-$\argmin{x}$ such that:
+implying that there is no other point $\mathbf{x}\in\mathbb R^n$ such
+that the value of $f$ at $\mathbf{x}$ is lower than the value of $f$
+at $\argmin{x}$. On the other hand, a \emph{local minimizer} is such
+that $\exists$ a neighborhood $\mathcal{N}$ of $\argmin{x}$ and:
+
 \begin{equation}
-  f(\argmin{x} \le f(\mathbf{x})~\forall \mathbf{x} \in \mathcal{N}
+\label{eq:chap3-local-min}
+  f(\argmin{x} \le f(\mathbf{x})~\forall \mathbf{x} \in \mathcal{N}.
 \end{equation}
 
-How to find a minimizer?
+Obviously, a local minimizer is weaker than a global minimizer, as
+Equation \ref{eq:chap3-local-min} implies that there is no other
+minimizer only in the vicinity of $\argmin{x}$, and it does not ensure
+the nonexistence of another point $\mathbf{x}^\star_g$ such that
+$f(\mathbf{x}^\star_g) \le f(\argmin{x})$. Therefore, there is no
+guarantee that the local minimizer is also a global one for $f$.
 
-First-order nevessary conditions:
+\subsubsection{Necessary Conditions}
+
+In order to characterize a minimizer of $f$, we introduce the
+\emph{first-order necessary conditions} for unconstrained
+optimization:
+
+\begin{theorem}
+\label{thm:chap3-first-order-cond}
 $\argmin{x}$ is a local minimizer, f continuously differentiable
 ($C^1$) in an open neighborhood of $\argmin{x} \Rightarrow
 \nabla f(\argmin{x}) = \mathbf{0}$.
+\end{theorem}
 
-All points $\argmin{x}$ which satisfy $\nabla f(\argmin{x})$ are called
-stationary points. Stationary points can correspond to minimizers,
-maximizers, or saddle points of $f$. The second-order conditions are
-then necessary to distinguish local minimizers:
+All points $\argmin{x}$ which satisfy the first-order conditions are
+called stationary points. Note that stationary points can correspond
+to minimizers, maximizers, or saddle points of $f$. The
+\emph{second-order necessary conditions} are then used to distinguish
+local minimizers:
 
+\begin{theorem}
+\label{thm:chap3-second-order-cond}
 $\argmin{x}$ is a local minimizer, f twice continuously differentiable
 ($C^2$) in an open neighborhood of $\argmin{x} \Rightarrow \nabla
 f(\argmin{x}) = \mathbf{0}$ and $\nabla^2 f(\argmin{x})$ is positive
 semi-definite (psd).
+\end{theorem}
 
-Note that if $F$ is convex and $C^1$, $\nabla f(x)$ is positive
-definite (pd) $\forall~\mathbf{x}$, and it can be shown that anu
-stationary point is a global minimizer.
+The key for the conditions is that $f$ be at least $C^2$ so that
+$\nabla f$ and $\nabla^2 f$ be defined and continuous. Note that if
+$f$ is convex and $C^1$, $\nabla f(x)$ is positive definite (pd)
+$\forall~\mathbf{x}$, and it can be shown that any stationary point of
+$f$ is also a global minimizer of $f$.
+
+\subsubsection{Finding the Minimizer}
 
 One way of finding a minimizer of $f$ is to look for a stationary
 point starting from an initial point $\arginit{x}$, and produce a
@@ -109,7 +141,7 @@ the point $\argmin{x}$ where no more progress can be made, up to a
 specified tolerance $\epsilon > 0$.
 
 Given an iterate $\mathbf{x_k}$, the next iterate $\mathbf{x_{k+1}}$
-can be chosen based on information about f at $\mathbf{x_k}$ so that
+can be chosen based on information about $f$ at $\mathbf{x_k}$ so that
 $f(\mathbf{x_{k+1}})<f(\mathbf{x_k})$. There exist two main strategies
 to do so:
 
@@ -117,68 +149,76 @@ to do so:
 \item Line search strategy: a direction $\mathbf{p_k}$ is first
   chosen, then a step length $\alpha_k > 0$ is computed such that it
   approximately solves the 1D minimization problem: $\min_{\alpha>0}
-  f(\mathbf{x_k}+\alpha_k\mathbf{p}_k)$.
+  f(\mathbf{x_k}+\alpha_k\mathbf{p}_k)$. This leads to
+  $\mathbf{x}_{k+1}=\mathbf{x}_k+\alpha_k\mathbf{p_k}.$
 \item Trust region strategy: a local model $m_k$ of $f$ is
   constructed, and a direction $p_k$ is chosen inside a fixed-size
   trust region such that it approximately solves the minimization
   problem: $\min_{\mathbf{p_k}} m_k(\mathbf{x}_k+\mathbf{p}_k)$.
 \end{enumerate}
 
-Note that these two strategies are very similar as they try find
-approximate solutions to simple optimization problems, which leads to
-good performance. They mainly differ in the order in which the step
-length and search direction are chosen. In the following section, we
-will describe some of the most common line search strategies.
-
-In what follows, $f_k$ denotes $f(\mathbf{x}_k)$ $\forall~k > 0$.
-
-We introduce as an example the Rosenbrock function, or banana
+Note that these two strategies are very similar as they try to find
+approximate solutions to simple optimization problems which offer good
+performance. They mainly differ in the order in which the step length
+and search direction are chosen. In the following section, we describe
+some of the most common line search strategies. We illustrate them
+using the Rosenbrock function \ref{rosenbrock1960automatic}, or banana
 function, defined as:
 
 \begin{equation}
-\mathbf{x} = (x,y) \in \mathbb R^2 r(\mathbf{x}) =
-(1-x^2)+100(y-x^2)^2
+\mathbf{x} = (x,y) \in \mathbb R^2 R(\mathbf{x}) =
+(1-x^2)+100(y-x^2)^2.
 \end{equation}
 
-$r$ has only one minimizer $\argmin{x} = (1~1)$ and is commonly
-used for benchmarking optimization algorithms.
+$R$ has only one minimizer $\argmin{x} = (1,1)$, and is commonly used
+to benchmark optimization algorithms.
 
 \subsubsection{Steepest Descent Line Search}
 
-Using a first-order Taylor approximation of $f$, it can be proved that:
+Let $f_k$ denote $f(\mathbf{x}_k)$ $\forall~k > 0$. Using a
+first-order Taylor approximation of $f$, it can be proved that:
 \begin{equation}
 \mathbf{p_k} = -\nabla f_k
 \end{equation}
 is the steepest descent direction, i.e. it is the direction along
-which $f$ decreases locally around $\mathbf{x}_k$.
+which $f$ decreases the most locally around $\mathbf{x}_k$.
 
-Add convergence rate:linear and explain.
+This strategy has a \emph{linear convergence rate}:
+\begin{equation}
+\frac{\norm{\mathbf{x}_{k+1}-\argmin{x}}}{\norm{\mathbf{x}_k-\argmin{x}}}
+\le r \text{ for all } k \text{ sufficiently large}, \quad
+r=\frac{\kappa-1}{\kappa+1},
+\end{equation}
+
+where $\kappa$ is the condition number of the Hessian $\nabla^2 f$.
+It can therefore lead to extremely slow convergence when $\nabla^2 f$
+is ill-conditioned and $r \approx 1$.
 
 Figure \ref{fig:chap3-unconstrained-steepest-descent} shows an example
 of minimizing the Rosenbrock function. We show the first 20 iterates
 when using a steepest descent line search and setting $\alpha_k$ to
 1. The search direction $\mathbf{p_k}$ is always orthogonal to the
 function contour line, as it is the direction that allows to decrease
-$r$ quickly. Unfortunately, as the iterates reach the basin, keeping a
+$R$ quickly. Unfortunately, as the iterates reach the basin, keeping a
 constant step size leads to a strong oscillation and convergence is
 not achieved. This motivates the need for a good step size computation
 method that will ensure a decrease of the function at each iteration.
 
 \begin{figure}
   \centering
-      {\def\svgwidth{0.5\linewidth}
+      {\def\svgwidth{0.8\linewidth}
         {\footnotesize
           \subimport*{src/chap3-optimal-motion-planning/figure/}
                      {unconstrained-steepest-descent.pdf_tex}
         }
       }
       \caption{Contour lines show the Rosenbrock function
-        $r$. Starting from $\arginit{x}=(-0.6~-0.6)$, a steepest
+        $R$. Starting from $\arginit{x}=(-0.6,-0.6)$, a steepest
         descent line search is used with a constant step size
         $\alpha_k=1$. The minimizer basin is reached very quickly,
         but large values of the step size then prevent minimizing the
         function. Note that the steepest descent direction is
-        orthogonal to the contour lines of $r$.}
+        orthogonal to the contour lines of $R$.}
       \label{fig:chap3-unconstrained-steepest-descent}
 \end{figure}
 
@@ -230,13 +270,15 @@ solution to the same problem as in Figure
 \ref{fig:chap3-unconstrained-steepest-descent} with the Wolfe
 conditions enforced at each iteration. The minimizer
 $\argmin{x}=(1~1)$ is reached after around 5000 iterations. Such a
-high number is mainly due to the zigzagging behavior which prevents
-quickly reaching the minimizer, as shown in Figure
+high number is mainly due to an ill-conditioned Hessian and the
+induced zigzagging behavior which prevents quickly reaching the
+minimizer, as shown in Figure
 \ref{fig:chap3-unconstrained-steepest-descent-wolfe-b}.
 
 \begin{figure}
+  \setlength{\belowcaptionskip}{\baselineskip}
   \centering
-  \begin{subfigure}{0.4\columnwidth}
+  \begin{subfigure}{0.8\columnwidth}
     \centering
         {\def\svgwidth{\linewidth}
           {\footnotesize
@@ -244,10 +286,11 @@ quickly reaching the minimizer, as shown in Figure
                        {unconstrained-steepest-descent-wolfe.pdf_tex}
           }
         }
-        \caption{FIXME}
+        \caption{Solution to the Rosenbrock function minimization
+          problem.}
         \label{fig:chap3-unconstrained-steepest-descent-wolfe-a}
   \end{subfigure}
-  \begin{subfigure}{0.4\columnwidth}
+  \begin{subfigure}{0.8\columnwidth}
     \centering
         {\def\svgwidth{\linewidth}
           {\footnotesize
@@ -255,35 +298,39 @@ quickly reaching the minimizer, as shown in Figure
                        {unconstrained-steepest-descent-wolfe-zoom.pdf_tex}
           }
         }
-        \caption{FIXME}
+        \caption{Enlarged view: the zigzagging behavior slows down
+          convergence.}
         \label{fig:chap3-unconstrained-steepest-descent-wolfe-b}
   \end{subfigure}
-  \caption{FIXME}
+  \caption{Steepest-descent line search strategy. The Wolfe conditions
+    are enforced at each iteration to ensure sufficient decrease of
+    the objective function.}
   \label{fig:chap3-unconstrained-steepest-descent-wolfe}
 \end{figure}
 
 \subsubsection{Newton Line Search}
 
 Assuming that $f$ is $C^2$ and using a second-order Taylor
-approximation at $\mathbf{x}_k$, we can derive the Newton direction:
+approximation at $\mathbf{x}_k$, we can derive the \emph{Newton
+  direction}:
 \begin{equation}
 \mathbf{p_k} = -\nabla^2 f_k^{-1} \nabla f_k;
 \end{equation}
 $\mathbf{x}_{k+1}=\mathbf{x_k}+\mathbf{p_k}$ is then the minimizer of
 the local quadratic approximation of $f$. The Newton direction has a
 natural step length $\alpha_k=1$. Nevertheless the Wolfe conditions
-still need to be verified to make sure that there is an actual
-decrease of the exact function $f$. Figure
-\ref{fig:chap3-unconstrained-newton-wolfe} shows the sequence of
-iterates when applying a Newton line search to find the minimizer of
-the Rosenbrock function. It is clear in Figure
+still need to be verified to make sure that there is a decrease in the
+exact function $f$. Figure \ref{fig:chap3-unconstrained-newton-wolfe}
+shows the sequence of iterates when applying a Newton line search to
+find the minimizer of the Rosenbrock function. It is clear in Figure
 \ref{fig:chap3-unconstrained-newton-wolfe-quad} how the next iterate
 is the minimizer of the local quadratic approximation of the objective
 function.
 
 \begin{figure}
+  \setlength{\belowcaptionskip}{\baselineskip}
   \centering
-  \begin{subfigure}{0.4\columnwidth}
+  \begin{subfigure}{0.8\columnwidth}
     \centering
         {\def\svgwidth{\linewidth}
           {\footnotesize
@@ -291,10 +338,12 @@ function.
                        {unconstrained-newton-wolfe.pdf_tex}
           }
         }
-        \caption{FIXME}
+        \caption{Solution to the Rosenbrock function minimization
+          problem: a few iterations are needed to find the minimizer
+          $\argmin{x}$.}
         \label{fig:chap3-unconstrained-newton-wolfe-a}
   \end{subfigure}
-  \begin{subfigure}{0.4\columnwidth}
+  \begin{subfigure}{0.8\columnwidth}
     \centering
         {\def\svgwidth{\linewidth}
           {\footnotesize
@@ -302,48 +351,48 @@ function.
                        {unconstrained-newton-wolfe-quad.pdf_tex}
           }
         }
-        \caption{FIXME}
+        \caption{The contour lines show the local quadratic
+          approximation of $R$ around $\arginit{x}$. The next iterate
+          $\argmin{x}_1$ is then the minimizer of the quadratic
+          approximation.}
         \label{fig:chap3-unconstrained-newton-wolfe-quad}
   \end{subfigure}
-  \caption{FIXME}
+  \caption{Newton line search. The Wolfe conditions are enforced at
+    each iteration to ensure sufficient decrease of the objective
+    function.}
   \label{fig:chap3-unconstrained-newton-wolfe}
 \end{figure}
 
-The Newton line search is very efficient and exhibits quadratic
-convergence. However, besides knowing how to compute the Jacobian of
-$f$, we need to know how to compute the Hessian of $f$ and this is not
-always a trivial task.
+The Newton line search is very efficient and exhibits a
+\emph{quadratic convergence rate}:
+
+\begin{equation}
+\frac{\norm{\mathbf{x}_{k+1}-\argmin{x}}}{\norm{\mathbf{x}_k-\argmin{x}}^2}
+\le M \text{ for all } k \text{ sufficiently large}, \quad M>0,
+\end{equation}
+
+which is faster than a linear convergence rate. However, besides
+knowing how to compute the Jacobian of $f$, we also need to derive the
+Hessian of $f$ and this is not always a trivial task.
 
 \subsubsection{Quasi-Newton Line Search}
 \label{subsubsec:chap3-quasi-newton-line-search}
 
-Instead of relying on the Hessian, a quasi-Newton line search relies
-on using an approximation of $\nabla^2 f$ when it is not possible to
-compute it. The search direction is then given by:
+Instead of using the Hessian, a quasi-Newton line search relies on an
+approximation of $\nabla^2 f$ when it is not possible to compute
+it. The search direction is then given by:
 \begin{equation}
 p_k=-\mathbf{B}_k^{-1}\nabla f_k,
 \end{equation}
 where $\mathbf{B}_k\approx\nabla^2 f$ is a symmetric nonsingular
 matrix.
 
-Several algorithms for deriving approximates $\mathbf{B_k}$ exist, the
-best one being the Broyden-Fletcher-Goldfarb-Shanno (BFGS) method, as
-described in Algorithm \ref{alg:chap3-bfgs}. It relies on updating the
-$\mathbf{H}_k = \mathbf{B}_k^{-1}$ while the iterative optimization is
-taking place. As an initial value $\mathbf{H}_0=\mathbf{I}$ is given,
-the line search behaves like a steepest descent line search for the
-first iterations, converging towards a Newton line search as the
-optimization advances and as the approximation is closer to the real
-Hessian. The BFGS line search exhibits then super linear convergence.
-
-limited memory version for large-squcale problems.
-
 \begin{algorithm}
 \caption{\texttt{BFGS}($\arginit{x}$, $\epsilon$)}
 \label{alg:chap3-bfgs}
 \begin{algorithmic}
 \STATE $\mathbf{H}_0$ $\leftarrow$ $\mathbf{I}$, $k$ $\leftarrow$ $0$
-\WHILE{$||\nabla f_k|| > \epsilon$}
+\WHILE{$\norm{\nabla f_k} > \epsilon$}
 \STATE {\color{red} // Search direction}
 \STATE $\mathbf{p}_k$ $\leftarrow$ $-\mathbf{H}_k\nabla f_k$
 \STATE {\color{red} // Line search with Wolfe conditions}
@@ -358,21 +407,47 @@ limited memory version for large-squcale problems.
 \end{algorithmic}
 \end{algorithm}
 
+Several algorithms for deriving approximates $\mathbf{B_k}$ exist, the
+best one being the Broyden-Fletcher-Goldfarb-Shanno (BFGS) method, as
+described in Algorithm \ref{alg:chap3-bfgs}. It relies on updating the
+$\mathbf{H}_k = \mathbf{B}_k^{-1}$ while the iterative optimization is
+taking place. As an initial value $\mathbf{H}_0=\mathbf{I}$ is given,
+the line search behaves like a steepest-descent line search for the
+first iterations, converging towards a Newton line search as the
+optimization advances and as the approximation is closer to the real
+Hessian. The BFGS line search has then a \emph{superlinear
+  convergence rate}:
+
+\begin{equation}
+\underset{k\rightarrow\infty}{\text{lim}}
+\frac{\norm{\mathbf{x}_{k+1}-\argmin{x}}}{\norm{\mathbf{x}_k-\argmin{x}}}
+= 0,
+\end{equation}
+
 \begin{figure}
   \centering
-      {\def\svgwidth{0.5\linewidth}
+      {\def\svgwidth{0.8\linewidth}
         {\footnotesize
           \subimport*{src/chap3-optimal-motion-planning/figure/}
                      {unconstrained-quasi-newton-wolfe.pdf_tex}
         }
       }
-      \caption{FIXME}
+      \caption{Rosenbrock function minimization with a quasi-Newton
+        line search using a BFGS-Hessian approximation. It is
+        interesting to note that the line search behaves like a
+        steepest-descent line search for the first iterations,
+        converging towards a Newton line search.}
       \label{fig:chap3-unconstrained-quasi-newton-wolfe}
 \end{figure}
 
-FIXME commenter figure.
-
 \subsection{Constrained Optimization}
+
+The previous section described methods that allow us to solve the
+problem of unconstrained optimization, which consists in finding the
+minimizer $\argmin{x}\in\mathbb R^n$ of a scalar function $f$. In many
+cases, however, the minimizer is required to additionally obey to a
+number of \emph{constraints} in order to be feasible. The general
+\emph{constrained optimization} problem can then be written as:
 
 \begin{equation}
 \label{eq:chap3-nlp}
@@ -384,30 +459,61 @@ c_i(\mathbf{x}) \ge 0, & i \in \mathcal{I} %
 \end{array}\right.
 \end{equation}
 
-The gradient of f should lie in the subspace spanned by the constraint
-gradients
+$\Omega=\{\mathbf{x}\in\mathbb R^n: c_i(\mathbf{x}) = 0, i \in
+\mathcal{E}; c_i(\mathbf{x}) \ge 0, i \in \mathcal{I}\}$ is called the
+\emph{feasible set}, and a point $\mathbf{x}$ is said to be feasible
+iff $\mathbf{x}\in\Omega$. At a feasible point, an inequality
+constraint $c_i~(i\in \mathcal{I})$ is:
 
-Gradient of f and constraint colinear. In general case, gradient f can
-be written as a linear combination of active constraints gradients. The
-components of gradient f in this basis are called the \emph{Lagrange
-  multipliers}.
+\begin{itemize}[noitemsep,nolistsep]
+\item active iff $c_i(\mathbf{x})=0$, i.e. $\mathbf{x}$ is on the boundary of $c_i$,
+\item inactive iff $c_i(\mathbf{x})>0,$ i.e. $\mathbf{x}$ is an
+  interior point of $c_i$.
+\end{itemize}
+\vspace{\baselineskip}
+We can then define the active set at $\mathbf{x}$:
 
-\emph{Lagrangian}:
+\begin{equation}
+\mathcal{A}(\mathbf{x})=\mathcal{E}\cup\{i\in\mathcal{I}:c_i(\mathbf{x}=0)\},
+\end{equation}
+
+as the set of all active constraints at a point $\mathbf{x}$. Let us
+also define the active constraint gradients at $\mathbf{x}$:
+
+\begin{equation}
+\mathbf{A}(\mathbf{x})=\left[\nabla
+  c_i(\mathbf{x})\right]_{i\in\mathcal{A}(\mathbf{x})}^\top
+\end{equation}
+
+The optimality conditions we introduced in Theorems
+\ref{thm:chap3-first-order-cond} and \ref{thm:chap3-second-order-cond}
+do not hold anymore as we need to take constraints into account. Let
+us define the \emph{Lagrangian}:
+
 \begin{equation}
 \mathcal{L}(\mathbf{x},\boldsymbol{\lambda}) =
 f(\mathbf{x})-\sum_{i\in\mathcal{E}\cup\mathcal{I}}
-\lambda_ic_i(\mathcal{x})
+\lambda_ic_i(\mathbf{x}),
 \end{equation}
 
-\emph{Active set} at a feasible point $\mathbf{x}$:
-\begin{equation}
-\mathbf{A}(\mathbf{x})=\mathcal{E}\cup{i \in \mathcal{I}:
-  c_i(\mathbf{x})=0}
-\end{equation}
+where $\lambda_i,~i\in \mathcal{E}\cup\mathcal{I}$ are called the
+\emph{Lagrange multipliers}.
 
-The Karush-Kuhn-Tucker (KKT) first-order necessary conditions:
-\begin{equation}
+It can be shown that candidate minimizers are the stationary points of
+$\mathcal{L}$, which is equivalent to $\nabla f$ lying in the subspace
+spanned by the active constraint gradients $\nabla
+c_i,~i\in\mathcal{A(\mathbf{x})}$. The components of $\nabla f$
+expressed in this subspace basis correspond then to the active
+constraint Lagrange multipliers
+$\lambda_i,~i\in\mathcal{A}(\mathbf{x})$. This leads to the
+\emph{Karush-Kuhn-Tucker (KKT) first-order necessary conditions}:
+
+\begin{theorem}
 \label{eq:chap3-kkt}
+$\argmin{x}$ is a local minimizer, f is $C^1$ in an open neighborhood
+of $\argmin{x}$, $\mathbf{A}(\mathbf{x})$ is full-rank $\Rightarrow$
+$\exists! \boldsymbol{\lambda}^{\star} \in \mathbb R^m$ such that:
+\[
 \begin{array}{crcl}
 a) & \nabla_{\mathbf{x}}\mathcal{L}(\argmin{x}, \boldsymbol{\lambda}^\star) & = & \mathbf{0} \\%
 b) & c_i(\argmin{x}) & = & 0 \qquad \forall i \in \mathcal{E} \\%
@@ -415,15 +521,19 @@ c) & c_i(\argmin{x}) & \ge & 0 \qquad \forall i \in \mathcal{I}\\%
 d) & \lambda_i^{\star} & \ge & 0 \qquad \forall i \in \mathcal{I}\\%
 e) & \lambda_i^{\star} c_i(\argmin{x}) & = & 0 \qquad \forall i \in \mathcal{E}\cup\mathcal{I}%
 \end{array}
-\end{equation}
+\]
+\end{theorem}
 
-$f(\argmin{x}) = \mathcal{L}(\argmin{x}, \boldsymbol{\lambda}^\star)$ because of
-the complementarity condition $e)$ in Equation \ref{eq:chap3-kkt}.
+Note that $f(\argmin{x}) = \mathcal{L}(\argmin{x},
+\boldsymbol{\lambda}^\star)$ because of the complementarity condition
+$e)$ in Equation \ref{eq:chap3-kkt}.
 
 \subsection{Quadratic Programming}
 
-\emph{Quadratic program (QP)}: quadratic objective function, linear
-constraints.
+In order to find points which satisfy the KKT conditions, we first
+consider the simpler problem of \emph{Quadratic programming (QP)},
+where the objective function is quadratic, and all constraints are
+linear:
 
 \begin{equation}
 \label{eq:chap3-qp}
@@ -436,13 +546,9 @@ q(\mathbf{x})=\frac{1}{2}\mathbf{x}^{\top}\mathbf{G}\mathbf{x}
 \end{array}\right. ~\mathbf{G}\text{ symmetric.}
 \end{equation}
 
-Convex QP $\Leftrightarrow$ $\mathbf{G}$ psd. Local minimizer is also
-global minimizer.
-
-Non-convex QP $\Leftrightarrow$ $\mathbf{G}$ not psd. Possibly several
-solutions.
-
 \subsubsection{Equality-constrained QP}
+
+In the particular case of an equality-constrained QP, we have:
 
 \begin{equation}
 \label{eq:chap3-qp-eq}
@@ -453,7 +559,7 @@ q(\mathbf{x})=\frac{1}{2}\mathbf{x}^{\top}\mathbf{G}\mathbf{x}
 \qquad \mathbf{A} \text{ full rank.}
 \end{equation}
 
-The KKT conditions given in Equation \ref{eq:chap3-kkt} imply that the
+The KKT conditions given in Theorem \ref{eq:chap3-kkt} imply that the
 solution $\argmin{x}$ verifies:
 
 \begin{equation}
@@ -497,28 +603,43 @@ techniques, and its solution gives the update $\mathbf{p}$ which leads
 directly to the minimizer $\argmin{x}$ of $q$.
 
 \begin{figure}
-  \centering {\def\svgwidth{0.5\linewidth} {\footnotesize
+  \centering {\def\svgwidth{0.8\linewidth} {\footnotesize
       \subimport*{src/chap3-optimal-motion-planning/figure/}
                  {qp-equality.pdf_tex} } }
-      \caption{FIXME}
+      \caption{Solution of a constrained QP problem. One linear
+        equality constraint is used, and solutions for different
+        values of the constraint are shown. Note that the further the
+        constraint is from the unconstrained minimum, the larger is
+        the associated Lagrange multiplier.}
       \label{fig:chap3-qp-equality}
 \end{figure}
 
-show in figure solution for same quadratic function and different
-equality constraints.
-
-The associated Lagrange multiplier is higher as the constrained
-minimizer is further from the unconstrained minimum. Intuitively, we
-can see Lagrange multiplier give an idea of the ``force'' which the
-constraints are exerting on the constrained minimizer.
+We use this method to solve an equality-constrained QP, shown in
+Figure \ref{fig:chap3-qp-equality}: for the same quadratic objective
+function, we find the minimizer for three different linear equality
+constraints. We can see that the associated Lagrange multiplier is
+higher as the constrained minimizer is further from the unconstrained
+minimum. Intuitively, Lagrange multiplier give an idea of the
+``force'' which the constraints are exerting on the constrained
+minimizer to keep it away from the unconstrained minimum.
 
 \subsubsection{Inequality-Constrained QP}
 
-Solve the general system presented in Equation \ref{eq:chap3-qp}.
-
-Several types of method such as active-set, gradient-projection and
+Now that we can solve an equality-constrained QP, we can move to solve
+the general QP presented in Equation \ref{eq:chap3-qp}. Several types
+of method such as active-set, gradient-projection and
 interior-point. We describe here the active-set method for solving
 inequality-constrained QP.
+
+The active-set method, described in detail in Algorithm
+\ref{alg:chap3-active-set}, consists in iteratively estimating the
+optimal active set, solving the underlying equality-constrained QP
+with the active constraints, and repeat until the optimal active set
+is correctly found. We implement an active-set method to solve a QP as
+shown in Figure \ref{fig:chap3-qp-inequality}. One linear equality
+constraint and two linear inequality constraints are added. Starting
+from a point $\arginit{x_0}$, the optimal solution and active set are
+found iteratively.
 
 \begin{algorithm}
 \caption{\texttt{ActiveSetSolve}($\arginit{x}$)}
@@ -556,31 +677,33 @@ inequality-constrained QP.
 
 \begin{figure}
   \centering
-      {\def\svgwidth{0.5\linewidth}
+      {\def\svgwidth{0.8\linewidth}
         {\footnotesize
           \subimport*{src/chap3-optimal-motion-planning/figure/}
                      {qp-inequality.pdf_tex}
         }
       }
-      \caption{FIXME}
+      \caption{Solution to the general QP problem using an active-set
+        method. The blue line represents the linear equality
+        constraint, while the green and red half-planes represent the
+        linear inequalities (the infeasible set is filled). Starting
+        from a $\arginit{x_0}$, the optimal solution $\argmin{x}$ and
+        active set are found iteratively.}
       \label{fig:chap3-qp-inequality}
 \end{figure}
 
-Figure \ref{fig:chap3-qp-inequality} shows the minimization of a
-quadratic objective function with one linear equality constraint and
-two linear inequality constraints. Minimizer is found with the
-previously described active-set method.
-
 \subsection{Nonlinear Programming}
 
-\emph{Non-linear program (NLP)}: solve the general problem presented
-in Equation \ref{eq:chap3-nlp}.
+We are now ready to tackle \emph{Nonlinear programming (NLP)}, i.e. to
+solve the general problem from Equation \ref{eq:chap3-nlp}. Two of the
+most successful methods used nowadays to solve large-scale problems
+are \emph{Sequential Quadratic Program (SQP)} and \emph{Interior-Point
+  Methods (IPM)}.
 
 \subsubsection{Sequential Quadratic Programming}
 
-\emph{Sequential Quadratic Program (SQP)}
-
-Build local quadratic approximation of the objective function and
+The idea behind SQP is quite simple: for each SQP iteration, we build
+a local quadratic approximation of the objective function and
 linearized approximation of the constraints in order to obtain a
 \emph{QP subproblem}:
 
@@ -593,8 +716,9 @@ linearized approximation of the constraints in order to obtain a
 \end{array}\right.
 \end{equation}
 
-Solve the QP subproblem, with active-set methods for instance, and
-repeat iteratively until the convergence test is satisfied.
+We then solve the QP subproblem, with active-set methods for instance,
+and repeat iteratively until the convergence test is satisfied, as
+described in Algorithm \ref{alg:chap3-sqp}.
 
 \begin{algorithm}
 \caption{\texttt{SQPSolve}($\arginit{x}$,$\boldsymbol{\lambda}_0$, $\epsilon$)}
@@ -611,29 +735,54 @@ repeat iteratively until the convergence test is satisfied.
 \end{algorithmic}
 \end{algorithm}
 
-Requires us to derive the Hessian of objective function and
-constraints. Solution: use BFGS as in Section
-\ref{subsubsec:chap3-quasi-newton-line-search}.
+This requires us to derive the Hessian of both objective function and
+constraints. One solution to avoid computing them exactly is to use
+the BFGS method as seen in Section
+\ref{subsubsec:chap3-quasi-newton-line-search}. Note that iterates can
+be infeasible and that only the final solution is guaranteed to be
+feasible. Also, as in the case of line search methods in unconstrained
+optimization, there is no guarantee that the solution of QP subproblem
+will lead to a decrease of the original objective function, or that it
+will improve feasibility with respect to the constraints. A
+\emph{merit function} can be used to this end and ensure, just like
+the Wolfe conditions for the unconstrained case, that there is a
+sufficient decrease of $f$ \emph{} and forbid too great
+infeasibility. One simple merit function is the $\ell_1$ exact
+function defined as:
 
-merit function: sufficient decrease of function and sufficient
-feasibility with respect to equality and inequality constraints.
+\begin{equation}
+  \phi_1(\mathbf{x},\mu)= f(\mathbf{x}) +
+  \mu\sum_{i\in\mathcal{E}}|c_i(\mathbf{x})| +
+  \mu\sum_{i\in\mathcal{I}}[c_i(\mathbf{x})]^-, \quad\mu>0,
+  \quad[x]^-=\text{max}(0,-x).
+\end{equation}
 
-example: $l_1$ merit function
+In Figure \ref{fig:chap3-sqp}, we show an implementation of SQP using
+the $\ell_1$ merit function, where the Rosenbrock function is
+minimized under one nonlinear equality constraint and one nonlinear
+inequality constraint, represented by a circle and a disk
+respectively. Interestingly, it shows that not all initial values will
+lead to the global minimizer, as some iterates might get stuck in
+local minimizers. Also it is clear that not all iterates are feasible,
+which means that we have to wait until the end of the optimization
+process (up to a specified tolerance) to retrieve a feasible solution.
 
 \begin{figure}
   \centering
-      {\def\svgwidth{0.5\linewidth}
+      {\def\svgwidth{0.8\linewidth}
         {\footnotesize
           \subimport*{src/chap3-optimal-motion-planning/figure/}
                      {sqp.pdf_tex}
         }
       }
-      \caption{FIXME}
+      \caption{Minimization of the Rosenbrock function under nonlinear
+        equality and inequality constraints, starting from three
+        different initial points. Only $\mathbf{x_{0a}}$ leads to the
+        global minimizer $\mathbf{x}_a^\star$, while $\mathbf{x_{0b}}$
+        and $\mathbf{x_{0c}}$ lead only to different local
+        minimizers.}
       \label{fig:chap3-sqp}
 \end{figure}
-
-Iterates can be infeasible. Only final solution is guaranteed to be
-feasible.
 
 \subsubsection{Interior-Point Methods for Nonlinear Programming}
 
@@ -711,44 +860,40 @@ problem is then equivalent to minimizing the equality-constrained
 \emph{log-barrier function} $P(\mathbf{x};\mu)$ and making $\mu
 \rightarrow 0$.
 
-Write algorithm? inner loop: quadratic approximations to find
-$\mathbf{x}^\star(\mu)$, outer loop: decrease $\mu$. Confirm with
-Nicolas.
+FIXME: Write algorithm? inner loop: quadratic approximations to find
+$\mathbf{x}^\star(\mu)$, outer loop: decrease $\mu$. To confirm.
 
-move along central path $\{\mathbf{x}^\star(\mu)\}_k$: solution always
+Move along central path $\{\mathbf{x}^\star(\mu_k)\}_k$: solution always
 feasible
 
 \subsubsection{Conclusion}
 
-SQP and IP methods equally efficient for solving large-scale NLP
-problems.
-
-SQP: a large number of inexpensive steps (small linear systems with
-only active constraints, but active-search method runs a lot of
-times), intermediate iterates might not be feasible. Easy to
-warm-start
-
-IP: a small number of expensive steps (larger linear system), iterates
-all feasible. Harder to warm-start.
+To conclude, SQP and IPM are equally efficient for solving large-scale
+NLP problems. They are somewhat similar as both of them are based on
+two nested iteration loops. Their main difference is the fact that IPM
+generate feasible iterates thanks to their conservative approach,
+while SQP methods may generate infeasible iterates, with the guarantee
+that only the solution is feasible.
 
 \section{Optimal Control}
 
 Given a dynamic model, let:
-\begin{itemize}
+\begin{itemize}[noitemsep,nolistsep]
 \item $t$ denotes the time variable,
 \item \state{} denotes the state vector,
 \item \control{} denotes the control vector,
 \item $T$ denotes the trajectory duration,
 \item $L$ denotes the Lagrangian term (also cost rate) of the
   objective function,
-\item $\Phi$ denotes the Mayer term (also terminal cost?) of the
+\item $\Phi$ denotes the Mayer term (also terminal cost) of the
   objective function,
-\item \dfcn{} denotes the \emph{ordinary differential equation (ODE)}
+\item \dfcn{} denotes the \emph{Ordinary Differential Equation (ODE)}
   of the model,
 \item \eqcstr{} denotes the equality constraint vector function,
 \item \ineqcstr{} denotes the inequality constraint vector function,
 \item \bndcstr{} denotes the boundary conditions vector function.
 \end{itemize}
+\vspace{\baselineskip}
 
 An optimal control problem can be written as follows:
 
@@ -794,7 +939,7 @@ Richard Bellman's \emph{Optimality principle}
 
 Optimal control for the unconstrained case
 
-\emph{Hamilton Jacobi Bellman (HJB) partial differential equation}:
+\emph{Hamilton-Jacobi-Bellman (HJB) Partial Differential Equation (PDE)}:
 
 $v = J(\mathbf{x}(t),\mathbf{u}(t),T)$
 
@@ -865,8 +1010,6 @@ multiple-shooting. Trajectory is C2 by design, no need to add
 additional constraints as in multiple shooting. works for problems
 where the final solution (such as the input controls) can be easily
 derived from the state. \cite{sirinesa1981}
-
-Add figures in inkscape? or as Martin?
 
 \subsubsection{Direct Single-Shooting}
 
