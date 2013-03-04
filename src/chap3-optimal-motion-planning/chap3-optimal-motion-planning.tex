@@ -162,7 +162,7 @@ approximate solutions to simple optimization problems which offer good
 performance. They mainly differ in the order in which the step length
 and search direction are chosen. In the following section, we describe
 some of the most common line search strategies. We illustrate them
-using the Rosenbrock function \ref{rosenbrock1960automatic}, or banana
+using the Rosenbrock function \cite{rosenbrock1960automatic}, or banana
 function, defined as:
 
 \begin{equation}
@@ -701,6 +701,7 @@ are \emph{Sequential Quadratic Program (SQP)} and \emph{Interior-Point
   Methods (IPM)}.
 
 \subsubsection{Sequential Quadratic Programming}
+\label{subsubsec:chap3-sqp}
 
 The idea behind SQP is quite simple: for each SQP iteration, we build
 a local quadratic approximation of the objective function and
@@ -877,6 +878,17 @@ that only the solution is feasible.
 
 \section{Optimal Control}
 
+While the previous section described numerical optimization and its
+associated techniques, this section discusses the particular
+application of finding, for a dynamic model such as an anthropomorphic
+system, a trajectory that allows the model to move over the course of
+time from an initial state to a final state, while minimizing a
+certain criterion. This particular field is known as \emph{optimal
+  control}, and has been a major field of interest in the Robotics
+community ever since its creation.
+
+\bigskip
+
 Given a dynamic model, let:
 \begin{itemize}[noitemsep,nolistsep]
 \item $t$ denotes the time variable,
@@ -895,7 +907,7 @@ Given a dynamic model, let:
 \end{itemize}
 \vspace{\baselineskip}
 
-An optimal control problem can be written as follows:
+An \emph{optimal control problem (OCP)} can be written as follows:
 
 \label{OCP}
 \begin{equation}
@@ -906,20 +918,24 @@ An optimal control problem can be written as follows:
 \ \ \ subject to:
 
 \begin{equation}
-  \begin{array}{rcl}
-  \dot{\mathbf{x}} (t) & = & \mathbf{f}(t, \mathbf{x}(t), \mathbf{u}(t))
-  \label{OCP:Model}
-  \\
-  \mathbf{g}(t, \mathbf{x}(t), \mathbf{u}(t)) & = & \mathbf{0},
-  \\
-  \mathbf{h}(t, \mathbf{x}(t), \mathbf{u}(t)) & \succeq & \mathbf{0}%,
-  \\
-  \mathbf{r} (\mathbf{x}(0), \mathbf{x}(T)) & = & \mathbf{0}.
-  \\
+  \begin{array}{rclr}
+  \dot{\mathbf{x}} (t) & = & \mathbf{f}(t, \mathbf{x}(t),
+  \mathbf{u}(t)), & t\in[0,T],%
+  \label{OCP:Model}%
+  \\%
+  \mathbf{g}(t, \mathbf{x}(t), \mathbf{u}(t)) & = & \mathbf{0}, & t\in[0,T],%
+  \\%
+  \mathbf{h}(t, \mathbf{x}(t), \mathbf{u}(t)) & \succeq & \mathbf{0}, & t\in[0,T],%
+  \\%
+  \mathbf{r} (\mathbf{x}(0), \mathbf{x}(T)) & = & \mathbf{0}.%
+  \\%
   \end{array}
-\end{equation} 
+\end{equation}
 
-FIXME: add interval [0,T] next to constraint validity (with explanation?)
+Figure \ref{fig:chap3-optimal-control-problem} summarizes the
+OCP. Note that it cannot be written (yet) as a finite-dimensional NLP
+and use associated solving methods, as $\mathbf{x}(t)$ and
+$\mathbf{u}(t)$ are infinite-dimensional.
 
 \begin{figure}
   \centering
@@ -927,82 +943,115 @@ FIXME: add interval [0,T] next to constraint validity (with explanation?)
         \subimport*{src/chap3-optimal-motion-planning/figure/}
                    {optimal-control-problem.pdf_tex}
       }
-      \caption{Optimal control problem}
+      \caption{FIXME:Optimal control problem}
       \label{fig:chap3-optimal-control-problem}
 \end{figure}
 
-\subsection{Hamilton-Jacobi-Bellman Equation}
+A significant number of methods which can solve the OCP have been
+developed in the past sixty years. They can be classified into three
+broad categories: dynamic programming, inverse methods and direct
+methods. For more details on dynamic programming and indirect methods,
+the interested reader can refer to \cite{laumond1998robot,
+  todorov2006optimal} We give a broad description of the first two
+methods and discuss direct methods more deeply, as they are heavily
+used in Robotics and Computer Graphics nowadays.
 
-continuous extension of dynamic programming.
+\subsection{Dynamic Programming}
 
-Richard Bellman's \emph{Optimality principle}
+\emph{Dynamic Programming} is based on Richard Bellman's
+\emph{Optimality Principle} \cite{bellman1965dynamic}, which states
+that for any OCP going from an initial to a final state, we have a
+solution optimal control iff we have a solution optimal control for
+the sub-OCP starting from a state reached from the initial state and
+going to the final state.
 
-Optimal control for the unconstrained case
-
-\emph{Hamilton-Jacobi-Bellman (HJB) Partial Differential Equation (PDE)}:
-
-$v = J(\mathbf{x}(t),\mathbf{u}(t),T)$
+Let $v(\mathbf{x},0) = J(\mathbf{x}(t),\mathbf{u}(t),T)$. Using this
+principle, the \emph{Hamilton-Jacobi-Bellman (HJB) Partial
+  Differential Equation (PDE)} can be derived for continuous-time
+systems:
 
 \begin{equation}
 \label{eq:chap3-hjb}
-\dot{v} + \min_{\mathbf{x} (\cdot), \mathbf{u} (\cdot),
-  T}(\nabla_{\mathbf{x}} v^{\top}f(t, \mathbf{x}(t), \mathbf{u}(t)) +
-L (\mathbf{x}(t), \mathbf{u}(t)) = 0
+\dot{v}(\mathbf{x},t) + \min_{\mathbf{u} (\cdot)}\left(f(\mathbf{x},
+\mathbf{u})^{\top}\nabla_{\mathbf{x}} v(\mathbf{x},t) + L (\mathbf{x},
+\mathbf{u},t)\right) = 0,
 \end{equation}
 
-$v$ is also called the value function.
+subject to the terminal condition:
 
-Equation \ref{eq:chap3-hjb} can be solved backwards in time, just as
-in discrete-time dynamic programming, starting from $t=T$ and ending
-at $ t=0$.
+\begin{equation}
+\label{eq:chap3-hjb-cond}
+v(\mathbf{x},T)=\Phi(\mathbf{x}(T)).
+\end{equation}
 
-curse of dimensionality (cf todorov).
+$v$ is also called the \emph{value function}. Equation
+\ref{eq:chap3-hjb} is that PDE that gives the necessary and sufficient
+conditions for finding an optimal control policy. It can be solved
+backwards in time, just as in discrete-time dynamic programming,
+starting from $t=T$ and ending at $ t=0$. However, as it contains
+partial derivatives with respect to time and state, it suffers from
+the curse of dimensionality and is not used for large-scale systems in
+practice.
 
 \subsection{Indirect Methods,Pontryagin}
 
-\emph{Maximum (or Minimum) principle}
-
-Minimize the \emph{Hamiltonion} $\mathcal{H}$ defined as:
+Another fundamental idea in optimal control is the \emph{Maximum (or
+  Minimum) Principle}, introduced by Pontryagin
+\cite{boltyanskii1960theory}. It also gives sufficient and necessary
+conditions for optimal control, and leads to the same solutions as the
+optimality principle. It can be derived indirectly from the HJB
+equation, by first hiding the value function gradient in a
+\emph{costate} vector:
 
 \begin{equation}
-\mathcal{H}(\mathbf{x}(t),\mathbf{u}(t),T) = \nabla_{\mathbf{x}}
-v^{\top}f(t, \mathbf{x}(t), \mathbf{u}(t)) + L (\mathbf{x}(t),
-\mathbf{u}(t))
+  \mathbf{p}(t) = \nabla_{\mathbf{x}} v(\mathbf{x},t),
+\end{equation} 
+
+and defining the \emph{Hamiltonian} as the objective function in the
+HJB PDE:
+
+\begin{equation}
+  \mathcal{H}(\mathbf{x},\mathbf{u},\mathbf{p},t) = f(\mathbf{x},
+  \mathbf{u})^{\top}\mathbf{p}(t) + L (\mathbf{x}, \mathbf{u},t)
 \end{equation}
 
-continuous extension to Lagrange multipliers.
+These new definitions lead to Pontryagin's minimum principle
+sufficient and necessary conditions:
 
-define hamiltonian as objective function defined in HJB equation.
+\begin{equation}
+\begin{array}{rcl}
+\dot{\mathbf{x}}(t) &=&
+\frac{\partial}{\partial\mathbf{p}}\mathcal{H}(\mathbf{x},\mathbf{u},\mathbf{p},t)
+\\ -\dot{\mathbf{p}}(t) &=&
+\frac{\partial}{\partial\mathbf{x}}\mathcal{H}(\mathbf{x},\mathbf{u},\mathbf{p},t)
+\\ \mathbf{u}(t) &=&
+\text{arg}\min_{\mathbf{u}(\cdot)}\mathcal{H}(\mathbf{x},\mathbf{u},\mathbf{p},t).
+\end{array}
+\end{equation}
 
-remarkable: Turn PDE to ODE by defining costate variable as
-$\nabla_{\mathbf{x}} v$.
-
-Solve Boundary Value Problem: very easy especially when controls
-appear linearly in dynamics and quadratically in cost rate.
-
-complexity linear with state dimension.
-
-How to handle constrained case?
+Remarkably, this transformation turns the HJB PDE into an
+$2n$-dimensional which can be solved with standard boundary value
+problems with linear complexity. Furthermore, deriving the optimal
+control policy consists in minimizing the Hamiltonian, which is very
+easy in the particular case where controls appear linearly in the
+dynamics and quadratically in the cost rate.
 
 \subsection{Direct Methods}
 
-Also known as “First discretize, then optimize” methods.
-
-infinite-dimensional variables => discretization of controls: reduction to a finite
-dimension variables
-
-transcribe infinite problem into finite dimensional NLP.
-
-Pros:
-Can use state-of-the-art methods for NLP solution.
-Can treat inequality constraints and multipoint constraints much
-easier.
-
-Cons:
-suboptimal/approximate solution but still ok if chosen properly.
-
-Nowadays most commonly used methods due to their easy
-applicability and robustness.
+Dynamic programming and Indirect methods are used to solve the exact
+OCP. Direct methods, on the other hand, rely on first discretizing the
+controls and/or the states: this effectively transcribes the
+infinite-dimensional OCP into a finite dimensional NLP, which can be
+solved using standard numerical optimization techniques. This allows
+handling all constraints more easily, and, surprisingly, can lead to
+better performance than exact methods, as specialized solvers can take
+advantage of the high sparsity of the NLP, i.e. the fact that the
+associated gradients contain a large number of zeros. The major
+drawback of such methods comes from the fact that we only obtain an
+approximate solution of the OCP, but a proper choice of discretization
+gives good results in practice. Nowadays direct method are the most
+commonly used methods due to their easy applicability to large-scale
+problems and their robustness.
 
 FIXME: state (and not control) parametrization: where does it fall?:
 not collocation, not single-shooting, not
@@ -1013,24 +1062,40 @@ derived from the state. \cite{sirinesa1981}
 
 \subsubsection{Direct Single-Shooting}
 
-\cite{hicks1971approximation,sargent1978development}
+In \emph{direct single-shooting methods}
+\cite{hicks1971approximation,sargent1978development}, the control
+vector $\mathbf{u}(t)$ is discretized on a fixed grid
+$0=t_0<t_1<\ldots<t_N=T$. The state vector $\mathbf{x}(t)$ is regarded
+as a dependent variable on $[0,T]$; numerical integration is then used
+in order to obtain, starting from an initial state $\mathbf{x}(0)$,
+the state as a function $\mathbf{x}(t,\mathbf{q})$ of finitely many
+control parameters
+$\mathbf{q}=(\mathbf{q}_0,\mathbf{q}_1,\ldots,\mathbf{q}_{N-1})$. Examples
+of possible parametrizations include but are not limited to piecewise
+constant, piecewise linear, continuous piecewise linear functions.
 
-Discretize controls $\mathbf{u}(t)$ on a fixed grid
-$0=t_0<t_1<\ldots<t_N=T$. States $\mathbf{x}(t)$ are regarder as
-dependent variables on $[0,T]$; numerical integration is used in order
-to obtain state as function $\mathbf{x}(t,\mathbf{q})$ of finitely
-many control parameters
-$\mathbf{q}=(\mathbf{q}_0,\mathbf{q}_1,\ldots,\mathbf{q}_{N-1})$.
+Once the control discretization is achieved and a numerical ODE
+solution is found, we obtain the following finite-dimension NLP:
 
-discretized controls: piecewise constant, piecewise linear, continuous
-piecewise linear, etc
+\begin{equation}
+  \min_{\mathbf{q}\in\mathbb R^{nN}} \ \ \int_{0}^{T}L (\mathbf{x}(t,\mathbf{q}),
+  \mathbf{u}(t,\mathbf{q}))dt + \Phi(\mathbf{x}(T,\mathbf{q}))
+\end{equation}
+\ \ \ subject to:
+\begin{equation}
+  \begin{array}{rclr}
+  \mathbf{g}(\mathbf{x}(t_i,\mathbf{q}), \mathbf{u}(t_i,\mathbf{q})) & = & \mathbf{0}, & i=0,\ldots,N,%
+  \\%
+  \mathbf{h}(\mathbf{x}(t_i,\mathbf{q}), \mathbf{u}(t_i,\mathbf{q})) & \succeq & \mathbf{0}, & i=0,\ldots,N,%
+  \\%
+  \mathbf{r} (\mathbf{x}(0,\mathbf{q}), \mathbf{x}(T,\mathbf{q})) & = & \mathbf{0}.%
+  \\%
+  \end{array}
+\end{equation} 
 
-After control discretization and numerical ODE solution, obtain
-finite-dimension NLP:
-
-FIXME: add NLP
-
-\emph{Sequential} simulation and optimization.
+Figure \ref{fig:chap3-optimal-control-problem-single-shoot} shows an
+example of the control discretization and state numerical integration,
+using a piecewise constant control parametrization $\mathbf{q}$.
 
 \begin{figure}
   \centering
@@ -1038,40 +1103,41 @@ FIXME: add NLP
         \subimport*{src/chap3-optimal-motion-planning/figure/}
                    {optimal-control-problem-single-shoot.pdf_tex}
       }
-      \caption{Optimal control problem}
+      \caption{FIXME:Optimal control problem}
       \label{fig:chap3-optimal-control-problem-single-shoot}
 \end{figure}
 
-Only discretized controls in NLP
-
-Pros:
-+ Can use state-of-the-art ODE/DAE solvers.
-+ Few degrees of freedom even for large ODE/DAE systems.
-+ Active set changes easily treated.
-+ Need only initial guess for controls q.
-
-Cons:
-- Cannot use knowledge of x in initialization (e.g. in tracking
-problems).
-- ODE solution x(t; q) can depend very nonlinearly on q.
-- Unstable systems difﬁcult to treat.
+Single-shooting methods present several advantages: they only need an
+initial guess of the control parametrization $\mathbf{q}$, and they
+can rely on state-of-the-art ODE solvers to obtain the corresponding
+state $\mathbf{x}(t,\mathbf{q})$. Due to this fact, the underlying SQP
+problem has few degrees of freedom, even for large-scale ODE
+systems. However, because the state vector cannot be initialized, we
+cannot use the state knowledge to initialize it. This is problematic
+in tracking problems for instance, where we want to find an optimal
+policy starting from a good initial state trajectory. Furthermore,
+some ODE systems can be highly nonlinear and unstable (imagine a
+propelled rocket system); it can be very difficult to stabilize such
+systems over long trajectories and to make them achieve terminal
+constraints just by modifying $\mathbf{x}(0)$ and $\mathbf{q}$.
 
 \subsubsection{Direct Collocation}
 
-\cite{tsang1975optimal}
-
-Discretize controls and states on \emph{fine} grid with node values
-$\mathbf{s}_i\approx\mathbf{t_i}$.
-
-Replace infinite ODE by finitely many equality constraints and
-approximate Lagrangian term in objective function. Using forward
-differentiation for instance would give:
+\emph{Direct collocation methods}, as described in
+\cite{tsang1975optimal}, discretize both control and state vectors on
+a \emph{fine} grid with node values
+$\mathbf{q}_i\approx\mathbf{u}(t_i)$
+$\mathbf{s}_i\approx\mathbf{x}(t_i)$ respectively. This allows
+replacing the infinite ODE by finitely many equality constraints, and
+approximating the Lagrangian term in the objective function. Using
+forward differentiation for instance would give:
 
 \begin{equation}
   \begin{array}{rcl}
     \dot{\mathbf{x}}(t) -
     \mathbf{f}(\mathbf{x}(t)),\mathbf{u}(t)) & = & \mathbf{0}, \qquad t\in[0,T] \\
     & \Downarrow  & \text{\scriptsize forward differentiation}\\
+    \mathbf{c}_i(\mathbf{q}_i,\mathbf{s}_i,\mathbf{s}_{i+1}) =
     \frac{\mathbf{s}_{i+1}-\mathbf{s}_i}{t_{i+1}-t_i} -
     \mathbf{f}\left(\frac{\mathbf{s}_{i}+\mathbf{s}_{i+1}}{2},
     \mathbf{q_i}\right) & = & \mathbf{0}, \qquad i=0,1,\ldots,N-1
@@ -1084,37 +1150,69 @@ and
   \begin{array}{c}
     \int_{0}^{T}L (\mathbf{x}(t), \mathbf{u}(t))dt \\ 
     \Downarrow \\
-    \sum_{i=0}^{N-1}L\left(\frac{\mathbf{s}_{i}+\mathbf{s}_{i+1}}{2},
+    \sum_{i=0}^{N-1}l_i(\mathbf{q}_i,\mathbf{s}_i,\mathbf{s}_{i+1})=\sum_{i=0}^{N-1}L\left(\frac{\mathbf{s}_{i}+\mathbf{s}_{i+1}}{2},
     \mathbf{q_i}\right)(t_{i+1}-t_i)
   \end{array}
 \end{equation}
 
-After discretization obtain large scale but sparse NLP:
+Using this discretization, we obtain a large but sparse NLP. It can be
+solved using efficient SQP or IPM solvers which are specialized for
+sparse problems, such as \textsc{SNOPT} \cite{gill2002snopt} and \textsc{IPOPT}
+\cite{Biegler2009}:
 
-FIXME: add sparse NLP
+\begin{equation}
+  \min_{\mathbf{s}\in\mathbb R^{nN},\mathbf{q}\in\mathbb R^{nN}} \ \ \sum_{i=0}^{N-1}l_i(\mathbf{q}_i,\mathbf{s}_i,\mathbf{s}_{i+1}) + \Phi(\mathbf{s}_N)
+\end{equation}
+\ \ \ subject to:
+\begin{equation}
+  \begin{array}{rclr}
+    \mathbf{c}_i(\mathbf{q}_i,\mathbf{s}_i,\mathbf{s}_{i+1}) & = & \mathbf{0}, & i=0,\ldots,N,%,
+    \\
+    \mathbf{g}(\mathbf{s}_i,\mathbf{q}_i) & = & \mathbf{0}, & i=0,\ldots,N,%
+    \\%
+    \mathbf{h}(\mathbf{s}_i,\mathbf{q}_i) & \succeq & \mathbf{0}, & i=0,\ldots,N,%
+    \\%
+    \mathbf{r} (\mathbf{s}_0, \mathbf{s}_N) & = & \mathbf{0}.%
+    \\%
+  \end{array}
+\end{equation} 
 
-FIXME: Add sparse block structure to explain?
-
-Solve with SQP method for sparse problems, or interior point methods.
-
-Simultaneous simulation and optimization.
-
-Discretized controls and states in NLP
-
-Pros
-+ Large scale, but very sparse NLP.
-+ Can use knowledge of x in initialization.
-+ Can treat unstable systems well.
-+ Robust handling of path and terminal constraints.
-
-Cons
-- Adaptivity (for ODE/DAE solvers) needs new grid, changes NLP dimensions.
+To conclude, direct collocation methods transcribe the OCP into a
+large-scale, but very sparse NLP, which can be solved by efficient
+solvers. It can treat unstable systems well, offering robust handling
+of path and terminal constraints. Furthermore, the state
+discretization is such that convenient state trajectories can be used
+as an initial guess, which is not the case for single-shooting
+methods. However, not all ODE solvers can be used as some of the most
+efficient ones use an adaptive-step scheme to perform state
+integration; this indeed requires changing the discretization grid
+during the optimization process, and leads to a change in the NLP
+dimensions.
 
 \subsubsection{Direct Multiple-Shooting}
 
 \cite{Bock1984}
 
-FIXME: \cite{leineweber2003efficient1,leineweber2003efficient2} ? 
+hybrid: Controls and node start values in NLP
+
+Discretize control piecewise on a coarse grid
+$\mathbf{u}(t)=\mathbf{q}_i$ for $t\in\left[t_i,t_{i+1}\right]$
+
+Solve ODE on each interval $\left[t_i,t_{i+1}\right]$ numerically,
+starting with an artificial initial state value $\mathbf{s}_i$ such that:
+
+\begin{equation}
+\begin{array}{rcl}
+\dot{\mathbf{x}}_i(t,\mathbf{s}_i,\mathbf{q_i}) &=&
+\mathbf{f}(\mathbf{x}_i(t,\mathbf{s}_i,\mathbf{q}_i),\mathbf{q}_i),
+\quad t\in\left[t_i,t_{i+1}\right], \\
+\mathbf{x}_i(t,\mathbf{s}_i,\mathbf{q}_i) &=& \mathbf{s}_i.
+\end{array}
+\end{equation} 
+
+Obtain trajectory pieces $\mathbf{x}_i(t,\mathbf{s}_i,\mathbf{q}_i)$,
+as shown in Figure
+\ref{fig:chap3-optimal-control-problem-multiple-shoot}.
 
 \begin{figure}
   \centering
@@ -1122,24 +1220,142 @@ FIXME: \cite{leineweber2003efficient1,leineweber2003efficient2} ?
         \subimport*{src/chap3-optimal-motion-planning/figure/}
                    {optimal-control-problem-multiple-shoot.pdf_tex}
       }
-      \caption{Optimal control problem}
+      \caption{FIXME:Optimal control problem}
       \label{fig:chap3-optimal-control-problem-multiple-shoot}
 \end{figure}
 
-\emph{Simultaneous} simulation and optimization.
+Also numerically compute integrals:
 
-Controls and node start values in NLP
+\begin{equation}
+l_i(\mathbf{s}_i,\mathbf{q}_i) =
+\int_{t_i}^{t_{i+1}}L(\mathbf{x}_i(t_i,\mathbf{s}_i,\mathbf{q}_i),\mathbf{q}_i)dt
+\end{equation}
 
-Pros:
-uses \emph{adaptive} ODE/DAE solvers.
-NLP has \emph{ﬁxed} dimensions.
-can use knowledge of x in initialization.
-can treat unstable systems well.
-robust handling of path and terminal constraints.
-easy to parallelize.
+Introduce continuity conditions to ensure state continuity over the
+whole duration.
 
-Cons:
-not as sparse as collocation.
+Obtain NLP:
+
+\begin{equation}
+  \min_{\mathbf{s}\in\mathbb R^{nN},\mathbf{q}\in\mathbb R^{nN}}
+  \ \ \sum_{i=0}^{N-1}l_i(\mathbf{s}_i,\mathbf{q}_i) +
+  \Phi(\mathbf{s}_N)
+\end{equation}
+\ \ \ subject to:
+\begin{equation}
+  \begin{array}{rcll}
+   \mathbf{x}_i(t_{i+1},\mathbf{s}_i,\mathbf{q}_i) - \mathbf{s}_{i+1} &
+    = & \mathbf{0}, & \quad i=0,\ldots,N-1,\\%
+    \mathbf{g}(\mathbf{s}_i,\mathbf{q}_i) & = & \mathbf{0}, & \quad i=0,\ldots,N,%
+    \\%
+    \mathbf{h}(\mathbf{s}_i,\mathbf{q}_i) & \succeq & \mathbf{0}, & \quad i=0,\ldots,N,%
+    \\%
+    \mathbf{r} (\mathbf{s}_0,\mathbf{s}_N) & = & \mathbf{0}.%
+    \\%
+  \end{array}
+\end{equation} 
+
+Let us summarize all variables $\mathbf{s}_i$ and $\mathbf{q}_i$ in
+one single vector as:
+
+\begin{equation}
+\mathbf{w}=(\mathbf{s}_0,\mathbf{q}_0,\mathbf{s}_1,\mathbf{q}_1,\ldots,\mathbf{s}_N)
+\in \mathbb R^{2nN},
+\end{equation} 
+
+and let us regroup continuity (including boundary), equality and
+inequality constraints in three vectors $\mathbf{C}$,$\mathbf{G}$ and
+$\mathbf{H}$ respectively. We can then rewrite the NLP problem as:
+
+\begin{equation}
+  \min_{\mathbf{w}\in\mathbb R^{2nN}}F(\mathbf{w}) \quad\text{such that }
+  \left\{
+    \begin{array}{rcl}
+      \mathbf{C}(\mathbf{w}) &=& \mathbf{0},\\
+      \mathbf{G}(\mathbf{w}) &=& \mathbf{0},\\
+      \mathbf{H}(\mathbf{w}) &\succeq& \mathbf{0}.\\
+    \end{array}
+    \right.
+\end{equation}
+
+This NLP can be solved iteratively using an SQP method, where each
+step consists in building the approximate QP subproblem around the
+current iterate, as seen in Section \ref{subsubsec:chap3-sqp}. The QP
+subproblem is written as:
+
+\begin{equation}
+  \min_{\mathbf{p}\in\mathbb R^{2nN}}
+  \frac{1}{2}\mathbf{p}^\top\nabla^2_{\mathbf{w}\mathbf{w}}\mathcal{L}\mathbf{p} + \nabla
+  F^\top\mathbf{p},
+  \quad \text{such that }
+  \left\{\begin{array}{rcl}
+  \mathbf{C} + \nabla \mathbf{C}^\top\mathbf{p} &=& \mathbf{0},\\
+  \mathbf{G} + \nabla \mathbf{G}^\top\mathbf{p} &=& \mathbf{0},\\
+  \mathbf{H} + \nabla \mathbf{H}^\top\mathbf{p} &\succeq& \mathbf{0},\\
+  \end{array}\right.
+\end{equation}
+
+where $\mathbf{p}=
+(\Delta\mathbf{s}_0,\Delta\mathbf{q}_0,\Delta\mathbf{s}_1,\Delta\mathbf{q}_1,\ldots,\Delta\mathbf{s}_N)$,
+and $\mathcal{L}$ is the Lagrangian of $\mathbf{F}$.
+
+If we have a closer look at the first equality constraint, we notice
+that each block-component can be written as:
+
+\begin{equation}
+\label{eq:chap3-ms-recurrence}
+\begin{array}{c}
+\mathbf{c}_i +
+\mathbf{X}_i^\mathbf{s}\Delta\mathbf{s}_i +
+\mathbf{X}_i^\mathbf{q}\Delta\mathbf{q}_i - \Delta\mathbf{s}_{i+1}, \quad i=0,\ldots,N-1\\
+\Updownarrow\\
+\Delta\mathbf{s}_{i+1}=\mathbf{c}_i + \mathbf{X}_i^\mathbf{s}\Delta\mathbf{s}_i +
+\mathbf{X}_i^\mathbf{q}\Delta\mathbf{q}_i, \quad i=0,\ldots,N-1,\\
+\end{array}
+\end{equation}
+
+where $\mathbf{X}_i^\mathbf{s}$ and $\mathbf{X}_i^\mathbf{q}$ are the
+Jacobians of $\mathbf{x}(t_{i+1},\mathbf{s}_i,\mathbf{q}_i)$ with
+respect to $\mathbf{s}$ and $\mathbf{q}$ respectively.
+
+This leads to two conclusions: first, the continuity constraint vector
+Jacobian $\mathbf{C}^\top$ is block-sparse (it can be similarly shown
+that it is also the case for the other constraints gradients and the
+Lagrangian Hessian). Second, there exists a recurrence relation
+between $\Delta\mathbf{s}_{i+1}$ and $\Delta\mathbf{s}_i$ for
+$i=0,\ldots,N-1$. This gives way for a \emph{condensing strategy},
+where the variables $\Delta\mathbf{s}_i, i=1,\ldots,N$ are eliminated
+from the KKT system, and a reduced and simpler system is solved for
+the vector:
+
+\begin{equation}
+  \mathbf{w}' =
+  (\Delta\mathbf{s}_0,\Delta\mathbf{q}_0,\Delta\mathbf{q}_1,
+  \ldots,\Delta\mathbf{q}_{N-1})
+\end{equation}
+
+The eliminated variables can then be reconstructed, starting from
+$\Delta\mathbf{s}_0$, using the recurrence relation from Equation
+\ref{eq:chap3-ms-recurrence}.
+
+The condensing strategy allows then to make advantage of the QP
+subproblem sparsity, and leads to an efficient SQP strategy. Such a
+method can be found in the \textsc{MUSCOD-II}
+\cite{leineweber2003efficient1,leineweber2003efficient2} and
+\textsc{ACADO} \cite{houska2010acado} multiple-shooting optimal
+control solvers.
+
+To conclude, multiple-shooting direct methods offer several
+advantages: they rely on a coarse discretization of both control and
+state vectors, using adaptive-step ODE solvers to integrate on the
+sub-intervals. They can thus use knowledge of the state in
+initialization, which makes very suitable for applications where a
+good initial guess of the state can be given. Furthermore, the
+multiple shooting scheme allows robust handling of all constraints,
+and can be potentially easy to parallelize. Multiple shooting methods
+are particularly powerful thanks to the condensing strategy, which
+takes advantage of the QP subproblem sparsity and solve them
+efficiently.
 
 \section{Humanoid Robot Dynamics}
 
@@ -1197,8 +1413,12 @@ bounding capsules, i.e. cylinders capped by half-spheres.
 
 \subsection{Numerical Optimal Control Solvers}
 
-IPOPT
-CHOMP (different than other?)
+\cite{verscheure2009time,suleiman2010time}
+
+\cite{suleiman2008human}
+
+\textsc{IPOPT}
+\textsc{CHOMP} (different than other?)
 
 Optimal control techniques have been successfully applied on humanoid
 figures \cite{Schultz2010} and humanoid robots \cite{Toussaint2007,
@@ -1223,7 +1443,7 @@ inequality constraints given by Eq. \ref{OCP:Model}.
 
 There exists several classes of optimization solvers, among which
 gradient-based methods such as interior point optimizers implemented
-notably in IPOPT \cite{Biegler2009}, and Sequential Quadratic Program
+notably in \textsc{IPOPT} \cite{Biegler2009}, and Sequential Quadratic Program
 (SQP) solvers. Particularly, multiple shooting optimization,
 implemented in the \textsc{MUSCOD-II} software
 \cite{leineweber2003efficient1, leineweber2003efficient2}, is a
@@ -1385,7 +1605,7 @@ capsule while ensuring all points $p$ of the underlying polyhedron
 $\mathcal{P}$ lie inside the capsule. HRP-2 has 41 bodies, each body
 polyhedron containing about 1000 points. We solve all 41 optimization
 problems with RobOptim \cite{roboptim, moulard2012optimisation} and
-the IPOPT solver \cite{Biegler2009} in less than 5s. Figure
+the \textsc{IPOPT} solver \cite{Biegler2009} in less than 5s. Figure
 \ref{hrp2-capsule} shows the best fitting bounding capsules
 superimposed on the robot geometries.
 
