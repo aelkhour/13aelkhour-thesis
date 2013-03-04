@@ -943,7 +943,11 @@ $\mathbf{u}(t)$ are infinite-dimensional.
         \subimport*{src/chap3-optimal-motion-planning/figure/}
                    {optimal-control-problem.pdf_tex}
       }
-      \caption{FIXME:Optimal control problem}
+      \caption{Illustration of the optimal control problem, showing
+        the control and state vectors, path and boundary
+        constraints. As the space of continuous functions is
+        infinite-dimensional, the general OCP is also
+        infinite-dimensional.}
       \label{fig:chap3-optimal-control-problem}
 \end{figure}
 
@@ -985,7 +989,7 @@ v(\mathbf{x},T)=\Phi(\mathbf{x}(T)).
 \end{equation}
 
 $v$ is also called the \emph{value function}. Equation
-\ref{eq:chap3-hjb} is that PDE that gives the necessary and sufficient
+\ref{eq:chap3-hjb} is the PDE which gives the necessary and sufficient
 conditions for finding an optimal control policy. It can be solved
 backwards in time, just as in discrete-time dynamic programming,
 starting from $t=T$ and ending at $ t=0$. However, as it contains
@@ -993,7 +997,7 @@ partial derivatives with respect to time and state, it suffers from
 the curse of dimensionality and is not used for large-scale systems in
 practice.
 
-\subsection{Indirect Methods,Pontryagin}
+\subsection{Indirect Methods}
 
 Another fundamental idea in optimal control is the \emph{Maximum (or
   Minimum) Principle}, introduced by Pontryagin
@@ -1038,7 +1042,7 @@ dynamics and quadratically in the cost rate.
 
 \subsection{Direct Methods}
 
-Dynamic programming and Indirect methods are used to solve the exact
+Dynamic programming and indirect methods are used to solve the exact
 OCP. Direct methods, on the other hand, rely on first discretizing the
 controls and/or the states: this effectively transcribes the
 infinite-dimensional OCP into a finite dimensional NLP, which can be
@@ -1103,7 +1107,10 @@ using a piecewise constant control parametrization $\mathbf{q}$.
         \subimport*{src/chap3-optimal-motion-planning/figure/}
                    {optimal-control-problem-single-shoot.pdf_tex}
       }
-      \caption{FIXME:Optimal control problem}
+      \caption{Solving the OCP with direct single-shooting methods:
+        the controls are discretized on a coarse grid, and the state
+        trajectory is found by numerical integration of the model ODE
+        starting from an initial value.}
       \label{fig:chap3-optimal-control-problem-single-shoot}
 \end{figure}
 
@@ -1191,15 +1198,13 @@ dimensions.
 
 \subsubsection{Direct Multiple-Shooting}
 
-\cite{Bock1984}
-
-hybrid: Controls and node start values in NLP
-
-Discretize control piecewise on a coarse grid
-$\mathbf{u}(t)=\mathbf{q}_i$ for $t\in\left[t_i,t_{i+1}\right]$
-
-Solve ODE on each interval $\left[t_i,t_{i+1}\right]$ numerically,
-starting with an artificial initial state value $\mathbf{s}_i$ such that:
+\emph{Direct multiple-shooting methods} \cite{Bock1984} were devised
+as hybrid methods between single-shooting and collocation methods;
+they are based on a coarse discretization of the control vector
+$\mathbf{u}(t)=\mathbf{q}_i$ for $t\in\left[t_i,t_{i+1}\right]$, and
+the addition of initial state values $\mathbf{s}_i$ for the state
+vector. These nodes serve as initial values for the numerical
+integration of the ODE over each sub-interval $[t_i,t_{i+1}]$:
 
 \begin{equation}
 \begin{array}{rcl}
@@ -1210,31 +1215,36 @@ starting with an artificial initial state value $\mathbf{s}_i$ such that:
 \end{array}
 \end{equation} 
 
-Obtain trajectory pieces $\mathbf{x}_i(t,\mathbf{s}_i,\mathbf{q}_i)$,
-as shown in Figure
-\ref{fig:chap3-optimal-control-problem-multiple-shoot}.
-
 \begin{figure}
   \centering
       {\def\svgwidth{0.9\linewidth}
         \subimport*{src/chap3-optimal-motion-planning/figure/}
                    {optimal-control-problem-multiple-shoot.pdf_tex}
       }
-      \caption{FIXME:Optimal control problem}
+      \caption{Solving the OCP with direct multiple-shooting methods:
+        controls are discretized on a coarse grid, and several initial
+        values for the state are given. The state trajectory is
+        computed on each sub-interval by numerical integration of the
+        model ODE starting from the node values. Note that the whole
+        trajectory is not continuous, and additional continuity
+        constraints need to be added.}
       \label{fig:chap3-optimal-control-problem-multiple-shoot}
 \end{figure}
 
-Also numerically compute integrals:
+Similarly, the Lagrangian term can be numerically integrated over each
+sub-interval:
 
 \begin{equation}
 l_i(\mathbf{s}_i,\mathbf{q}_i) =
 \int_{t_i}^{t_{i+1}}L(\mathbf{x}_i(t_i,\mathbf{s}_i,\mathbf{q}_i),\mathbf{q}_i)dt
 \end{equation}
 
-Introduce continuity conditions to ensure state continuity over the
-whole duration.
-
-Obtain NLP:
+Trajectory pieces $\mathbf{x}_i(t,\mathbf{s}_i,\mathbf{q}_i)$ are then
+generated, as shown in Figure
+\ref{fig:chap3-optimal-control-problem-multiple-shoot}. We can see
+that the whole trajectory is not necessarily continuous; we introduce
+continuity conditions to ensure state continuity over the whole
+duration, and the obtained finite-dimensional NLP is:
 
 \begin{equation}
   \min_{\mathbf{s}\in\mathbb R^{nN},\mathbf{q}\in\mathbb R^{nN}}
@@ -1297,9 +1307,9 @@ subproblem is written as:
 
 where $\mathbf{p}=
 (\Delta\mathbf{s}_0,\Delta\mathbf{q}_0,\Delta\mathbf{s}_1,\Delta\mathbf{q}_1,\ldots,\Delta\mathbf{s}_N)$,
-and $\mathcal{L}$ is the Lagrangian of $\mathbf{F}$.
+and $\mathcal{L}$ is the Lagrangian of $F$.
 
-If we have a closer look at the first equality constraint, we notice
+If we give a closer look at the first equality constraint, we notice
 that each block-component can be written as:
 
 \begin{equation}
@@ -1307,7 +1317,7 @@ that each block-component can be written as:
 \begin{array}{c}
 \mathbf{c}_i +
 \mathbf{X}_i^\mathbf{s}\Delta\mathbf{s}_i +
-\mathbf{X}_i^\mathbf{q}\Delta\mathbf{q}_i - \Delta\mathbf{s}_{i+1}, \quad i=0,\ldots,N-1\\
+\mathbf{X}_i^\mathbf{q}\Delta\mathbf{q}_i - \Delta\mathbf{s}_{i+1}=\mathbf{0}, \quad i=0,\ldots,N-1\\
 \Updownarrow\\
 \Delta\mathbf{s}_{i+1}=\mathbf{c}_i + \mathbf{X}_i^\mathbf{s}\Delta\mathbf{s}_i +
 \mathbf{X}_i^\mathbf{q}\Delta\mathbf{q}_i, \quad i=0,\ldots,N-1,\\
@@ -1345,17 +1355,17 @@ method can be found in the \textsc{MUSCOD-II}
 \textsc{ACADO} \cite{houska2010acado} multiple-shooting optimal
 control solvers.
 
-To conclude, multiple-shooting direct methods offer several
+To conclude, direct multiple-shooting methods offer several
 advantages: they rely on a coarse discretization of both control and
-state vectors, using adaptive-step ODE solvers to integrate on the
-sub-intervals. They can thus use knowledge of the state in
-initialization, which makes very suitable for applications where a
-good initial guess of the state can be given. Furthermore, the
-multiple shooting scheme allows robust handling of all constraints,
-and can be potentially easy to parallelize. Multiple shooting methods
+state vectors, using adaptive-step ODE solvers to integrate the state
+on the sub-intervals. They can thus use knowledge of the state at
+initialization, which makes them very suitable for applications where
+a good initial guess of the state can be given. Furthermore, the
+multiple-shooting scheme allows robust handling of all constraints,
+and can be potentially easy to parallelize. Multiple-shooting methods
 are particularly powerful thanks to the condensing strategy, which
-takes advantage of the QP subproblem sparsity and solve them
-efficiently.
+takes advantage of the QP subproblem sparsity, and is used to solve
+them efficiently.
 
 \section{Humanoid Robot Dynamics}
 
