@@ -1367,30 +1367,193 @@ are particularly powerful thanks to the condensing strategy, which
 takes advantage of the QP subproblem sparsity, and is used to solve
 them efficiently.
 
-\section{Humanoid Robot Dynamics}
+\section{Anthropomorphic System Dynamics}
 
-\subsection{Forward Dynamics}
+If we want to be able to generate feasible motions for anthropomorphic
+systems, we need to take into account their dynamics in the OCP
+formulation. Such underactuated systems are modeled by a rigid body
+kinematic tree attached to a floating base, as mentioned in Section
+\ref{subsec:chap1-underactuated-systems}; therefore a motion
+feasibility cannot be guaranteed unless dynamic balance constraints
+are enforced over the whole trajectory duration. We give in this
+section a brief overview about a floating-base system dynamics
+computation and the dynamic balance conditions. A complete description
+of state-of-the-art efficient dynamics algorithms can be found in
+\cite{feat08}.
 
-dynamic equation for floating-base robots.
+\subsection{Expressing Dynamics with Spatial Algebra}
 
-CRBA+ABA
+write general form of transformation.
 
-from torques to acceleration.
+transformation from a frame to another made easy with spatial algebra \cite{feat08}
+
+for speed and acceleration:
+
+for forces:
+
+Various contact models,(add reference), rigid non-sliding contact used
+in this work. unilateral contact forces, inside friction cone to
+avoid slipping.
+
+Each articulated body can be submitted to one or more 3D contact
+forces. We can regroup them and express them as a single 6D force
+field.
+
+Add figure of humanoid robot with actuated torques, state, contact
+forces.
+
+\subsection{Dynamics Equation}
+
+By using a Newtonian dynamics formulation, we can express the compact
+dynamics equation for a floating-base robot with respect to the
+generalized coordinate and actuated torque vectors $\mathbf{q}$ and
+$\boldsymbol{\tau}$:
+
+\begin{equation}
+\label{dynamics-equation}
+\mathbf{A}(\mathbf{q})\ddot{\mathbf{q}}
++\mathbf{b}(\mathbf{q},\dot{\mathbf{q}})
++\sum_i\mathbf{J}_{c_i}^\top\mathbf{f}^s_{c_i} =
+\mathbf{S}^\top\boldsymbol{\tau},
+\end{equation}
+
+where $\mathbf{A}$ is the \emph{joint-space inertia matrix},
+$\mathbf{b}$ is the joint-space bias force which account for both
+Coriolis and gravity effects, $\mathbf{J}_{c_i}$ is the \emph{contact
+  Jacobian} for the contact $c_i$ that is submitted to spatial contact
+force $\mathbf{f}^s_{c_i}$.
 
 \subsection{Inverse Dynamics}
 
-RNEA
-Torques
-Contact Forces
+When the generalized position, velocity and acceleration vectors are
+known, we can use the dynamics equation \ref{dynamics-equation} to
+retrieve the unknown actuated torques $\mathbb{\tau}$. This is a
+problem of {Inverse Dynamics}; the \emph{Recursive Newton-Euler
+  Algorithm} is an efficient algorithm which relies on a loop of
+forward propagation of spatial velocities and accelerations starting
+from the floating base, then a second loop of backward propagation of
+torques and forces starting from the leaves of the kinematic tree
+until the floating base. Its complexity is $\mathcal{O}(n)$ and it has
+a low count of operations, which makes very suitable for optimal
+control applications.
 
-\subsection{Dynamic Balance Constraints}
+\subsection{Forward Dynamics}
 
-ZMP vs contact forces
+In \emph{Forward dynamics}, on the opposite of the inverse dynamics
+problem, the generalized position, velocity and actuated torque
+vectors are known, and we the accelerations $\ddot{\mathbf{q}}$ are
+unknown.
 
-inverse dynamics  enforce free-flyer torques to 0 \\
-forward dynamics  ?
+The \emph{Composite Rigid Body Algorithm (CRBA)} is an efficient
+algorithm for computing the joint-space inertia matrix
+$\mathbf{A}(\mathbf{q})$. Interestingly, the bias force
+$\mathbf{b}(\mathbf{q},\dot{\mathbf{q}})$ can be retrieved by computing the
+inverse dynamics while setting both accelerations $\ddot{\mathbf{q}}$
+and contact forces $\mathbf{f}^s_{c_i}$ to $\mathbf{0}$. We can then
+use standard linear algebra solvers to solve the following system for
+$\ddot{\mathbf{q}}$:
+
+\begin{equation}
+  \mathbf{A}(\mathbf{q})\ddot{\mathbf{q}} =
+  \mathbf{S}^\top\boldsymbol{\tau} -
+  \mathbf{b}(\mathbf{q},\dot{\mathbf{q}}) -
+  \sum_i\mathbf{J}_{c_i}^\top\mathbf{f}^s_{c_i}
+\end{equation}
+
+The whole algorithm complexity is $\mathcal{O}(n^3)$; the
+\emph{Articulated Body Algorithm (ABA)}, just like RNEA, is based on a
+propagation method and offers a complexity of $\mathcal{O}(n)$. As the
+torques usually constitute the physical controls of a system, forward
+dynamics algorithms are very useful in simulation and control
+applications.
+
+\subsection{Dynamic Balance for Anthropomorphic Systems}
+
+ZMP: compute from floating joint torques if no external forces are
+applied. The spatial force, is equivalent to the necessary external
+forces, transform it in the absolute coordinate system, then find the
+point where the moments are zero.  => add inequality constraints to
+force ZMP to stay inside the support polygon.
+
+Multiple contact points: apply external forces, a spatial force will
+appear on the floating joint. But the floating joint has fictitious
+actuators, so this force must be zero to ensure the dynamic model
+consistency and its dynamic balance. Compute external forces then such
+that the floating joint torques are zero.
+
+Forward dynamics: torques are inputs, forces and accelerations are
+states.  Start from dynamic model and contact equation, form linear
+system using G = the inertia matrix, and G = Jc the contact force
+Jacobian. Note that Jc must be full-rank, otherwise, the system is not
+invertible. This means that no more than one contact force can be
+exerted on each rigid body (not practical when the contact surface of
+a rigid body is larger than a single point).\ref{mombaur2005open}.
+
+Contact equations:
+
+\begin{equation}
+\mathbf{p}_{ci}=\mathbf{0},\quad i = 1,\ldots,n_c,
+\end{equation}
+
+By deriving them twice we obtain the contact condition:
+
+\begin{equation}
+\mathbf{J}_{c_i}\ddot{\mathbf{q}} +
+\dot{\mathbf{J}}_{c_i}\dot{\mathbf{q}}=\mathbf{0}, \quad i = 1,\ldots,n_c,
+\end{equation}
+
+Let $\mathbf{f}^s_c$ and $\mathbf{J}_c$ denote the concatenated
+contact force vector and contact Jacobian respectively:
+
+\begin{equation}
+\mathbf{f}^s_c=
+\left(\begin{matrix}
+\mathbf{f}^s_{c_1}\\
+\vdots\\
+\mathbf{f}^s_{c_i}\\
+\vdots\\
+\mathbf{f}^s_{c_{n_c}}\\
+\end{matrix}\right),
+\qquad
+\mathbf{J}_c=
+\left(\begin{matrix}
+\mathbf{J}_{c_1}\\
+\vdots\\
+\mathbf{J}_{c_i}\\
+\vdots\\
+\mathbf{J}_{c_{n_c}}\\
+\end{matrix}\right)
+\end{equation}
+
+The following linear system can then be built and solved for
+$\ddot{\mathbf{q}}$ and all $\mathbf{f}^s_{c_i}$.
+
+\begin{equation}
+  \left(\begin{matrix}
+    \mathbf{A} & \mathbf{J}_{c}^\top \\
+    \mathbf{J}_{c} & \mathbf{0}\\
+  \end{matrix}\right)
+  \left(\begin{matrix}
+  \ddot{\mathbf{q}}\\
+  \mathbf{f}^s_{c_i}
+  \end{matrix}\right)
+  = \left(\begin{matrix} \mathbf{S}^\top\boldsymbol{\tau}-\mathbf{b}
+    \\ \mathbf{f}_{c_i}
+  \end{matrix}\right)
+\end{equation}
+
+Inverse dynamics: forces are inputs, add torque equality constraints
+in the OCP. Note that in the direct methods, the constraint will be
+enforced only on the discretization grid.
+
+cite lengagne? or idea came before?
+
+FD and ID: add constraints on contact forces: force inside positive
+friction cone.
 
 \section{(Self-)Collision Avoidance Constraints}
+
+Add figure with collision pairs and environment.
 
 Faverjon Tournassoud
 Elaborate.
@@ -1427,8 +1590,8 @@ bounding capsules, i.e. cylinders capped by half-spheres.
 
 \cite{suleiman2008human}
 
-\textsc{IPOPT}
-\textsc{CHOMP} (different than other?)
+\textsc{IPOPT} \textsc{CHOMP} \cite{ratliff2009chomp} covariant
+gradient descent technique
 
 Optimal control techniques have been successfully applied on humanoid
 figures \cite{Schultz2010} and humanoid robots \cite{Toussaint2007,
@@ -1470,7 +1633,7 @@ by the use of non gradient-based solvers
 Shortcut (cf chapter 1)
 Sampling-Based Optimal Motion Planning: RRT$^*$
 
-Recently \cite{Karaman2011} introduced RRT*, a new variant of RRT that
+Recently \cite{Karaman2011} introduced RRT$^*$, a new variant of RRT that
 has the property of asymptotically converging towards the \emph{global}
 minimum solution path. This is a very interesting approach as only one
 algorithm is needed to achieve optimal motion planning. But if we want
