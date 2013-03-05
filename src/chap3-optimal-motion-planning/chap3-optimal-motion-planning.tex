@@ -1383,26 +1383,91 @@ of state-of-the-art efficient dynamics algorithms can be found in
 
 \subsection{Expressing Dynamics with Spatial Algebra}
 
-write general form of transformation.
+Usually, rigid body dynamics are written using 3D vector notations
+which keeps the translation and rotation parts of dynamic quantities
+apart: linear velocities vs angular velocities, forces vs torques,
+linear momentum vs angular momentum, etc. We introduce here 6D
+\emph{spatial vectors} and their associated \emph{spatial algebra}
+\cite{feat08}: they allow to have a compact representation of dynamic
+quantities, which leads to increased performance of their associated
+operators.
 
-transformation from a frame to another made easy with spatial algebra \cite{feat08}
+For instance let us assume that we have a rigid body $\mathcal{B}$
+with two coordinate systems $A$ and $B$; each of them has an
+associated Cartesian frame and coordinates system. Let
+$\tensor[^A]{\mathbf{v}}{}$ and $\tensor[^A]{\boldsymbol{\omega}}{}$
+denote the body linear and angular velocity in $A$ coordinates. We
+have then the following relations:
 
-for speed and acceleration:
+\begin{equation}
+\label{eq:chap3-transf-3d-vectors}
+\begin{array}{rcl}
+  \tensor[^B]{\mathbf{v}}{} &=&
+  \mathbf{E}(\tensor[^A]{\mathbf{v}}{} -
+  \mathbf{r}\times\tensor[^A]{\boldsymbol{\omega}}{})\\%
+  \tensor[^B]{\boldsymbol{\omega}}{} &=&
+  \mathbf{E}\tensor[^A]{\boldsymbol{\omega}}{}
+\end{array}
+\end{equation}
 
-for forces:
+where $r=\overset{\longrightarrow}{AB}$ is the translation vector
+between the two coordinate systems, and $\mathbf{E} =
+\tensor[^B]{\mathbf{R}}{_A}$ is the rotation matrix from $A$ to $B$.
 
-Various contact models,(add reference), rigid non-sliding contact used
-in this work. unilateral contact forces, inside friction cone to
-avoid slipping.
+Let us define the 6D spatial velocity vector:
+\begin{equation}
+  \tensor[^A]{\mathbf{v}}{^s}=
+  \left(\begin{matrix}
+    \tensor[^A]{\boldsymbol{\omega}}{}\\
+    \tensor[^A]{\mathbf{v}}{}
+  \end{matrix}\right)
+\end{equation}
 
-Each articulated body can be submitted to one or more 3D contact
-forces. We can regroup them and express them as a single 6D force
-field.
+We can then rewrite Equation \ref{eq:chap3-transf-3d-vectors} as:
 
-Add figure of humanoid robot with actuated torques, state, contact
-forces.
+\begin{equation}
+  \tensor[^B]{\mathbf{v}}{^s}=
+  \tensor[^B]{\mathbf{X}}{_A}
+  \tensor[^A]{\mathbf{v}}{^s}
+  ,\quad
+  \tensor[^B]{\mathbf{X}}{_A}=
+    \left(\begin{matrix}
+    \mathbf{E} & \mathbf{0} \\
+    -\mathbf{E}\mathbf{r}\times & \mathbf{E}
+  \end{matrix}\right)
+\end{equation}
+
+The same relation holds for both spatial velocities and accelerations,
+which are both referred to by the term \emph{spatial motions}.
+Similarly, we can define a coordinate transformation relation for
+spatial forces:
+
+\begin{equation}
+  \tensor[^B]{\mathbf{f}}{^s}=
+  \tensor[^B]{\mathbf{X}}{^*_A}
+  \tensor[^A]{\mathbf{f}}{^s}
+  ,\quad
+  \tensor[^A]{\mathbf{f}}{^s}=
+  \left(\begin{matrix}
+    \tensor[^A]{\mathbf{n}}{}\\
+    \tensor[^A]{\mathbf{f}}{}
+  \end{matrix}\right)
+  ,\quad
+  \tensor[^B]{\mathbf{X}}{^*_A}=\tensor[^B]{\mathbf{X}}{^\top_A}=
+    \left(\begin{matrix}
+    \mathbf{E} & -\mathbf{E}\mathbf{r}\times \\
+    \mathbf{0} & \mathbf{E}
+  \end{matrix}\right)
+\end{equation}
+
+In conclusion, the spatial vector notation provides a compact
+rewriting of the dynamics equations, which leads to efficient dynamics
+computation algorithms.
 
 \subsection{Dynamics Equation}
+
+FIXME: Add figure of humanoid robot with actuated torques, state, contact
+forces.
 
 By using a Newtonian dynamics formulation, we can express the compact
 dynamics equation for a floating-base robot with respect to the
@@ -1428,13 +1493,13 @@ force $\mathbf{f}^s_{c_i}$.
 When the generalized position, velocity and acceleration vectors are
 known, we can use the dynamics equation \ref{dynamics-equation} to
 retrieve the unknown actuated torques $\mathbb{\tau}$. This is a
-problem of {Inverse Dynamics}; the \emph{Recursive Newton-Euler
+problem of \emph{inverse dynamics}; the \emph{Recursive Newton-Euler
   Algorithm} is an efficient algorithm which relies on a loop of
 forward propagation of spatial velocities and accelerations starting
 from the floating base, then a second loop of backward propagation of
 torques and forces starting from the leaves of the kinematic tree
 until the floating base. Its complexity is $\mathcal{O}(n)$ and it has
-a low count of operations, which makes very suitable for optimal
+a low count of operations, which makes them very suitable for optimal
 control applications.
 
 \subsection{Forward Dynamics}
@@ -1468,6 +1533,14 @@ dynamics algorithms are very useful in simulation and control
 applications.
 
 \subsection{Dynamic Balance for Anthropomorphic Systems}
+
+Various contact models,(add reference), rigid non-sliding contact used
+in this work. unilateral contact forces, inside friction cone to avoid
+slipping.
+
+Each articulated body can be submitted to one or more 3D contact
+forces. We can regroup them and express them as a single 6D force
+field.
 
 ZMP: compute from floating joint torques if no external forces are
 applied. The spatial force, is equivalent to the necessary external
@@ -1546,7 +1619,7 @@ Inverse dynamics: forces are inputs, add torque equality constraints
 in the OCP. Note that in the direct methods, the constraint will be
 enforced only on the discretization grid.
 
-cite lengagne? or idea came before?
+cite lengagne IJRR? or idea came before?
 
 FD and ID: add constraints on contact forces: force inside positive
 friction cone.
