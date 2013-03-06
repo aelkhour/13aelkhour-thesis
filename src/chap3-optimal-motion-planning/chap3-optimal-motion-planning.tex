@@ -814,8 +814,8 @@ A parameter $\mu>0$ is also introduced, which allows us to obtain the
 a) & \nabla f(\mathbf{x}) - \mathbf{A}_\mathcal{E}^{\top}(\mathbf{x})\mathbf{y} - \mathbf{A}_\mathcal{I}^{\top}(\mathbf{x})\mathbf{z} & = & \mathbf{0} \\%
 b) & \mathbf{c}_{\mathcal{E}}(\mathbf{x}) & = & \mathbf{0} \\%
 b')& \mathbf{c}_{\mathcal{I}}(\mathbf{x}) - \mathbf{s}& = & \mathbf{0} \\%
-c) & \mathbf{s} & \succeq & \mathbf{0} \\%
-d) & \mathbf{z} & \succeq & \mathbf{0} \\%
+c) & \mathbf{s} & \ge & \mathbf{0} \\%
+d) & \mathbf{z} & \ge & \mathbf{0} \\%
 e) & \mathbf{S}\mathbf{z} & = & \mu\mathbf{e}, \\%
 \end{array}
 \end{equation}
@@ -925,7 +925,7 @@ An \emph{optimal control problem (OCP)} can be written as follows:
   \\%
   \mathbf{g}(t, \mathbf{x}(t), \mathbf{u}(t)) & = & \mathbf{0}, & t\in[0,T],%
   \\%
-  \mathbf{h}(t, \mathbf{x}(t), \mathbf{u}(t)) & \succeq & \mathbf{0}, & t\in[0,T],%
+  \mathbf{h}(t, \mathbf{x}(t), \mathbf{u}(t)) & \ge & \mathbf{0}, & t\in[0,T],%
   \\%
   \mathbf{r} (\mathbf{x}(0), \mathbf{x}(T)) & = & \mathbf{0}.%
   \\%
@@ -956,9 +956,12 @@ developed in the past sixty years. They can be classified into three
 broad categories: dynamic programming, inverse methods and direct
 methods. For more details on dynamic programming and indirect methods,
 the interested reader can refer to \cite{laumond1998robot,
-  todorov2006optimal} We give a broad description of the first two
+  todorov2006optimal}. We give a broad description of the first two
 methods and discuss direct methods more deeply, as they are heavily
-used in Robotics and Computer Graphics nowadays.
+used in Robotics and Computer Graphics nowadays. Note that the list we
+establish is largely inspired by \cite{diehl2006fast}; a even more
+exhaustive survey can be found in
+\cite{betts1998survey,betts2010practical}.
 
 \subsection{Dynamic Programming}
 
@@ -1041,6 +1044,7 @@ easy in the particular case where controls appear linearly in the
 dynamics and quadratically in the cost rate.
 
 \subsection{Direct Methods}
+\label{subsec:chap3-direct-methods}
 
 Dynamic programming and indirect methods are used to solve the exact
 OCP. Direct methods, on the other hand, rely on first discretizing the
@@ -1090,7 +1094,7 @@ solution is found, we obtain the following finite-dimension NLP:
   \begin{array}{rclr}
   \mathbf{g}(\mathbf{x}(t_i,\mathbf{q}), \mathbf{u}(t_i,\mathbf{q})) & = & \mathbf{0}, & i=0,\ldots,N,%
   \\%
-  \mathbf{h}(\mathbf{x}(t_i,\mathbf{q}), \mathbf{u}(t_i,\mathbf{q})) & \succeq & \mathbf{0}, & i=0,\ldots,N,%
+  \mathbf{h}(\mathbf{x}(t_i,\mathbf{q}), \mathbf{u}(t_i,\mathbf{q})) & \ge & \mathbf{0}, & i=0,\ldots,N,%
   \\%
   \mathbf{r} (\mathbf{x}(0,\mathbf{q}), \mathbf{x}(T,\mathbf{q})) & = & \mathbf{0}.%
   \\%
@@ -1177,7 +1181,7 @@ sparse problems, such as \textsc{SNOPT} \cite{gill2002snopt} and \textsc{IPOPT}
     \\
     \mathbf{g}(\mathbf{s}_i,\mathbf{q}_i) & = & \mathbf{0}, & i=0,\ldots,N,%
     \\%
-    \mathbf{h}(\mathbf{s}_i,\mathbf{q}_i) & \succeq & \mathbf{0}, & i=0,\ldots,N,%
+    \mathbf{h}(\mathbf{s}_i,\mathbf{q}_i) & \ge & \mathbf{0}, & i=0,\ldots,N,%
     \\%
     \mathbf{r} (\mathbf{s}_0, \mathbf{s}_N) & = & \mathbf{0}.%
     \\%
@@ -1258,7 +1262,7 @@ duration, and the obtained finite-dimensional NLP is:
     = & \mathbf{0}, & \quad i=0,\ldots,N-1,\\%
     \mathbf{g}(\mathbf{s}_i,\mathbf{q}_i) & = & \mathbf{0}, & \quad i=0,\ldots,N,%
     \\%
-    \mathbf{h}(\mathbf{s}_i,\mathbf{q}_i) & \succeq & \mathbf{0}, & \quad i=0,\ldots,N,%
+    \mathbf{h}(\mathbf{s}_i,\mathbf{q}_i) & \ge & \mathbf{0}, & \quad i=0,\ldots,N,%
     \\%
     \mathbf{r} (\mathbf{s}_0,\mathbf{s}_N) & = & \mathbf{0}.%
     \\%
@@ -1283,7 +1287,7 @@ $\mathbf{H}$ respectively. We can then rewrite the NLP problem as:
     \begin{array}{rcl}
       \mathbf{C}(\mathbf{w}) &=& \mathbf{0},\\
       \mathbf{G}(\mathbf{w}) &=& \mathbf{0},\\
-      \mathbf{H}(\mathbf{w}) &\succeq& \mathbf{0}.\\
+      \mathbf{H}(\mathbf{w}) &\ge& \mathbf{0}.\\
     \end{array}
     \right.
 \end{equation}
@@ -1301,7 +1305,7 @@ subproblem is written as:
   \left\{\begin{array}{rcl}
   \mathbf{C} + \nabla \mathbf{C}^\top\mathbf{p} &=& \mathbf{0},\\
   \mathbf{G} + \nabla \mathbf{G}^\top\mathbf{p} &=& \mathbf{0},\\
-  \mathbf{H} + \nabla \mathbf{H}^\top\mathbf{p} &\succeq& \mathbf{0},\\
+  \mathbf{H} + \nabla \mathbf{H}^\top\mathbf{p} &\ge& \mathbf{0},\\
   \end{array}\right.
 \end{equation}
 
@@ -1362,10 +1366,11 @@ on the sub-intervals. They can thus use knowledge of the state at
 initialization, which makes them very suitable for applications where
 a good initial guess of the state can be given. Furthermore, the
 multiple-shooting scheme allows robust handling of all constraints,
-and can be potentially easy to parallelize. Multiple-shooting methods
-are particularly powerful thanks to the condensing strategy, which
-takes advantage of the QP subproblem sparsity, and is used to solve
-them efficiently.
+and can be potentially easy to parallelize. While its underlying NLP
+is not as sparse as in direct collocation methods, multiple-shooting
+methods are particularly powerful thanks to the condensing strategy,
+which takes advantage of the QP subproblem sparsity, and is used to
+solve them efficiently.
 
 \section{Anthropomorphic System Dynamics}
 
@@ -1395,42 +1400,42 @@ operators.
 For instance let us assume that we have a rigid body $\mathcal{B}$
 with two coordinate systems $A$ and $B$; each of them has an
 associated Cartesian frame and coordinates system. Let
-$\tensor[^A]{\mathbf{v}}{}$ and $\tensor[^A]{\boldsymbol{\omega}}{}$
+$\tensor*[^A]{\mathbf{v}}{}$ and $\tensor*[^A]{\boldsymbol{\omega}}{}$
 denote the body linear and angular velocity in $A$ coordinates. We
 have then the following relations:
 
 \begin{equation}
 \label{eq:chap3-transf-3d-vectors}
 \begin{array}{rcl}
-  \tensor[^B]{\mathbf{v}}{} &=&
-  \mathbf{E}(\tensor[^A]{\mathbf{v}}{} -
-  \mathbf{r}\times\tensor[^A]{\boldsymbol{\omega}}{})\\%
-  \tensor[^B]{\boldsymbol{\omega}}{} &=&
-  \mathbf{E}\tensor[^A]{\boldsymbol{\omega}}{}
+  \tensor*[^B]{\mathbf{v}}{} &=&
+  \mathbf{E}(\tensor*[^A]{\mathbf{v}}{} -
+  \mathbf{r}\times\tensor*[^A]{\boldsymbol{\omega}}{})\\%
+  \tensor*[^B]{\boldsymbol{\omega}}{} &=&
+  \mathbf{E}\tensor*[^A]{\boldsymbol{\omega}}{}
 \end{array}
 \end{equation}
 
 where $r=\overset{\longrightarrow}{AB}$ is the translation vector
 between the two coordinate systems, and $\mathbf{E} =
-\tensor[^B]{\mathbf{R}}{_A}$ is the rotation matrix from $A$ to $B$.
+\tensor*[^B]{\mathbf{R}}{_A}$ is the rotation matrix from $A$ to $B$.
 
 Let us define the 6D spatial velocity vector:
 \begin{equation}
-  \tensor[^A]{\mathbf{v}}{^s}=
+  \tensor*[^A]{\mathbf{v}}{^s}=
   \left(\begin{matrix}
-    \tensor[^A]{\boldsymbol{\omega}}{}\\
-    \tensor[^A]{\mathbf{v}}{}
+    \tensor*[^A]{\boldsymbol{\omega}}{}\\
+    \tensor*[^A]{\mathbf{v}}{}
   \end{matrix}\right)
 \end{equation}
 
 We can then rewrite Equation \ref{eq:chap3-transf-3d-vectors} as:
 
 \begin{equation}
-  \tensor[^B]{\mathbf{v}}{^s}=
-  \tensor[^B]{\mathbf{X}}{_A}
-  \tensor[^A]{\mathbf{v}}{^s}
+  \tensor*[^B]{\mathbf{v}}{^s}=
+  \tensor*[^B]{\mathbf{X}}{_A}
+  \tensor*[^A]{\mathbf{v}}{^s}
   ,\quad
-  \tensor[^B]{\mathbf{X}}{_A}=
+  \tensor*[^B]{\mathbf{X}}{_A}=
     \left(\begin{matrix}
     \mathbf{E} & \mathbf{0} \\
     -\mathbf{E}\mathbf{r}\times & \mathbf{E}
@@ -1443,17 +1448,17 @@ Similarly, we can define a coordinate transformation relation for
 spatial forces:
 
 \begin{equation}
-  \tensor[^B]{\mathbf{f}}{^s}=
-  \tensor[^B]{\mathbf{X}}{^*_A}
-  \tensor[^A]{\mathbf{f}}{^s}
+  \tensor*[^B]{\mathbf{f}}{^s}=
+  \tensor*[^B]{\mathbf{X}}{^*_A}
+  \tensor*[^A]{\mathbf{f}}{^s}
   ,\quad
-  \tensor[^A]{\mathbf{f}}{^s}=
+  \tensor*[^A]{\mathbf{f}}{^s}=
   \left(\begin{matrix}
-    \tensor[^A]{\mathbf{n}}{}\\
-    \tensor[^A]{\mathbf{f}}{}
+    \tensor*[^A]{\mathbf{n}}{}\\
+    \tensor*[^A]{\mathbf{f}}{}
   \end{matrix}\right)
   ,\quad
-  \tensor[^B]{\mathbf{X}}{^*_A}=\tensor[^B]{\mathbf{X}}{^\top_A}=
+  \tensor*[^B]{\mathbf{X}}{^*_A}=\tensor*[^B]{\mathbf{X}}{^\top_A}=
     \left(\begin{matrix}
     \mathbf{E} & -\mathbf{E}\mathbf{r}\times \\
     \mathbf{0} & \mathbf{E}
@@ -1466,8 +1471,18 @@ computation algorithms.
 
 \subsection{Dynamics Equation}
 
-FIXME: Add figure of humanoid robot with actuated torques, state, contact
-forces.
+\begin{figure}
+  \centering
+      {\def\svgwidth{0.4\linewidth}
+        \subimport*{src/chap3-optimal-motion-planning/figure/}
+                   {robot-dynamics.pdf_tex}
+      }
+      \caption{Non-vanishing and non-sliding contact forces are
+        applied on the anthropomorphic system by its environment, and
+        they are integrated in its dynamics equation. Joints limits
+        are shown in red.}
+      \label{fig:chap3-robot-dynamics}
+\end{figure}
 
 By using a Newtonian dynamics formulation, we can express the compact
 dynamics equation for a floating-base robot with respect to the
@@ -1478,15 +1493,60 @@ $\boldsymbol{\tau}$:
 \label{dynamics-equation}
 \mathbf{A}(\mathbf{q})\ddot{\mathbf{q}}
 +\mathbf{b}(\mathbf{q},\dot{\mathbf{q}})
-+\sum_i\mathbf{J}_{c_i}^\top\mathbf{f}^s_{c_i} =
++\sum_k\mathbf{J}_{c_k}^\top\mathbf{f}^s_{c_k} =
 \mathbf{S}^\top\boldsymbol{\tau},
 \end{equation}
 
 where $\mathbf{A}$ is the \emph{joint-space inertia matrix},
 $\mathbf{b}$ is the joint-space bias force which account for both
-Coriolis and gravity effects, $\mathbf{J}_{c_i}$ is the \emph{contact
-  Jacobian} for the contact $c_i$ that is submitted to spatial contact
-force $\mathbf{f}^s_{c_i}$.
+Coriolis and gravity effects, $\mathbf{J}_{c_k}$ is the \emph{contact
+  Jacobian} for the contact $c_k$ that is submitted to spatial contact
+force $\mathbf{f}^s_{c_k}$. In this work, we assume that all bodies
+are rigid and that contacts are non-sliding. This leads to the
+necessary condition that each 3D contact force applied at a point must
+lie inside the positive \emph{Coulomb friction cone} \cite{trinkle1997dynamic}
+defined by the inequalities:
+
+\begin{equation}
+  \label{eq:chap3-friction-cone}
+  \begin{array}{c}
+    \mathbf{f}_{c_k}^{\top}\mathbf{u}_{c_k} \ge 0, \quad k=1,\dots,n_c, \\
+    \norm{\mathbf{f}_{c_k}^\bot} \le
+    \mu_s\norm{\mathbf{f}_{c_k}^\angle}, \quad k=1,\dots,n_c,
+  \end{array}
+\end{equation}
+
+where $\mathbf{u}_{c_k}$ denotes the normal vector to the contact
+surface, $\mathbf{f}^\bot$ and $\mathbf{f}^\angle$ denote the normal
+and tangential contact forces to the contact surface respectively, and
+$\mu_s$ denotes the \emph{limiting coefficient of static friction},
+which depends of the contact interface nature (materials, temperature,
+etc).
+
+In addition to the dynamics equation, both of the actuators and the
+kinematic structure can impose several limitations, such as joint
+position limits
+
+\begin{equation}
+  \downbar{\mathbf{q}} \le \mathbf{q} \le \overbar{\mathbf{q}},
+\end{equation}
+
+joint velocity limits
+
+\begin{equation}
+  \downbar{\mathbf{\dot{q}}} \le \mathbf{\dot{q}} \le
+  \overbar{\mathbf{\dot{q}}},
+\end{equation}
+
+and actuator torque limits
+
+\begin{equation}
+  \downbar{\boldsymbol{\tau}} \le \boldsymbol{\tau} \le
+  \overbar{\boldsymbol{\tau}}
+\end{equation}
+
+These additional constraints will also have to be taken into account
+in the OCP formulation in order to generate feasible motions.
 
 \subsection{Inverse Dynamics}
 
@@ -1514,7 +1574,7 @@ algorithm for computing the joint-space inertia matrix
 $\mathbf{A}(\mathbf{q})$. Interestingly, the bias force
 $\mathbf{b}(\mathbf{q},\dot{\mathbf{q}})$ can be retrieved by computing the
 inverse dynamics while setting both accelerations $\ddot{\mathbf{q}}$
-and contact forces $\mathbf{f}^s_{c_i}$ to $\mathbf{0}$. We can then
+and contact forces $\mathbf{f}^s_{c_k}$ to $\mathbf{0}$. We can then
 use standard linear algebra solvers to solve the following system for
 $\ddot{\mathbf{q}}$:
 
@@ -1522,7 +1582,7 @@ $\ddot{\mathbf{q}}$:
   \mathbf{A}(\mathbf{q})\ddot{\mathbf{q}} =
   \mathbf{S}^\top\boldsymbol{\tau} -
   \mathbf{b}(\mathbf{q},\dot{\mathbf{q}}) -
-  \sum_i\mathbf{J}_{c_i}^\top\mathbf{f}^s_{c_i}
+  \sum_k\mathbf{J}_{c_k}^\top\mathbf{f}^s_{c_k}
 \end{equation}
 
 The whole algorithm complexity is $\mathcal{O}(n^3)$; the
@@ -1534,45 +1594,84 @@ applications.
 
 \subsection{Dynamic Balance for Anthropomorphic Systems}
 
-Various contact models,(add reference), rigid non-sliding contact used
-in this work. unilateral contact forces, inside friction cone to avoid
-slipping.
+Dynamic balance is a necessary condition to the generation of safe and
+feasible motions. We describe here possible ways of including this
+condition in an OCP.
 
-Each articulated body can be submitted to one or more 3D contact
-forces. We can regroup them and express them as a single 6D force
-field.
+\subsubsection{Dynamic Balance with Zero-Momentum Point}
 
-ZMP: compute from floating joint torques if no external forces are
-applied. The spatial force, is equivalent to the necessary external
-forces, transform it in the absolute coordinate system, then find the
-point where the moments are zero.  => add inequality constraints to
-force ZMP to stay inside the support polygon.
+As we previously introduced in Section \ref{subsec:chap1-zmp} the ZMP,
+we simply recall that it gives simple dynamic balance conditions,
+namely that the ZMP must remain inside the contact support polygon, as
+long as the humanoid robot is moving on a flat horizontal floor. We
+saw in Section \ref{subsec:chap1-cart-table} how the ZMP can be
+derived for the cart-table model, and we briefly describe here a
+method to compute the ZMP for whole-body motions of an anthropomorphic
+system.
 
-Multiple contact points: apply external forces, a spatial force will
-appear on the floating joint. But the floating joint has fictitious
-actuators, so this force must be zero to ensure the dynamic model
-consistency and its dynamic balance. Compute external forces then such
-that the floating joint torques are zero.
-
-Forward dynamics: torques are inputs, forces and accelerations are
-states.  Start from dynamic model and contact equation, form linear
-system using G = the inertia matrix, and G = Jc the contact force
-Jacobian. Note that Jc must be full-rank, otherwise, the system is not
-invertible. This means that no more than one contact force can be
-exerted on each rigid body (not practical when the contact surface of
-a rigid body is larger than a single point).\ref{mombaur2005open}.
-
-Contact equations:
+Given the rigid-body system generalized position, velocity and
+acceleration vectors $\mathbf{q}$,$\dot{\mathbf{q}}$ and
+$\ddot{\mathbf{q}}$, let us first note that if feasible contact forces
+are applied to the system bodies, the robot is dynamically balanced if
+and only if it can realize the inputs $\mathbf{q}$,$\dot{\mathbf{q}}$
+and $\ddot{\mathbf{q}}$ using only its physical actuators, i.e. by
+making sure that:
 
 \begin{equation}
-\mathbf{p}_{ci}=\mathbf{0},\quad i = 1,\ldots,n_c,
+\label{eq:chap3-dynamic-balance-inverse}
+ \boldsymbol{\tau_{fl}}=\mathbf{0},
 \end{equation}
 
-By deriving them twice we obtain the contact condition:
+where $\boldsymbol{\tau_{fl}}$ denotes the 6D floating-joint torque
+vector \cite{hirukawa2006universal}. This means that if we set all
+contact forces to zero and we compute the torques with RNEA,
+$\boldsymbol{\tau_{fl}}$ is equal, via a reordering of the components
+if necessary, to the resultant contact spatial force when expressed in
+the floating-base frame; $\tensor*[^{fl}]{\mathbf{f}}{_c^s}$ denote
+this spatial vector. Computing the ZMP is then a simple matter of
+transforming $\tensor*[^{fl}]{\mathbf{f}}{_c^s}$ to the absolute world
+frame $W$, and finding the coordinates $(p_x,p_y)$ of the point on the
+floor such that the moments around the $x$ and $y$ axes, i.e. the
+first two components of $\tensor*[^W]{\mathbf{f}}{_c^s}$, are equal to
+zero. This point $p$ is, according to the definition, the Zero-Moment
+Point we are looking for. We can then guarantee a humanoid robot
+dynamic balance by ensuring the ZMP stays inside the support polygon
+$\mathcal{P}_{s}$, which is defined at the convex hull of all contact
+points.
+
+\subsubsection{Dynamic Balance with Non-Coplanar Contact Forces}
+
+Let us briefly mention that the ZMP criterion is extended to handle
+non-coplanar contact points such as arms and hands in
+\cite{harada2003zmp}, and is called the \emph{Generalized ZMP
+  (GZMP)}. An associated support polyhedron is defined, and the GZMP
+must stay inside this polyhedron to ensure the dynamic balance of the
+robot. Although this approach is interesting, it is not as simple as
+the ZMP criterion, and we prefer to deal directly with contact forces
+through the complete dynamics of the robot.
+
+\paragraph{Forward Dynamics}
+
+We present here a method that ensure the dynamic balance constraint
+for optimal control, as seen in \cite{mombaur2005open}. It relies on
+forward dynamics, where the system is torque-controlled. The state
+contains both the acceleration $\ddot{\mathbf{q}}$ and contact forces
+$\mathbf{f}^s_{c_k}$. 
+
+As we work under the assumption a contact point does not move during
+the motion, we have:
 
 \begin{equation}
-\mathbf{J}_{c_i}\ddot{\mathbf{q}} +
-\dot{\mathbf{J}}_{c_i}\dot{\mathbf{q}}=\mathbf{0}, \quad i = 1,\ldots,n_c,
+\mathbf{p}_{c_k}(t)=\mathbf{p}_{c_k}(0),\quad k = 1,\ldots,n_c,
+\end{equation}
+
+where $\mathbf{p}_{c_k}$ denotes the 6D position of contact $c_k$.
+
+By deriving it twice we obtain the contact condition:
+
+\begin{equation}
+\mathbf{J}_{c_k}\ddot{\mathbf{q}} +
+\dot{\mathbf{J}}_{c_k}\dot{\mathbf{q}}=\mathbf{0}, \quad k = 1,\ldots,n_c,
 \end{equation}
 
 Let $\mathbf{f}^s_c$ and $\mathbf{J}_c$ denote the concatenated
@@ -1583,7 +1682,7 @@ contact force vector and contact Jacobian respectively:
 \left(\begin{matrix}
 \mathbf{f}^s_{c_1}\\
 \vdots\\
-\mathbf{f}^s_{c_i}\\
+\mathbf{f}^s_{c_k}\\
 \vdots\\
 \mathbf{f}^s_{c_{n_c}}\\
 \end{matrix}\right),
@@ -1592,14 +1691,15 @@ contact force vector and contact Jacobian respectively:
 \left(\begin{matrix}
 \mathbf{J}_{c_1}\\
 \vdots\\
-\mathbf{J}_{c_i}\\
+\mathbf{J}_{c_k}\\
 \vdots\\
 \mathbf{J}_{c_{n_c}}\\
 \end{matrix}\right)
 \end{equation}
 
-The following linear system can then be built and solved for
-$\ddot{\mathbf{q}}$ and all $\mathbf{f}^s_{c_i}$.
+The following linear system can then be built using the dynamics
+equation and contact condition, and solved for $\ddot{\mathbf{q}}$ and
+all $\mathbf{f}^s_{c_k}$.
 
 \begin{equation}
   \left(\begin{matrix}
@@ -1608,63 +1708,160 @@ $\ddot{\mathbf{q}}$ and all $\mathbf{f}^s_{c_i}$.
   \end{matrix}\right)
   \left(\begin{matrix}
   \ddot{\mathbf{q}}\\
-  \mathbf{f}^s_{c_i}
+  \mathbf{f}^s_{c}
   \end{matrix}\right)
   = \left(\begin{matrix} \mathbf{S}^\top\boldsymbol{\tau}-\mathbf{b}
-    \\ \mathbf{f}_{c_i}
+    \\ \mathbf{f}_{c}
   \end{matrix}\right)
 \end{equation}
 
-Inverse dynamics: forces are inputs, add torque equality constraints
-in the OCP. Note that in the direct methods, the constraint will be
-enforced only on the discretization grid.
+The constraints $\mathbf{p}_{c_k}(t)=\mathbf{p}_{c_k}(0)$ and
+$\dot{\mathbf{p}_{c_k}}(t)=\mathbf{0}$ also need to be enforced. Note
+that $\mathbf{J}_{c}$ must be full-rank, otherwise, the system is not
+invertible; this means that no more than one spatial contact force can
+be exerted on each rigid body. This is unfortunately not sufficient to
+ensure dynamic balance when the contact surface of the rigid bodies is
+larger than a single point; additional constraints, such as ZMP
+constraints \cite{koch2012optimization}, need to be added.
 
-cite lengagne IJRR? or idea came before?
+\paragraph{Inverse Dynamics}
 
-FD and ID: add constraints on contact forces: force inside positive
-friction cone.
+We saw in Equation \ref{eq:chap3-dynamic-balance-inverse} that if we
+apply feasible contact forces and the floating-joint torques are zero,
+then the humanoid robot is dynamically balanced. If we chose to
+control our system with the generalized acceleration vector
+$\mathbf{\dot{q}}$ and contact forces $\mathbf{f}^s_{c_k}$, we can use
+a simple integration scheme to retrieve the generalized position and
+velocity vectors $\mathbf{q}$ and $\mathbf{\dot{q}}$, compute the
+torques $\boldsymbol{\tau}_{fl}$, and add Equation
+\ref{eq:chap3-dynamic-balance-inverse} as an equality constraint in
+the OCP formulation. This gives an efficient way of integrating the
+dynamics and enforcing the dynamic balance of the humanoid robot
+through a single equality constraint, given any set of contact forces,
+even when some of them are exerted on the same bodies. In order to
+ensure that only feasible contact forces are applied, the inequalities
+from Equation \ref{eq:chap3-friction-cone} also need to be taken into
+account.
 
-\section{(Self-)Collision Avoidance Constraints}
+\section{(Self-)Collision Avoidance}
 
-Add figure with collision pairs and environment.
+Besides generating dynamically feasible motions for an anthropomorphic
+system, we need make sure no collision occurs during the motion. Let
+us assume a collision-free initial guess is fed to the OCP solver. The
+optimization process iteratively reshapes motion and collision between
+the robot and itself or the environment might ensue. This motivates
+the need to take into account (self-)collision avoidance in the OCP.
 
-Faverjon Tournassoud
-Elaborate.
+\subsection{Distance Pairs}
 
-abder + ehwa paper
+\begin{figure}
+  \centering
+      {\def\svgwidth{0.59\linewidth}
+        \subimport*{src/chap3-optimal-motion-planning/figure/}
+                   {robot-collision-pairs.pdf_tex}
+      }
+      \caption{All self-collision possible pairs are shown in red for
+        body $B_i$. The collision pair between $B_i$ and an obstacle
+        $O$ is also shown in blue.}
+      \label{fig:chap3-robot-collision-pairs}
+\end{figure}
 
-signed distance field
+Consider a body $B_i$ of the robot. Figure
+\ref{fig:chap3-robot-collision-pairs} gives an idea of the potential
+complexity of self-collision avoidance: if the robot has $N_B$ bodies,
+there are $N_B-1$ potential pairs of bodies $\langle B_i,B_j\rangle$
+that need to be checked at a given configuration $\mathbf{q}$ in order
+to ensure that there is no collision between the robot bodies. Since
+the pair $\langle B_i,B_j\rangle$ is equivalent to the pair $\langle
+B_j,B_i\rangle$, the total number of self-collision body pairs can be
+as high as to $\frac{N_B(N_B-1)}{2}$. Furthermore, assuming that the
+obstacles surrounding the robot are considered as a single geometric
+entity $O$, we also need to check $N_B$ body-environment pairs
+$\langle B_i,O\rangle$ for collisions.
 
-There are several ways to express collision avoidance constraints
-between two bodies; one can express the constraint with the exact
-distance between the exact polyhedral geometries such as in
-\cite{Larsen2000}. While distance computation is precise and efficient
-thanks to bounding volume hierarchy structures, distance is zero in
-case of penetration, which forbids the computation of a correct
-constraint gradient. \cite{Kim2002} propose a fast penetration
-computation algorithm, but computation times are
-restrictive. Moreover, the distance constraint between two
-non-strictly convex polyhedra is not $C^1$, which can cause the
-optimization solver to behave incorrectly. \cite{Escande2007} proposes
-a nice solution to this problem and introduces Sphere-Torus Patches
-Bounding Volumes (STPBV), which are strictly convex bounding volumes;
-in this case the distance between a STPBV and a convex mesh is always
-$C^1$. These constraints are successfully used for self-collision
-avoidance in real-time control of a humanoid robot
-\cite{Stasse2008}. In \cite{Kanoun2011}, also in a control context,
-self-collision constraints are expressed as the distance between
-bounding capsules, i.e. cylinders capped by half-spheres.
+One could use efficient collision detection algorithms, but their
+return result is Boolean and is not suitable for gradient-based
+optimal control. In order to guarantee (self-)collision avoidance, we
+need to compute the distance between for all potential collision pairs
+(or distance pairs), and make sure this distance is positive during
+the whole duration of the optimized motion.
+
+\subsection{Distance Computation for Collision Avoidance}
+
+A geometry can be represented accurately by a cloud of vertices, and a
+set of facets, usually triangles, which define the surface of the
+geometry. One could then express inequality constraints using the
+exact distance between the polyhedral geometries. Thanks to bounding
+volume hierarchy representations of the polyhedrons, the distance
+computation can be precise and relatively efficient \cite{Larsen2000},
+especially when the algorithms are parallelized on graphics processing
+unit (GPU) \cite{lauterbach2010gproximity}. However, such algorithms
+return a constant zero distance when collisions occur, thus leading to
+a zero gradient; this can be very prohibitive as numerical
+optimization methods rely on the local constraint information to
+generate feasible iterates. In \cite{Kim2002}, a penetration
+computation algorithm is proposed, but computation times are still too
+restrictive. 
+
+One strategy to cope with poor performance and gradient
+discontinuities is to consider bounding volumes that contain the exact
+robot body geometries. As this is a conservative approach, some
+motions such as ones involving fine object manipulation cannot be
+generated. In most cases, however, this approach is suitable for a
+variety of robotic applications a constitutes a good trade-off between
+precision and computation time. In \cite{Escande2007} a nice solution
+to this problem is described: they introduce \emph{Sphere-Torus
+  Patches Bounding Volumes (STPBV)}, which are strictly convex
+bounding volumes of the exact polyhedral body geometries; the returned
+distance can be negative for slight collisions, and it is shown that
+the distance between a STPBV and a convex mesh is always $C^1$. These
+constraints are successfully used for self-collision avoidance in
+posture optimization, and real-time control of a humanoid robot
+\cite{Stasse2008}. Capsules, which are basically cylinders capped by
+half-spheres, are slightly more conservative than STPBV, but offer an
+even simpler way of computing distances: computing the distance
+between two capsules is equivalent to computing the distance between
+two segments and subtracting the segment radii. In \cite{Kanoun2011}
+for instance, such bounding volumes are successfully used to avoid
+self-collision for a humanoid robot in a real-time control
+application.
+
+We discuss here an important aspect of OCP solutions when using direct
+methods, seen in Section \ref{subsec:chap3-direct-methods}. Indeed,
+these methods are based on a transcription of the OCP into a
+finite-dimensional NLP, through a grid discretization. Constraints are
+also discretized over the trajectory duration, which means that they
+are verified on the grid points, but not between them. In
+\cite{lee2012accurate}, based on previous work for safe trajectory
+optimization \cite{Lengagne2010}, capsules are used as bounding
+geometries for each body; the minimum distance over each sub-interval
+of the discretization grid is computed for all distance pairs, and
+this minimum distance is required to stay positive. Interestingly,
+this leads to a final optimized motion which is guaranteed to be
+collision-free for any $t\in[0,T]$. So far this method has been
+applied to implement self-collision avoidance, i.e. motions are
+generated in the absence of obstacles.
+
+We briefly present the signed distance transform
+\cite{felzenszwalb2004distance}, which is an alternative method for
+computing distances: assuming that the environment is static, a
+offline voxelized grid can be built, and the minimum distance to the
+obstacles is computed for each voxel. If there is a collision, the
+distance is negative and is equal to the penetration depth. This
+method allows fast distance computation for optimization algoritm, but
+the voxel grid needs to be fine enough to allow acceptable gradient
+computation through finite differentiation.
 
 \section{Optimal Control Applications in Robotics}
 
 \subsection{Numerical Optimal Control Solvers}
 
-\cite{verscheure2009time,suleiman2010time}
+\cite{verscheure2009time,suleiman2010time} minimum-time: time
+parametrization on existing path, no geometric reshaping.
 
 \cite{suleiman2008human}
 
-\textsc{IPOPT} \textsc{CHOMP} \cite{ratliff2009chomp} covariant
-gradient descent technique
+\textsc{IPOPT}
 
 Optimal control techniques have been successfully applied on humanoid
 figures \cite{Schultz2010} and humanoid robots \cite{Toussaint2007,
@@ -1679,7 +1876,28 @@ bodies of the robot. Hence, initial trajectory generation and
 collision avoidance have yet to be treated properly in the optimal
 control formulation.
 
-\emph{local}
+\cite{quinlan1993elastic} \cite{brock2002elastic} combined planning
+and control?
+
+\cite{miossec2006development} optimization for complex robotics.
+
+\cite{arisumi2008dynamic} optimal control, go out static feasibility
+domain to achieve goal.
+
+\cite{coros2010generalized} \cite{mordatch2012discovery} generalized
+locomotion
+
+wieber?
+
+\cite{chevallereau2001optimal}
+
+\textsc{CHOMP} \cite{ratliff2009chomp} covariant gradient descent
+technique, how does hes use signed distance then??
+
+\cite{tassa2012synthesis} extremely fast optimal control, ipopt,
+receding horizon, fast dynamics, convex contact model.
+
+\cite{saab-tro-12} not optimal control
 
 Starting from an initial value of \state{} and \control{}, numerical
 optimal control techniques are capable of iteratively converging
@@ -2018,9 +2236,9 @@ limits are then added as:
 
 \begin{equation}
   \begin{array}{rcccl}
-    \mathbf{q_{min}} & \le & \mathbf{q} & \le & \mathbf{q_{max}} \\
-    \mathbf{\dot{q}_{min}} & \le & \mathbf{\dot{q}} & \le & \mathbf{\dot{q}_{max}} \\
-    \mathbf{\tau_{min}} & \le & \mathbf{\tau} & \le & \mathbf{\tau_{max}}
+    \downbar{\mathbf{q}} & \le & \mathbf{q} & \le & \overbar{\mathbf{q}} \\
+    \downbar{\mathbf{\dot{q}}} & \le & \mathbf{\dot{q}} & \le & \overbar{\mathbf{\dot{q}}} \\
+    \downbar{\boldsymbol{\tau}} & \le & \mathbf{\tau} & \le & \overbar{\boldsymbol{\tau}}
   \end{array}
   \label{joint-constraints}
 \end{equation}
