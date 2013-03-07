@@ -959,7 +959,7 @@ the interested reader can refer to \cite{laumond1998robot,
   todorov2006optimal}. We give a broad description of the first two
 methods and discuss direct methods more deeply, as they are heavily
 used in Robotics and Computer Graphics nowadays. Note that the list we
-establish is largely inspired by \cite{diehl2006fast}; a even more
+establish is largely inspired by \cite{diehl2006fast}; an even more
 exhaustive survey can be found in
 \cite{betts1998survey,betts2010practical}.
 
@@ -1062,11 +1062,8 @@ commonly used methods due to their easy applicability to large-scale
 problems and their robustness.
 
 FIXME: state (and not control) parametrization: where does it fall?:
-not collocation, not single-shooting, not
-multiple-shooting. Trajectory is C2 by design, no need to add
-additional constraints as in multiple shooting. works for problems
-where the final solution (such as the input controls) can be easily
-derived from the state. \cite{sirinesa1981}
+collocation? direct or inverse?. works for problems where the input
+controls can be easily derived from the state. \cite{sirinesa1981}
 
 \subsubsection{Direct Single-Shooting}
 
@@ -1372,6 +1369,31 @@ methods are particularly powerful thanks to the condensing strategy,
 which takes advantage of the QP subproblem sparsity, and is used to
 solve them efficiently.
 
+\subsection{Non-Jacobian-Based Optimal Control}
+
+Note that for all gradient-based solvers, the objective and constraint
+functions can be nonlinear, but they must be at least $C^1$,
+i.e. continuously differentiable. This requirement can be alleviated
+by the use of non gradient-based solvers
+
+* Shortcut (cf chapter 1)
+
+* Sampling-Based Optimal Motion Planning: RRT$^*$
+
+Recently \cite{Karaman2011} introduced RRT$^*$, a new variant of RRT that
+has the property of asymptotically converging towards the \emph{global}
+minimum solution path. This is a very interesting approach as only one
+algorithm is needed to achieve optimal motion planning. But if we want
+to generate an optimal trajectory, we need to explore not only the
+configuration space \cspace, but the whole state space
+\sspace\thinspace where an element of \sspace\enspace is \state{} =
+$[$\config{}$,$ \dotconfig{}$]^T$. This doubles the dimension of the
+problem. Another problem arises from choosing the correct metric and
+local optimal policy. \cite{Perez2012} propose a variant uses local
+linearization of a system to derive a coherent extension
+method. Results have so far been only obtained on simple systems, and
+this method has yet to be tested on complex ones.
+
 \section{Anthropomorphic System Dynamics}
 
 If we want to be able to generate feasible motions for anthropomorphic
@@ -1636,8 +1658,8 @@ first two components of $\tensor*[^W]{\mathbf{f}}{_c^s}$, are equal to
 zero. This point $p$ is, according to the definition, the Zero-Moment
 Point we are looking for. We can then guarantee a humanoid robot
 dynamic balance by ensuring the ZMP stays inside the support polygon
-$\mathcal{P}_{s}$, which is defined at the convex hull of all contact
-points.
+$\mathcal{P}_{sup}$, which is defined at the convex hull of all
+contact points.
 
 \subsubsection{Dynamic Balance with Non-Coplanar Contact Forces}
 
@@ -1852,16 +1874,48 @@ method allows fast distance computation for optimization algoritm, but
 the voxel grid needs to be fine enough to allow acceptable gradient
 computation through finite differentiation.
 
-\section{Optimal Control Applications in Robotics}
+\section{Optimal Control Applications for Anthropomorphic Systems}
 
-\subsection{Numerical Optimal Control Solvers}
+* Time-Optimal motions motions: time parametrization to minimize
+objective function \cite{verscheure2009time,suleiman2010time}
+minimum-time: time parametrization on existing path, no geometric
+reshaping \cite{suleiman2008human}
 
-\cite{verscheure2009time,suleiman2010time} minimum-time: time
-parametrization on existing path, no geometric reshaping.
+* Motion imitation
 
-\cite{suleiman2008human}
+* Obtain movements that would be very hard or impossible to generate
+otherwise \cite{miossec2006development} and \cite{arisumi2008dynamic}:
+go out of static feasibility domain to achieve goal.
 
-\textsc{IPOPT}
+* \emph{Model Predictive Control (MPC)}, the current control depends
+on the future state of the system. Specific instance of optimal
+control:allows real-time optimal control over a receding time
+horizon. Application to biped walking \cite{herdt2010online},
+generalized biped walking \cite{coros2010generalized}, most impressive
+results in \cite{tassa2012synthesis}.
+
+* Allow human behaviors found to emerge: walking
+\cite{chevallereau2001optimal}, running \cite{Schultz2010}, emotional
+walking \cite{felis2012modeling}, generalized locomotion
+\cite{coros2010generalized,mordatch2012discovery}
+
+* Simulate disabilities and study their effect on human motion in a
+biomechanics context \cite{Lengagne2010}
+
+* We notice convergence of computer graphics, biomechanics and
+robotics and simulation models become more and more realistic in order
+to generate natural motions easily.
+
+* Optimal control in the presence of obstacles
+\cite{shiller1988global}
+
+\textsc{CHOMP} \cite{ratliff2009chomp} covariant gradient descent
+technique
+
+\textsc{STOMP}, multi-objective function and soft constraints.
+\cite{Kalakrishnan2011}, but this method has so far been only applied
+to simple trajectory optimization problems where obstacle and torque
+constraints were integrated in the cost function.
 
 Optimal control techniques have been successfully applied on humanoid
 figures \cite{Schultz2010} and humanoid robots \cite{Toussaint2007,
@@ -1876,72 +1930,37 @@ bodies of the robot. Hence, initial trajectory generation and
 collision avoidance have yet to be treated properly in the optimal
 control formulation.
 
-\cite{quinlan1993elastic} \cite{brock2002elastic} combined planning
-and control?
+for humanoid robots: \cite{Toussaint2007}, \cite{lee2012accurate}
 
-\cite{miossec2006development} optimization for complex robotics.
+Note however that all methods cited above do not behave well if no
+good initial guess is provided. even when collision avoidance is well
+integrated in the OCP, local optimizers used often fall in local
+geometric minima and get stuck.
 
-\cite{arisumi2008dynamic} optimal control, go out static feasibility
-domain to achieve goal.
-
-\cite{coros2010generalized} \cite{mordatch2012discovery} generalized
-locomotion
-
-wieber?
-
-\cite{chevallereau2001optimal}
-
-\textsc{CHOMP} \cite{ratliff2009chomp} covariant gradient descent
-technique, how does hes use signed distance then??
-
-\cite{tassa2012synthesis} extremely fast optimal control, ipopt,
-receding horizon, fast dynamics, convex contact model.
-
-\cite{saab-tro-12} not optimal control
-
-Starting from an initial value of \state{} and \control{}, numerical
-optimal control techniques are capable of iteratively converging
-towards a trajectory that locally minimizes $\phi$ while taking into
-account the dynamics of the system and verifying equality and
-inequality constraints given by Eq. \ref{OCP:Model}.
-
-There exists several classes of optimization solvers, among which
-gradient-based methods such as interior point optimizers implemented
-notably in \textsc{IPOPT} \cite{Biegler2009}, and Sequential Quadratic Program
-(SQP) solvers. Particularly, multiple shooting optimization,
-implemented in the \textsc{MUSCOD-II} software
-\cite{leineweber2003efficient1, leineweber2003efficient2}, is a
-powerful tool that allows solving large-scale optimal control problems
-thanks to a specially tailored SQP.
-
-\subsection{Non Jacobian-Based Applications - Probabilistic Optimal Control Solvers}
-
-Note that for all gradient-based solvers, the objective and constraint
-functions can be nonlinear, but they must be at least $C^1$,
-i.e. continuously differentiable. This requirement can be alleviated
-by the use of non gradient-based solvers
-
-Shortcut (cf chapter 1)
-Sampling-Based Optimal Motion Planning: RRT$^*$
-
-Recently \cite{Karaman2011} introduced RRT$^*$, a new variant of RRT that
-has the property of asymptotically converging towards the \emph{global}
-minimum solution path. This is a very interesting approach as only one
-algorithm is needed to achieve optimal motion planning. But if we want
-to generate an optimal trajectory, we need to explore not only the
-configuration space \cspace, but the whole state space
-\sspace\thinspace where an element of \sspace\enspace is \state{} =
-$[$\config{}$,$ \dotconfig{}$]^T$. This doubles the dimension of the
-problem. Another problem arises from choosing the correct metric and
-local optimal policy. \cite{Perez2012} propose a variant uses local
-linearization of a system to derive a coherent extension
-method. Results have so far been only obtained on simple systems, and
-this method has yet to be tested on complex ones.
-
-STOMP, multi-objective function and soft constraints.
-\cite{Kalakrishnan2011}, but this method has so far been only applied
-to simple trajectory optimization problems where obstacle and torque
-constraints were integrated in the cost function. 
+The idea of combining planning algorithms with optimization methods is
+not new, and is especially motivated by the wide use of sampling-based
+planners which generally produce collision-free paths of poor-quality
+\cite{lava06}. The shortcut method, which we used in Chapters 1 and 2,
+can be seen as a local optimization method. In
+\cite{geraerts2007creating}, several shortcut heuristics are developed
+to increase a path quality and clearance from obstacles, but they can
+be used to shorten a path length with respect to a given distance only
+in the configuration space as time is not considered. A suitable
+shortcut heuristic for optimal control of simple robotic arms is
+described in \cite{hauser2010fast}: starting from an initial
+collision-free path given by a RRT path, an initial trajectory is
+placed on the path, making stops at the milestones to ensure it is
+still collision-free, then a shortcut heuristic is called several
+times to reduce the trajectory duration under bounded velocity and
+acceleration constraints, while making sure the result it
+collision-free. Similarly, a method that combines a sampling-based
+planner and the \textsc{STOMP} optimizer is proposed
+\cite{mainprice2012planification}. Note that in both previous methods,
+results were successfully obtained for simple mechanisms such as 7-DoF
+arms; as they do not allow enforcing complicated constraints such as
+closed-loop constraints or dynamic balance, achieving optimal motion
+planning for anthropomorphic systems with such methods seems to be
+impossible.
 
 \section{Contribution}
 Idea not new, but application is. cf ICRA reviews
@@ -2247,7 +2266,7 @@ limits are then added as:
 The robot is submitted in our case to multiple coplanar contact
 reaction forces from the ground. We can then express the dynamic
 balance constraint using the Zero-Moment Point (ZMP)
-\cite{Vukobratovic2004zero}, which has to remain inside the robot
+\cite{vukobratovic1990biped}, which has to remain inside the robot
 support polygon defined by its feet.
 
 These constraints can be written as for any $t\in[0,T]$:
