@@ -1378,10 +1378,20 @@ shapes and know where to look for the minimizer while obeying the
 constraints. This requirement can be alleviated by the use of non
 gradient-based optimal control methods.
 
-RRT$^*$ \cite{Karaman2011} is an example of such methods; it is a
-variant of RRT which relies on a simultaneous exploration of the
-configuration space and rewiring of the exploration tree so that it
-contains only low-cost connections. This exploration-rewiring
+We described a random optimization method in Section
+\ref{subsubsec:chap3-random-optimization}. It is a shortcut heuristic,
+and can be seen as an optimal control method which does not need the
+function Jacobians. If shortcut heuristics are applied in the state
+space, the resulting trajectory has a lower cost than the original
+one. However, no solution can be found outside the bounding box of the
+original trajectory due to the fact that the iterative process picks
+points to shortcut that are on the trajectory. Shortcut methods get
+easily stuck in local minimizers.
+
+Another example is RRT$^*$ \cite{Karaman2011}: it is a variant of the
+RRT sampling-based planner that relies on a simultaneous exploration
+of the configuration space and rewiring of the exploration tree so
+that it contains only low-cost connections. This exploration-rewiring
 iterative process continues even after one solution has been found,
 and it offers the interesting property of asymptotic convergence
 towards the \emph{global} minimum-cost collision-free path. It is also
@@ -1884,29 +1894,30 @@ computation through finite differentiation.
 
 \section{Optimal Control Applications for Anthropomorphic Systems}
 
-Over the past twenty years, optimal control techniques have been
-applied in the fields Robotics, Biomechanics and Computer
-Graphics. The problem of tracking a reference path while minimizing
-time can for instance be modeled as an OCP and solved thanks to
-state-of-the-art solvers, see
-\cite{verscheure2009time,suleiman2010time}. Note that in this case,
-the path is assumed to be collision-free; as solving the path tracking
-problem consists in applying a time parametrization without deforming
-the path, collision avoidance constraints are not taken into account.
+Over the past thirty years, optimal control techniques have been
+successfully applied in the fields of Robotics, Biomechanics and
+Computer Graphics. The problem of tracking a reference path while
+minimizing time can for instance be modeled as an OCP and solved
+thanks to state-of-the-art solvers, see
+\cite{bobrow1985time,verscheure2009time,suleiman2010time}. In this
+case, the initial path is assumed to be collision-free; as solving the
+path tracking problem consists in applying a time parametrization
+without deforming the path, collision avoidance constraints are not
+taken into account.
 
-Optimal control techniques can also be used in the field of motion
-imitation such as in \cite{suleiman2008human}, where trajectories are
-generated for a humanoid robot by minimizing the error with reference
-human motions and ensuring its dynamic balance. Self-collisions are
-then post-processed when replaying the motion using a task-based
-controller, see \cite{kanehiro2008local}.
+Optimal control techniques can also be used for motion imitation such
+as in \cite{suleiman2008human}, where trajectories are generated for a
+humanoid robot by minimizing the error with reference human motions
+and ensuring its dynamic balance. Self-collisions are then
+post-processed when replaying the motion, using a task-based
+controller for instance, see \cite{kanehiro2008local}.
 
 In \emph{Model Predictive Control (MPC)}, the current control of a
 system is derived from its future states to ensure its
 stability. Finding the best control can be done through an optimal
 control formulation over a receding time horizon, in order to ensure
-maximum dynamic balance for instance. This his led to online control
-applications for a biped walking motion for a humanoid robot
+maximum dynamic balance for instance. This has led to online control
+applications for a biped walking motion of a humanoid robot
 \cite{herdt2010online}, and more complex locomotion on uneven terrains
 for animated avatars \cite{coros2010generalized,tassa2012synthesis}.
 
@@ -1916,7 +1927,7 @@ solving the same OCP can allow human behaviors to emerge from the
 solutions: such behaviors include walking
 \cite{chevallereau2001optimal}, running \cite{Schultz2010}, emotional
 walking \cite{felis2012modeling} and even more general motions
-involving locomotion and manipulation seamlessly
+involving seamless extreme locomotion and manipulation
 \cite{mordatch2012discovery}. It is interesting here to point out the
 gradual convergence of the Robotics, Biomechanics and Computer
 Graphics fields as simulation models become more and more realistic
@@ -1936,38 +1947,62 @@ multiple non-coplanar contact motion, and optimal control methods have
 proved to be very powerful tools to do so
 \cite{lengagne2011generation}.
 
-* Optimal control in the presence of obstacles
-\cite{shiller1988global}
+\bigskip
 
-\textsc{CHOMP} \cite{ratliff2009chomp} covariant gradient descent
-technique
+In many cases, robots have to move in the presence of
+obstacles. Therefore we must make sure that resulting optimal policy
+does not lead to any collision between the robot and its environment
+or even itself. In \cite{dubowsky1986time}, time-optimal
+collision-free trajectories are computed for a 6-DoF manipulator by
+adding, to the OCP objective function, a penalty term that computes
+the distance to obstacles and allows avoiding obstacles. Penalty terms
+are also used in \textsc{CHOMP} \cite{ratliff2009chomp}, an efficient
+optimal control solver which relies on a covariant gradient descent
+technique, and in \textsc{STOMP} \cite{Kalakrishnan2011}, a similar
+solver which relies on trajectory stochastic perturbations in order to
+find collision-free optimal trajectories without computing function
+Jacobians.
 
-\textsc{STOMP}, multi-objective function and soft constraints.
-\cite{Kalakrishnan2011}, but this method has so far been only applied
-to simple trajectory optimization problems where obstacle and torque
-constraints were integrated in the cost function. weights to chose for
-objective function, but still fine for slow number of DoF. but for
-complex robots, soft constraints introduce a lot of nonlinearities in
-the objective function, which leads to poor convergence rate.
+All previous applications involve simple robotic arms; in
+\cite{Toussaint2007}, a humanoid robot trajectory is modeled as a
+finite sequence of attractors in the task-space, such as a 3D hand
+position. This allows a great dimension reduction of the underlying
+NLP and leads to very short optimizations times of the order of a few
+seconds. An obstacle avoidance penalty term is also added in the
+objective function, and enables the robot to avoid both
+self-collisions and collision with simple planar obstacles. In this
+work, the initial trajectory can potentially generate collisions,
+although there is no guarantee that the optimization process will
+succeed in finding a collision-free solution in more complex
+environments. Furthermore, as no contact body position or dynamic
+balance tasks are considered, fast motions cannot be generated with
+this framework without compromising the robot dynamic balance.
 
-Optimal control techniques have been successfully applied on humanoid
-robots \cite{Toussaint2007, Lengagne2010}. The problems take into
-account complex robot dynamics and actuator limitations. However,
-current formulations either work under the assumption that the initial
-guess is collision-free or allow it to be slightly in collision by
-means of linear interpolation between initial and final
-configurations. There are then cases where the solver might get stuck
-in local minima and fail to generate a trajectory without any
-collisions with either the environment or bodies of the robot. Hence,
-initial trajectory generation and collision avoidance have yet to be
-treated properly in the optimal control formulation.
+In the general case, minimizing an objective function that contains
+transcribed constraints as penalty terms allows building unconstrained
+optimal control problems. Good convergence rates can then be obtained
+as long as the problem dimension is small, and as long as the sum of
+too many penalty functions does not lead to an increased nonlinearity
+of the objective function. Otherwise, the performance gain obtained by
+solving an unconstrained NLP is neutralized by a poor convergence
+rate. Furthermore, the sum of penalty terms is usually weighted to
+give more or less importance to each term. This leads to the problem
+of choosing the correct weights such that the resulting trajectory is
+satisfactory for a variety of problems.
 
-for humanoid robots: \cite{Toussaint2007}, \cite{lee2012accurate}
+\bigskip
 
-Note however that all methods cited above do not behave well if no
-good initial guess is provided. even when collision avoidance is well
-integrated in the OCP, local optimizers used often fall in local
-geometric minima and get stuck.
+All methods cited above make profit from optimal control to achieve
+several applications of motion generation. However, current
+formulations either work under the assumption that the initial guess
+is collision-free, or allow it to be slightly in collision by means of
+linear interpolation between the initial and final states, without
+giving any guarantee that the optimization process will succeed. In
+fact, there are cases where the solver might get stuck in local minima
+and fail to generate a trajectory that avoids collisions of the robot
+with either itself or the environment.
+
+\bigskip
 
 The idea of combining planning algorithms with optimization methods is
 not new, and is especially motivated by the wide use of sampling-based
@@ -1989,89 +2024,52 @@ collision-free. Similarly, a method that combines a sampling-based
 planner and the \textsc{STOMP} optimizer is proposed
 \cite{mainprice2012planification}. Note that in both previous methods,
 results were successfully obtained for simple 7-DoF arms; as they do
-not allow enforcing complicated constraints such as closed-loop
+not allow enforcing complex constraints such as closed-loop
 constraints or dynamic balance, achieving optimal motion planning for
-anthropomorphic systems with such methods seems to be impossible.
+anthropomorphic systems with such methods does not seems to be possible.
 
 \section{Contribution}
-Idea not new, but application is. cf ICRA reviews
+\label{sec:chap3-contribution}
 
-To the authors' best knowledge there is no available algorithmic
-approach that addresses the problem of optimal motion planning for
-complex robot systems in cluttered environments.
+To our best knowledge there is no available algorithmic approach that
+addresses the global problem of optimal motion planning for complex
+robots, such as anthropomorphic systems, in the presence of
+arbitrarily complex obstacles.
 
-Our contribution is three-fold: first, we describe a simple method to
-automatically generate minimum bounding capsules around exact robot
-body geometries. Second, we use the bounding capsules to implement
-distance constraints for the solver and achieve (self-)collision
-avoidance. Finally, we propose a complete two-stage framework for
-optimal motion planning on complex robots. Given a start and goal task
-or configuration, the constrained path planner produces a
-collision-free path where kinematic constraints have been enforced,
-thus avoiding geometric local minima. This path is given as an initial
-guess to the \textsc{MUSCOD-II} solver, which generates a locally
-optimal trajectory while enforcing dynamic constraints and
-(self-)collision avoidance. This framework is successfully applied to
-generate optimal collision-free trajectories both in simulation and on
-the humanoid robot HRP-2.
+We therefore propose a new framework for optimal motion
+planning. Given a humanoid robot geometric and dynamic model, an exact
+model of the environment, start and end configurations, a robot
+contact stance, we first \emph{plan} a collision-free \emph{statically
+  balanced} path that satisfies kinematic constraints. We use the
+constrained RRT planner, which we presented in Section
+\ref{subsec:chap1-sampling-algorithms}, to this end. We convert the
+path to an initial trajectory using a suitable time parametrization,
+and we then \emph{optimize} it to generate a locally-optimal
+collision-free \emph{dynamically-balanced} trajectory. The
+\textsc{MUSCOD-II} solver uses a direct multiple shooting method to
+solve the formulated optimal control problem.
 
-Section \ref{path-planning} describes the path planning stage. The
-collision avoidance constraints are tackled in section
+In order to ensure (self-)collision avoidance, we choose to model
+distance constraints using bounding capsules around the robot exact
+body geometries. In previous applications, the capsule parameters were
+set by hand by the user for a given body. We therefore provide an
+automatic bounding capsule generation tool; it relies on an NLP
+formulation that allows us to find the minimum-volume capsules around
+bodies that are modeled by polyhedrons. The capsules allow us then to
+enforce collision-avoidance constraints between the robot, obstacles
+and itself.
+
+FIXME: ZMP balance at first, then move to non-coplanar multiple contact points?
+
+The full framework is successfully applied to generate optimal
+collision-free trajectories for a humanoid robot both in simulation
+and on the HRP-2.
+
+FIXME: Section \ref{path-planning} describes the path planning
+stage. The collision avoidance constraints are tackled in section
 \ref{distance-constraints}, and are used in the optimal control
 problem described in section \ref{framework}. Finally, section
 \ref{results} showcases results on the robot HRP-2.
-
-\section{Constrained Path Planning}
-\label{path-planning}
-
-\begin{figure}
-\centering
-\includegraphics[width=0.8\linewidth]
-                {src/chap3-optimal-motion-planning/figure/shelves-path.png}
-\caption{Path found by the path planner in a shelves environment.}
-\label{path}
-\end{figure}
-
-We use the constrained planner in \cite{dali09}, which is
-implemented with the motion planning library KineoWorks\texttrademark
-\cite{Laumond2006}. This planner allows generating a collision-free
-path, while guaranteeing that the solution path lies on a manifold of
-the configuration space. We want to generate for HRP-2 a
-collision-free path that guarantees its quasi-static balance when it
-is standing on both feet. We then define the manifold $\manifold$
-with the following stack of equality constraints:
-
-\begin{enumerate}
-  \item Right foot has a fixed 6D transformation,
-  \item Left foot has a fixed 6D transformation,
-  \item Center of mass vertical projection lies in the center of the
-    support polygon.
-\end{enumerate}
-
-Additionally, we would like to avoid choosing a single goal
-configuration \config{g}, but instead define a goal task
-\task{g}. This task can be defined by a sub-manifold
-$\goalmanifold$\thinspace of the planning manifold $\manifold$. For a
-simple object manipulation task, $\goalmanifold$\thinspace can be
-defined as the intersection between $\manifold$\thinspace and the
-manifold defined by the following stack of equality constraints:
-
-\begin{enumerate}
-  \item Gripper has the same 3D position as the object to grab.
-  \item Gripper thumb is oriented vertically.
-\end{enumerate}
-
-Given a start configuration \config{s} a planning manifold $\manifold$
-and a goal sub-manifold $\goalmanifold$, we first create a set of goal
-configurations \config{g} by sampling a fixed number of configurations
-in $\goalmanifold$, then we solve the path problem from \config{s} to
-\config{g}. The constrained planner diffuses trees from \config{s} and
-each configuration of \config{g}, and stops once at least one of the
-goal configurations is in the same connected component as
-\config{s}. A shortcut optimizer can then prune unnecessary waypoints
-and smooth the solution path. Figure \ref{path} shows an example where
-HRP-2 has to grab an object on the lower shelf and place it on the
-upper shelf.
 
 \section{(Self-)Collision Avoidance Constraints}
 \label{distance-constraints}
@@ -2245,6 +2243,58 @@ particular kinematic structure of the HRP-2. For instance, if both
 waist and chest are not in collision with the environment, we can be
 sure that it will be the same for the intermediate body linking
 them. We thus keep 23 capsule-environment pairs.
+
+\section{Constrained Path Planning}
+\label{path-planning}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.8\linewidth]
+                {src/chap3-optimal-motion-planning/figure/shelves-path.png}
+\caption{Path found by the path planner in a shelves environment.}
+\label{path}
+\end{figure}
+
+We use the constrained planner in \cite{dali09}, which is
+implemented with the motion planning library KineoWorks\texttrademark
+\cite{Laumond2006}. This planner allows generating a collision-free
+path, while guaranteeing that the solution path lies on a manifold of
+the configuration space. We want to generate for HRP-2 a
+collision-free path that guarantees its quasi-static balance when it
+is standing on both feet. We then define the manifold $\manifold$
+with the following stack of equality constraints:
+
+\begin{enumerate}
+  \item Right foot has a fixed 6D transformation,
+  \item Left foot has a fixed 6D transformation,
+  \item Center of mass vertical projection lies in the center of the
+    support polygon.
+\end{enumerate}
+
+Additionally, we would like to avoid choosing a single goal
+configuration \config{g}, but instead define a goal task
+\task{g}. This task can be defined by a sub-manifold
+$\goalmanifold$\thinspace of the planning manifold $\manifold$. For a
+simple object manipulation task, $\goalmanifold$\thinspace can be
+defined as the intersection between $\manifold$\thinspace and the
+manifold defined by the following stack of equality constraints:
+
+\begin{enumerate}
+  \item Gripper has the same 3D position as the object to grab.
+  \item Gripper thumb is oriented vertically.
+\end{enumerate}
+
+Given a start configuration \config{s} a planning manifold $\manifold$
+and a goal sub-manifold $\goalmanifold$, we first create a set of goal
+configurations \config{g} by sampling a fixed number of configurations
+in $\goalmanifold$, then we solve the path problem from \config{s} to
+\config{g}. The constrained planner diffuses trees from \config{s} and
+each configuration of \config{g}, and stops once at least one of the
+goal configurations is in the same connected component as
+\config{s}. A shortcut optimizer can then prune unnecessary waypoints
+and smooth the solution path. Figure \ref{path} shows an example where
+HRP-2 has to grab an object on the lower shelf and place it on the
+upper shelf.
 
 \section{Description of Optimal Motion Planning Framework}
 \label{framework}
@@ -2699,6 +2749,10 @@ included as a free variable in the optimal control problem, we will
 have a guarantee of success for the second stage. The complete
 framework would then always succeed in generating optimal
 trajectories.
+
+fixed set of contact points, although the framework can be extended to
+handle contact changes by sequentially optimizing identified contact
+phases, as it is the case in \cite{lengagne2011generation}.
 
 \section{Conclusion}
 In this chapter we propose a novel approach to tackle optimal control
