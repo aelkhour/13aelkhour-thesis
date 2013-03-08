@@ -1784,6 +1784,7 @@ from Equation \ref{eq:chap3-friction-cone} also need to be taken into
 account.
 
 \section{(Self-)Collision Avoidance}
+\label{sec:chap3-collision-avoidance}
 
 Besides generating dynamically feasible motions for an anthropomorphic
 system, we need make sure no collision occurs during the motion. Let
@@ -2047,7 +2048,10 @@ path to an initial trajectory using a suitable time parametrization,
 and we then \emph{optimize} it to generate a locally-optimal
 collision-free \emph{dynamically-balanced} trajectory. The
 \textsc{MUSCOD-II} solver uses a direct multiple shooting method to
-solve the formulated optimal control problem.
+solve the formulated optimal control problem. Note that this involves
+both finding a new parametrization for the trajectory, and reshaping
+the path in a geometrical sense, so it is not simply a problem of path
+tracking.
 
 In order to ensure (self-)collision avoidance, we choose to model
 distance constraints using bounding capsules around the robot exact
@@ -2059,7 +2063,8 @@ bodies that are modeled by polyhedrons. The capsules allow us then to
 enforce collision-avoidance constraints between the robot, obstacles
 and itself.
 
-FIXME: ZMP balance at first, then move to non-coplanar multiple contact points?
+FIXME: ZMP balance at first, then move to non-coplanar multiple
+contact points?
 
 The full framework is successfully applied to generate optimal
 collision-free trajectories for a humanoid robot both in simulation
@@ -2073,29 +2078,37 @@ problem described in section \ref{framework}. Finally, section
 
 \section{(Self-)Collision Avoidance Constraints}
 \label{distance-constraints}
-In path planning, Boolean collision queries are used to validate or
-invalidate configurations and hence the whole path. This is not enough
-in optimal control, especially for gradient-based solvers where
-constraint must be $C^1$. Furthermore we need to return negative
-values of the distance in case of collision to provide the solver the
-means to get out of collision.
 
-We choose to use bounding capsules, like in
-\cite{Kanoun2011}. Capsules are sphere swept segments; the
-inter-capsule distance can be simply found by computing the distance
-between the capsule axes, then subtracting their radii. Similarly, we
-can compute the distance between a capsule and a polyhedron by
-computing the distance between the capsule axis and the polyhedron,
-then subtracting the radius. The returned distance can then become
-negative in case of collision.
+Before providing a description of our optimal motion planning
+framework, we first focus in this section on building the collision
+avoidance constraints through the automatic generation of bounding
+capsules around the robot body geometries, and the automatic pruning
+of unnecessary distance pairs $\langle B_i,B_j\rangle$ and $\langle
+B_i,O\rangle$.
 
 \subsection{Computing minimum bounding capsules}
-In \cite{Kanoun2011}, bounding capsules parameters, i.e. the 2
-endpoints $\mathbf{e_1}, \mathbf{e_2}$ and the radius $r$, were set by
-hand to obtain the best fitting capsules around the body
-geometries. We propose here to automatically find these parameters by
-solving, offline and once for each body of the robot, the following
-optimization problem:
+
+Capsule can be represented as the union of a cylinder and two
+half-spheres, or sphere-swept segment. It is uniquely determined by
+its two segment endpoints $\mathbf{e_1}$, $\mathbf{e_2}$ and its
+radius $r$. Capsules are convex geometries, and have been widely used
+in Robotics and Computer Graphics as they provide a simple
+representation of more complex polyhedral geometries.
+
+In \cite{Kanoun2011}, bounding the capsules parameters are set by hand
+to obtain the best fitting capsules around the body geometries, which
+is not very practical especially if we want to use multiple robot
+geometric models. In \cite{eberly20073d}, a method is proposed to
+compute a bounding capsule of a set of vertices, but not necessarily
+the best fitting one. This method is based on first determining the
+capsule segment direction using a least-squares regression, setting
+the capsule radius by finding the farthest vertex from the line, and
+finally determining the segment length by trying to make the capsule
+spherical caps come as close as possible to each other.
+
+We propose here to automatically find minimum-volume capsule
+parameters by solving, offline and once for each body of the robot,
+the following optimization problem:
 
 \begin{equation}
   \min_{\mathbf{e_1}, \mathbf{e_2}, r} \ \ 
@@ -2105,144 +2118,195 @@ optimization problem:
 \ \ \ subject to:
 \begin{equation}
   \begin{array}{rcll}
-    r - d(\mathbf{p},\mathbf{e_1e_2}) & \ge & 0\mbox{, for all }
-    \mathbf{p} \in \mathcal{P}
+    r - d(\mathbf{\mathbf{v}},\mathbf{e_1e_2}) & \ge & 0\mbox{, for all }
+    \mathbf{v} \in \mathcal{P},
     \label{capsule-constraint}
   \end{array}
 \end{equation} 
+
 where $d(\mathbf{p},\mathbf{e_1e_2})$ is the distance of $\mathbf{p}$
 to line segment $\mathbf{e_1e_2}$.  Equations \ref{capsule-objective}
 and \ref{capsule-constraint} mean we want to find the minimum-volume
-capsule while ensuring all points $p$ of the underlying polyhedron
-$\mathcal{P}$ lie inside the capsule. HRP-2 has 41 bodies, each body
-polyhedron containing about 1000 points. We solve all 41 optimization
-problems with RobOptim \cite{roboptim, moulard2012optimisation} and
-the \textsc{IPOPT} solver \cite{Biegler2009} in less than 5s. Figure
-\ref{hrp2-capsule} shows the best fitting bounding capsules
-superimposed on the robot geometries.
+capsule while ensuring all vertices $\mathbf{v}$ of the underlying
+polyhedron $\mathcal{P}$ lie inside the capsule.
 
-Add figure 2 capsules with distance.
+The problem we defined above is a NLP with inequality constraints. It
+can be solved using either SQP or IPM methods, as long as we give
+suitable initial parameters $\mathbf{e_1}_0$, $\mathbf{e_2}_0$, and
+$r_0$. Luckily, a good initial guess can be provided by the bounding
+capsule method we presented earlier, as all constraints are satisfied
+and the initial volume is not far off the optimal volume.
 
-FIXME: Add figure with romeo, kuka, hrp2.
+It can be proved that a geometry is a bounding volume of a set of
+points $\mathcal{P}$ if and only if it is a bounding volume of its
+convex hull $\mathcal{H}_{\mathcal{P}}$, which is characterized by a
+lower vertex count than $\mathcal{P}$. We can use this property to our
+advantage: by first computing the convex hull and finding the
+minimum-volume capsule for $\mathcal{H}_{\mathcal{P}}$, we are sure to
+have better optimization performance as the number of constraints is
+greatly reduced, especially for non-convex geometries.
 
-Add computation times for poly to capsule, vs poly to convex hull to
-capsule.
+We implement our minimization problem with RobOptim \cite{roboptim,
+  moulard2012optimisation} and the \textsc{IPOPT} solver
+\cite{Biegler2009}, and we use our implementation\footnote{An
+  open-source implementation can be found at
+  \url{https://github.com/roboptim/roboptim-capsule/} and
+  \url{http://roboptim.net/roboptim-capsule/doxygen/1.0.1/}} to find
+the optimal bounding capsules for both HRP-2 and Romeo humanoid
+robots. Table \ref{tab:chap3-minimum-capsule} demonstrates how solving
+optimization problem instances for $\mathcal{H}_\mathcal{P}$ instead
+of $\mathcal{P}$ accelerates their convergence. Figures
+\ref{fig:chap3-hrp2-capsule} and \ref{fig:chap3-hrp2-capsule} show the
+best fitting bounding capsules superimposed over the original robot
+geometries.
 
-%%  & number of bodies & mean number of vertices per body & computation time without convex hull (s) & computation time with convex hull (s)
-%% hrp2 & 41 & ? & 46.8 & 7.50
-%% romeo & 46 & ? & 410 & 27.6
-
-Add figure poly, convex hull, capsule (superimposed?)
+\begin{table}
+  \renewcommand{\arraystretch}{1.3}
+  \caption{Performance of minimum-volume bounding capsules generation.}
+  \label{tab:chap3-minimum-capsule}
+  \centering
+  \begin{tabular}{|c|C{0.11\linewidth}|C{0.2\linewidth}|C{0.18\linewidth}|C{0.18\linewidth}|}
+    \hline
+    Robot & Body count & Mean vertex count per body & Computation time without convex hull (s) & Computation time with convex hull (s) \\
+    \hline
+    HRP-2 & 41 & 1526 & 46.8 & 7.50 \\ 
+    \hline
+    Romeo & 46 & 7033 & 410 & 27.6 \\
+    \hline
+  \end{tabular}
+\end{table}
 
 \begin{figure}
   \centering
-  \includegraphics[width=0.9\linewidth]
-                  {src/chap3-optimal-motion-planning/figure/hrp2-capsule-transparent.png}
-  \caption{Best fitting capsules for HRP-2}
-  \label{hrp2-capsule}
-\end{figure}
-
-\begin{figure}
-  \centering
-  \begin{subfigure}{0.48\columnwidth}
+  \begin{subfigure}{0.24\columnwidth}
     \centering
     \includegraphics[width = \columnwidth]
                     {src/chap3-optimal-motion-planning/figure/hrp2-full-mesh.png}
-    \caption{Initial invalid path.}
+    \caption{Original geometries.}
     \label{simple-patha}
   \end{subfigure}
-  \begin{subfigure}{0.48\columnwidth}
+  \begin{subfigure}{0.24\columnwidth}
     \centering
     \includegraphics[width = \columnwidth]
                     {src/chap3-optimal-motion-planning/figure/hrp2-convex-hull.png}
-    \caption{RRT path.}
+    \caption{Convex hull.}
     \label{simple-path-sola}
   \end{subfigure}
-  \begin{subfigure}{0.48\columnwidth}
+  \begin{subfigure}{0.24\columnwidth}
     \centering
     \includegraphics[width = \columnwidth]
                     {src/chap3-optimal-motion-planning/figure/hrp2-bounding-capsule.png}
-    \caption{Shortcut path.}
+    \caption{Initial capsule parameter guess.}
     \label{simple-FIXMEa}
   \end{subfigure}
-  \begin{subfigure}{0.48\columnwidth}
+  \begin{subfigure}{0.24\columnwidth}
     \centering
     \includegraphics[width = \columnwidth]
                     {src/chap3-optimal-motion-planning/figure/hrp2-capsule.png}
-    \caption{Shortcut path.}
+    \caption{Optimization result.}
     \label{simple-path-sol-shortcuta}
   \end{subfigure}
-  \caption{Paths for the test case.}
+  \caption{Minimum-volume bounding capsule generation for the HRP-2.}
+  \label{fig:chap3-hrp2-capsule}
 \end{figure}
 
 \begin{figure}
   \centering
-  \begin{subfigure}{0.48\columnwidth}
+  \begin{subfigure}{0.24\columnwidth}
     \centering
     \includegraphics[width = \columnwidth]
                     {src/chap3-optimal-motion-planning/figure/romeo-full-mesh.png}
-    \caption{Initial invalid path.}
+    \caption{Original geometries.}
     \label{simple-pathb}
   \end{subfigure}
-  \begin{subfigure}{0.48\columnwidth}
+  \begin{subfigure}{0.24\columnwidth}
     \centering
     \includegraphics[width = \columnwidth]
                     {src/chap3-optimal-motion-planning/figure/romeo-convex-hull.png}
-    \caption{RRT path.}
+    \caption{Convex hull.}
     \label{simple-path-solb}
   \end{subfigure}
-  \begin{subfigure}{0.48\columnwidth}
+  \begin{subfigure}{0.24\columnwidth}
     \centering
     \includegraphics[width = \columnwidth]
                     {src/chap3-optimal-motion-planning/figure/romeo-bounding-capsule.png}
-    \caption{Shortcut path.}
+    \caption{Initial capsule parameter guess.}
     \label{FIXMEb}
   \end{subfigure}
-  \begin{subfigure}{0.48\columnwidth}
+  \begin{subfigure}{0.24\columnwidth}
     \centering
     \includegraphics[width = \columnwidth]
                     {src/chap3-optimal-motion-planning/figure/romeo-capsule.png}
-    \caption{Shortcut path.}
+    \caption{Optimization result.}
     \label{simple-path-sol-shortcutb}
   \end{subfigure}
-  \caption{Paths for the test case.}
+  \caption{Minimum-volume bounding capsule generation for the Romeo.}
+  \label{fig:chap3-romeo-capsule}
 \end{figure}
 
-\subsection{Distance computation}
-As mentioned previously, for capsule-capsule distance pairs, we need
-to compute the distance between the two capsule axes then subtract the
-radii to obtain the real distance. We rely on the Wild Magic geometric
-library \cite{schneider2003geometric, wildmagic} to compute this
-distance in an average time of 2 $\mu$s.
+\subsection{Computing Distances for Pairs}
 
-Concerning capsule-polyhedron pairs, we rely on an implementation of
-OBB-Trees in the Kineo Collision Detection (KCD) library
-\cite{Laumond2006} for an efficient computation. For the environment
-in figure \ref{path}, the distance for one capsule-environment pair
-takes about 500 $\mu$s to be computed, since the environment is
-assumed to be perfectly modeled by polyhedron meshes.
+The optimal capsule parameters can now be used to compute distances
+for body-body and body-environment pairs. With respect to body-body
+distance pairs, we can compute their minimum distance by first
+computing the distance between the two capsule axes, then subtract
+their radii in order to obtain the real distance. We rely on the Wild
+Magic geometric library \cite{schneider2003geometric, wildmagic} to
+compute this distance in an average time of 2 $\mu$s.
 
-\subsection{Selection of pairs of bodies for distance computation}
-If we take into account all capsule-capsule pairs of the robot, we end
-up with $\frac{n(n - 1)}{2}$ possible pairs, with $n$ the number of
-bodies. This means that for a robot like HRP-2, we can have up to 820
-pairs and it can be very costly to evaluate the distance for all of
-them. Luckily, some bodies are either always colliding because they
-are adjacent in the kinematic tree, or never colliding due to the
-joint limits; the pairs corresponding to those bodies can be safely
-pruned. We use the tool described in \cite{planning-environment},
-which relies on finely exploring the configuration space and keeping
-track of colliding bodies, to save 510 useful pairs. Furthermore,
-since we are in the particular case of double-support motion, we can
-be sure that most of the leg bodies cannot collide with each other due
-to the additional kinematic constraints. We finally end up with 327
-capsule-capsule pairs that must be all evaluated to guarantee
-self-collision avoidance. Similarly, we can prune some of the 41
+Concerning capsule-environment pairs, as the environment is modeled by
+polyhedral meshes, we can compute their distance by computing the
+distance between the capsule axis and mesh, then subtract the capsule
+radius. State-of-the-art algorithms distance computation algorithms
+rely on building a hierarchical tree of simple bounding volumes around
+the mesh. In our work, we rely on an implementation of OBB-Trees in
+the Kineo Collision Detection (KCD) library to compute distances for
+capsule-environment pairs. For the environment in figure \ref{path},
+the distance for one capsule-environment pair takes about 500 $\mu$s
+to be computed, since the environment is assumed to be perfectly
+modeled by polyhedron meshes. Note that even for very efficient
+implementations, the tree traversal scheme in bounding volume
+hierarchies implies running multiple proximity queries and we cannot
+hope for good performance unless GPU-based implementations are used.
+
+\subsection{Body Distance Pairs Selection}
+
+We mentioned in Section \ref{sec:chap3-collision-avoidance} that if we
+were to take into account all body distance pairs of a robot, we could
+end up with $\frac{N_B(N_B - 1)}{2}$ possible pairs. This means that
+for a robot like HRP-2, we can have up to 820 pairs and it can be very
+costly to evaluate the distance for all of them. Luckily, some bodies
+are either always colliding because they are adjacent in the kinematic
+tree, or never colliding due to kinematic constraints; for the
+particular example of the HRP-2, its kinematic tree and joint limits
+are such that the head body can never collide with its chest or any of
+its feet. The pairs corresponding to those bodies can therefore be
+safely pruned.
+
+In order to avoid hand-checking of all pairs, we use the tool
+described in \cite{planning-environment}: it relies on finely
+exploring the configuration space, using a sampling-based planner such
+as RRT, and keeping track of colliding bodies. In the case of the
+HRP-2, this allows us to keep only 510 ``useful'' pairs out of 820
+pairs.
+
+As in the first part of our work, we consider the particular case of
+double-support motion, we can be sure that most of the leg bodies
+cannot collide with each other due to the additional kinematic
+constraints. This is a manual step, but it could be automated if
+additional kinematic constraints were taken into account in the
+previously described tool. We finally end up with 327 capsule-capsule
+pairs that must be all evaluated to guarantee self-collision
+avoidance.
+
+Similarly, we can do more effort and prune some of the
 capsule-environment pairs that do not need to be checked due to the
-particular kinematic structure of the HRP-2. For instance, if both
-waist and chest are not in collision with the environment, we can be
-sure that it will be the same for the intermediate body linking
-them. We thus keep 23 capsule-environment pairs.
+particular kinematic structure of a robot. In the case of HRP-2 for
+instance, if both waist and chest are not in collision with the
+environment, we can be sure that it will be the same for the
+intermediate body linking them. This case is not handled in the
+automated tool. Out of 41 potential capsule-environment pairs, we keep
+23 pairs.
 
 \section{Constrained Path Planning}
 \label{path-planning}
