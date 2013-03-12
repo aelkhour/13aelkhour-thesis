@@ -697,8 +697,8 @@ found iteratively.
 We are now ready to tackle \emph{Nonlinear programming (NLP)}, i.e. to
 solve the general problem from Equation \ref{eq:chap3-nlp}. Two of the
 most successful methods used nowadays to solve large-scale problems
-are \emph{Sequential Quadratic Program (SQP)} and \emph{Interior-Point
-  Methods (IPM)}.
+are \emph{Sequential Quadratic Programming (SQP)} and
+\emph{Interior-Point Methods (IPM)}.
 
 \subsubsection{Sequential Quadratic Programming}
 \label{subsubsec:chap3-sqp}
@@ -787,7 +787,7 @@ process (up to a specified tolerance) to retrieve a feasible solution.
 
 \subsubsection{Interior-Point Methods for Nonlinear Programming}
 
-We introduce briefly \emph{interior-point methods}, also known as
+We describe \emph{interior-point methods}, also known as
 \emph{log-barrier methods}. They propose an alternative to SQP and are
 also very powerful when used to solve large-scale NLP.
 
@@ -861,11 +861,13 @@ problem is then equivalent to minimizing the equality-constrained
 \emph{log-barrier function} $P(\mathbf{x};\mu)$ and making $\mu
 \rightarrow 0$.
 
-FIXME: Write algorithm? inner loop: quadratic approximations to find
-$\mathbf{x}^\star(\mu)$, outer loop: decrease $\mu$. To confirm.
-
-Move along central path $\{\mathbf{x}^\star(\mu_k)\}_k$: solution always
-feasible
+One way to solve the NLP is to is to start with an initial value of
+the parameter $\mu_0$. The associated log-barrier function problem is
+then solved, and the process is repeated while decreasing $\mu_k$
+towards 0. The log-barrier function problem solutions for the
+\emph{central path} $\{\mathbf{x}^\star(\mu_k)\}_k$, with the
+particularity that each iterate is feasible with respect to the
+original equality and inequality constraints.
 
 \subsubsection{Conclusion}
 
@@ -1551,8 +1553,8 @@ defined by the inequalities:
   \label{eq:chap3-friction-cone}
   \begin{array}{c}
     \mathbf{f}_{c_k}^{\top}\mathbf{u}_{c_k} \ge 0, \quad k=1,\dots,n_c, \\
-    \norm{\mathbf{f}_{c_k}^\bot} \le
-    \mu_s\norm{\mathbf{f}_{c_k}^\angle}, \quad k=1,\dots,n_c,
+    \norm{\mathbf{f}_{c_k}^\angle} \le
+    \mu_s\norm{\mathbf{f}_{c_k}^\bot}, \quad k=1,\dots,n_c,
   \end{array}
 \end{equation}
 
@@ -1638,7 +1640,7 @@ Dynamic balance is a necessary condition to the generation of safe and
 feasible motions. We describe here possible ways of including this
 condition in an OCP.
 
-\subsubsection{Dynamic Balance with Zero-Momentum Point}
+\subsubsection{Dynamic Balance with Zero-Moment Point}
 
 As we previously introduced in Section \ref{subsec:chap1-zmp} the ZMP,
 we simply recall that it gives simple dynamic balance conditions,
@@ -2039,9 +2041,9 @@ arbitrarily complex obstacles.
 
 We therefore propose a new framework for optimal motion
 planning. Given a humanoid robot geometric and dynamic model, an exact
-model of the environment, start and end configurations, a robot
+model of the environment, start and end configurations, and a robot
 contact stance, we first \emph{plan} a collision-free \emph{statically
-  balanced} path that satisfies kinematic constraints. We use the
+  balanced} path that satisfies all kinematic constraints. We use the
 constrained RRT planner, which we presented in Section
 \ref{subsec:chap1-sampling-algorithms}, to this end. We convert the
 path to an initial trajectory using a suitable time parametrization,
@@ -2049,9 +2051,9 @@ and we then \emph{optimize} it to generate a locally-optimal
 collision-free \emph{dynamically-balanced} trajectory. The
 \textsc{MUSCOD-II} solver uses a direct multiple shooting method to
 solve the formulated optimal control problem. Note that this involves
-both finding a new parametrization for the trajectory, and reshaping
-the path in a geometrical sense, so it is not simply a problem of path
-tracking.
+both finding a new time parametrization for the trajectory, and
+reshaping the path in a geometrical sense, so it is not simply a
+problem of optimal path tracking.
 
 In order to ensure (self-)collision avoidance, we choose to model
 distance constraints using bounding capsules around the robot exact
@@ -2307,6 +2309,18 @@ environment, we can be sure that it will be the same for the
 intermediate body linking them. This case is not handled in the
 automated tool. Out of 41 potential capsule-environment pairs, we keep
 23 pairs.
+
+\section{Optimal Motion Planning Framework}
+
+\begin{figure}
+  \centering
+      {\def\svgwidth{0.9\linewidth}
+        \subimport*{src/chap3-optimal-motion-planning/figure/}
+                   {omp-framework.pdf_tex}
+      }
+      \caption{FIXME}
+      \label{fig:chap3-omp-framework}
+\end{figure}
 
 \section{Constrained Path Planning}
 \label{path-planning}
