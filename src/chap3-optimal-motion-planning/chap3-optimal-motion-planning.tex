@@ -1408,9 +1408,9 @@ exploration might become too large to have tractable
 performance. Another problem arises from choosing the correct metric
 for choosing nearest neighbors, as well as the local optimal steering
 method. In \cite{Perez2012}, the authors propose a variant which uses
-the local linearization of a system to derive both coherent metrics
-and coherent extension method. Results have so far been only obtained
-on simple systems, and this method has yet to be tested on complex
+the local linearization of a system to derive both coherent metric and
+extension method. Results have so far been only obtained on simple
+systems, and this method has yet to be tested on complex
 ones. Nevertheless, RRT$^*$ is an interesting approach as only one
 algorithm is needed to achieve global optimal motion planning.
 
@@ -1934,8 +1934,8 @@ involving seamless extreme locomotion and manipulation
 \cite{mordatch2012discovery}. It is interesting here to point out the
 gradual convergence of the Robotics, Biomechanics and Computer
 Graphics fields as simulation models become more and more realistic
-and are able to take into account all kinds of physical interactions
-including gravity, actuator models, contact models, etc.
+and are able to take into account various kinds of physical
+interactions including gravity, actuator models, contact models, etc.
 
 Some humanoid motions are very hard, or even impossible to generate
 without optimal control methods. Indeed, dynamic motions greatly
@@ -1953,12 +1953,12 @@ proved to be very powerful tools to do so
 \bigskip
 
 In many cases, robots have to move in the presence of
-obstacles. Therefore we must make sure that resulting optimal policy
-does not lead to any collision between the robot and its environment
-or even itself. In \cite{dubowsky1986time}, time-optimal
+obstacles. Therefore we must make sure that the resulting optimal
+policy does not lead to any collision between the robot and its
+environment or even itself. In \cite{dubowsky1986time}, time-optimal
 collision-free trajectories are computed for a 6-DoF manipulator by
 adding, to the OCP objective function, a penalty term that computes
-the distance to obstacles and allows avoiding obstacles. Penalty terms
+the distance to obstacles and allows avoiding them. Penalty terms
 are also used in \textsc{CHOMP} \cite{ratliff2009chomp}, an efficient
 optimal control solver which relies on a covariant gradient descent
 technique, and in \textsc{STOMP} \cite{Kalakrishnan2011}, a similar
@@ -1981,8 +1981,8 @@ environments. Furthermore, as no contact body position or dynamic
 balance tasks are considered, fast motions cannot be generated with
 this framework without compromising the robot dynamic balance.
 
-In the general case, minimizing an objective function that contains
-transcribed constraints as penalty terms allows building unconstrained
+In the general case, minimizing an objective function which contains
+constraints transcribed as penalty terms allows building unconstrained
 optimal control problems. Good convergence rates can then be obtained
 as long as the problem dimension is small, and as long as the sum of
 too many penalty functions does not lead to an increased nonlinearity
@@ -2014,7 +2014,7 @@ planners which generally produce collision-free paths of poor-quality
 can be seen as a local optimization method. In
 \cite{geraerts2007creating}, several shortcut heuristics are developed
 to increase a path quality and clearance from obstacles, but they can
-be used to shorten a path length with respect to a given distance only
+be used to shorten a path length with respect to a given metric only
 in the configuration space as time is not considered. A suitable
 shortcut heuristic for optimal control of simple robotic arms is
 described in \cite{hauser2010fast}: starting from an initial
@@ -2022,14 +2022,14 @@ collision-free path given by a RRT path, an initial trajectory is
 placed on the path, making stops at the milestones to ensure it is
 still collision-free, then a shortcut heuristic is called several
 times to reduce the trajectory duration under bounded velocity and
-acceleration constraints, while making sure the result it
+acceleration constraints, while making sure the result is still
 collision-free. Similarly, a method that combines a sampling-based
-planner and the \textsc{STOMP} optimizer is proposed
+planner and the \textsc{STOMP} optimizer is proposed, see
 \cite{mainprice2012planification}. Note that in both previous methods,
 results were successfully obtained for simple 7-DoF arms; as they do
 not allow enforcing complex constraints such as closed-loop
 constraints or dynamic balance, achieving optimal motion planning for
-anthropomorphic systems with such methods does not seems to be possible.
+anthropomorphic systems with such methods does not seem to be possible.
 
 \section{Contribution}
 \label{sec:chap3-contribution}
@@ -2059,9 +2059,9 @@ In order to ensure (self-)collision avoidance, we choose to model
 distance constraints using bounding capsules around the robot exact
 body geometries. In previous applications, the capsule parameters were
 set by hand by the user for a given body. We therefore provide an
-automatic bounding capsule generation tool; it relies on an NLP
+automatic bounding capsule generation tool; it relies on a NLP
 formulation that allows us to find the minimum-volume capsules around
-bodies that are modeled by polyhedrons. The capsules allow us then to
+bodies which are modeled by polyhedrons. The capsules allow us then to
 enforce collision-avoidance constraints between the robot, obstacles
 and itself.
 
@@ -2259,10 +2259,10 @@ compute this distance in an average time of 2 $\mu$s.
 Concerning capsule-environment pairs, as the environment is modeled by
 polyhedral meshes, we can compute their distance by computing the
 distance between the capsule axis and mesh, then subtract the capsule
-radius. State-of-the-art algorithms distance computation algorithms
-rely on building a hierarchical tree of simple bounding volumes around
-the mesh. In our work, we rely on an implementation of OBB-Trees in
-the Kineo Collision Detection (KCD) library to compute distances for
+radius. State-of-the-art distance computation algorithms rely on
+building a hierarchical tree of simple bounding volumes around the
+mesh. In our work, we rely on an implementation of OBB-Trees in the
+Kineo Collision Detection (KCD) library to compute distances for
 capsule-environment pairs. For the environment in figure \ref{path},
 the distance for one capsule-environment pair takes about 500 $\mu$s
 to be computed, since the environment is assumed to be perfectly
@@ -2276,23 +2276,23 @@ hope for good performance unless GPU-based implementations are used.
 We mentioned in Section \ref{sec:chap3-collision-avoidance} that if we
 were to take into account all body distance pairs of a robot, we could
 end up with $\frac{N_B(N_B - 1)}{2}$ possible pairs. This means that
-for a robot like HRP-2, we can have up to 820 pairs and it can be very
-costly to evaluate the distance for all of them. Luckily, some bodies
-are either always colliding because they are adjacent in the kinematic
-tree, or never colliding due to kinematic constraints; for the
-particular example of the HRP-2, its kinematic tree and joint limits
-are such that the head body can never collide with its chest or any of
-its feet. The pairs corresponding to those bodies can therefore be
-safely pruned.
+for a robot like HRP-2 with 41 bodies, we can have up to 820 pairs and
+it can be very costly to evaluate the distance for all of
+them. Luckily, some bodies are either always colliding because they
+are adjacent in the kinematic tree, or never colliding due to
+kinematic constraints; for the particular example of the HRP-2, its
+kinematic tree and joint limits are such that the head body can never
+collide with its chest or any of its feet. The pairs corresponding to
+those bodies can therefore be safely pruned.
 
 In order to avoid hand-checking of all pairs, we use the tool
-described in \cite{planning-environment}: it relies on finely
+implemented in \cite{planning-environment}: it relies on finely
 exploring the configuration space, using a sampling-based planner such
 as RRT, and keeping track of colliding bodies. In the case of the
 HRP-2, this allows us to keep only 510 ``useful'' pairs out of 820
 pairs.
 
-As in the first part of our work, we consider the particular case of
+As in all our examples, we consider the particular case of
 double-support motion, we can be sure that most of the leg bodies
 cannot collide with each other due to the additional kinematic
 constraints. This is a manual step, but it could be automated if
@@ -2311,19 +2311,22 @@ automated tool. Out of 41 potential capsule-environment pairs, we keep
 23 pairs.
 
 \section{Optimal Motion Planning Framework}
+\label{sec:chap3-omp-framework}
 
-\begin{figure}
-  \centering
-      {\def\svgwidth{0.9\linewidth}
-        \subimport*{src/chap3-optimal-motion-planning/figure/}
-                   {omp-framework.pdf_tex}
-      }
-      \caption{FIXME}
-      \label{fig:chap3-omp-framework}
-\end{figure}
+Now that we have defined collision avoidance constraints, we can build
+the full optimal motion planning framework. It can be decomposed into
+two main stages, namely constrained path planning and optimal, with an
+intermediate stage that builds a time parametrization over the path
+that is generated by the planner.
 
-\section{Constrained Path Planning}
-\label{path-planning}
+In our description, we focus on generating collision-free trajectories
+for the HRP-2 in the case both its feet remain in the same position on
+a horizontal floor. We choose to minimumize the integral, over a fixed
+duration, of the generalized square jerk $\dddot{\mathbf{q}(t)}$; this
+helps obtain smooth and natural looking motions.
+
+\subsection{Constrained Path Planning}
+\label{subsec:chap3-path-planning}
 
 \begin{figure}
 \centering
@@ -2370,18 +2373,41 @@ in $\goalmanifold$, then we solve the path problem from \config{s} to
 each configuration of \config{g}, and stops once at least one of the
 goal configurations is in the same connected component as
 \config{s}. A shortcut optimizer can then prune unnecessary waypoints
-and smooth the solution path. Figure \ref{path} shows an example where
-HRP-2 has to grab an object on the lower shelf and place it on the
-upper shelf.
+and shorten the solution path. Figure \ref{path} shows an example
+where HRP-2 has to grab an object on the lower shelf and place it on
+the upper shelf.
 
-\section{Description of Optimal Motion Planning Framework}
-\label{framework}
+\subsection{Time Parametrization for Initial Trajectory}
+\label{subsec:chap3-time-parametrization}
 
-Now that we have properly set distance pairs, we can establish a
-complete formulation of the optimal control problem for the second
-stage of our optimal motion planning framework.
+The constrained path planner generates a collision-free statically
+balanced path where the kinematic constraints are enforced, but we
+still need to apply a time parametrization before feeding it to the
+optimal control solver. We want to minimize the sum of square jerks;
+\cite{Flash1985} shows that an unconstrained minimum-jerk trajectory
+is a polynomial of degree 5 which can be explicitly computed if the
+initial and final states are known. We choose then to place
+minimum-jerk trajectories between each pair of path waypoints,
+assuming they start and end at zero velocity and acceleration. This
+ensures that the configuration $\mathbf{q}(t)$ follows exactly the
+solution path and that collision avoidance constraints are not
+violated.
+
+As we rely on \textsc{MUSCOD-II} which is a multiple-shooting optimal
+control solver, the minimum-jerk trajectories that have been computed
+are discretized along the state and control grid. Figure \ref{asd}
+shows an example where the time grid has 20 sub-intervals and a
+duration of 2 seconds, the control is a piecewise linear function
+representing the jerk, and the state is comprised of the position,
+velocity and acceleration. Note that as only the nodes $\mathbf{s}_i$
+are known, the remainder of the state trajectory can be obtained using
+the control representation and successive time integrations.
 
 \subsection{Optimal Control Problem Formulation}
+
+The optimization solver will then reshape this initial guess
+while enforcing all constraints, leading to a smooth motion without
+intermediate stops.
 
 \subsubsection{Objective function}
 
@@ -2407,10 +2433,9 @@ and we define the state and control variables to be:
 \subsubsection{Equality and inequality constraints}
 
 \paragraph{Joint constraints}
-% and mechanical structure
 Each actuated joint is subject to physical limitations of its
-underlying actuator. Box constraints on angular, speed and torque
-limits are then added as:
+underlying actuator and mechanical structure. Box constraints on
+angular, speed and torque limits are then added as:
 
 \begin{equation}
   \begin{array}{rcccl}
@@ -2424,9 +2449,8 @@ limits are then added as:
 \paragraph{Dynamic balance}
 The robot is submitted in our case to multiple coplanar contact
 reaction forces from the ground. We can then express the dynamic
-balance constraint using the Zero-Moment Point (ZMP)
-\cite{vukobratovic1990biped}, which has to remain inside the robot
-support polygon defined by its feet.
+balance constraint using the whole-body ZMP, which has to remain
+inside the robot support polygon defined by its feet.
 
 These constraints can be written as for any $t\in[0,T]$:
 \begin{equation}
@@ -2449,9 +2473,9 @@ We use the capsule-capsule and capsule-environment pairs defined in
 robot, we check that distances for pairs of bodies and pairs of body
 and obstacle are positive to ensure (self-)collision avoidance. We
 first tried to add one constraint per pair, which added up to $(327 +
-23)*n_{ms}$ constraints, where $n_{ms}$ is the number of multiple
-shooting nodes in \textsc{MUSCOD-II}. This led to poor performance as
-the solver systematically went beyond the threshold number of
+23)*n_{ms}$ constraints, where $n_{ms}$ is the number of shooting
+nodes in \textsc{MUSCOD-II}. This led to poor performance as the
+solver systematically went beyond the threshold number of
 iterations. We hence propose to group all pairs for each single body
 and define as an inequality constraint, the minimum distance of the
 body to other bodies and to the obstacles being positive.
@@ -2464,20 +2488,6 @@ and converges iteratively towards the locally optimal solution. It is
 then obvious that the initial guess plays an important role in the
 successful determination of the final solution and the convergence
 speed.
-
-The constrained path planner generates a collision-free path where the
-kinematic constraints are enforced, but we still need to apply a time
-parametrization before feeding it to the optimization solver. We want
-to minimize the sum of square jerks; \cite{Flash1985} shows that an
-unconstrained minimum-jerk trajectory is a polynomial of degree 5
-which can be explicitly computed if the initial and final states are
-known. We choose then to place minimum-jerk trajectories between each
-pair of path waypoints, assuming they start and end at zero velocity
-and acceleration. This ensures that the configuration $\mathbf{q}(t)$
-follows exactly the solution path and that collision avoidance
-constraints are not violated. The optimization solver will then
-reshape this initial guess while enforcing all constraints, leading to
-a smooth motion without intermediate stops.
 
 In order to solve a finite-dimension optimal problem, we need to
 discretize both controls and constraints. We thus define the control
@@ -2805,7 +2815,12 @@ scenarios are available in the attached file.
   \end{tabular}
 \end{table}
 
-\subsection{Discussion}
+\section{Extension to Non-coplanar Contact Points}
+\label{sec:chap3-noncoplanar-contact-points}
+
+Preliminary results for test case.
+
+\section{Limitations and Discussions}
 \label{discussion}
 
 In subsection \ref{test-case}, we demonstrate in a simple example the

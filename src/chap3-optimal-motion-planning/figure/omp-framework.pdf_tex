@@ -36,7 +36,7 @@
   }%
   \providecommand\rotatebox[2]{#2}%
   \ifx\svgwidth\undefined%
-    \setlength{\unitlength}{610.07947795bp}%
+    \setlength{\unitlength}{607.89227092bp}%
     \ifx\svgscale\undefined%
       \relax%
     \else%
@@ -48,15 +48,15 @@
   \global\let\svgwidth\undefined%
   \global\let\svgscale\undefined%
   \makeatother%
-  \begin{picture}(1,0.37396767)%
+  \begin{picture}(1,0.22244895)%
     \put(0,0){\includegraphics[width=\unitlength]{omp-framework.pdf}}%
-    \put(0.07824255,0.32969604){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{joint limits}}}%
-    \put(0.07824255,0.27724392){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{kinematic constraints}}}%
-    \put(0.07824255,0.22479173){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{static balance}}}%
-    \put(0.07824255,0.17233955){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{collision detection}}}%
-    \put(0.60538697,0.32969601){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{joint limits}}}%
-    \put(0.60538697,0.27724389){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{kinematic constraints}}}%
-    \put(0.60538697,0.22479171){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{static balance}}}%
-    \put(0.60538697,0.17233953){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{collision detection}}}%
+    \put(0.0179893,0.17801804){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{joint limits}}}%
+    \put(0.0179893,0.12537719){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{kinematic constraints}}}%
+    \put(0.0179893,0.07273628){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{static balance}}}%
+    \put(0.0179893,0.02009537){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{collision detection}}}%
+    \put(0.59177518,0.17801801){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{joint limits}}}%
+    \put(0.59177518,0.12537716){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{kinematic constraints}}}%
+    \put(0.59177518,0.07273626){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{static balance}}}%
+    \put(0.59177518,0.02009535){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{collision detection}}}%
   \end{picture}%
 \endgroup%

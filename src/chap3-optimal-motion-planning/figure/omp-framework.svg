@@ -24,17 +24,24 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.7"
-     inkscape:cx="341.06923"
-     inkscape:cy="863.97114"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="397.68629"
+     inkscape:cy="801.87168"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      showgrid="false"
      inkscape:window-width="1440"
      inkscape:window-height="825"
      inkscape:window-x="0"
-     inkscape:window-y="24"
-     inkscape:window-maximized="1" />
+     inkscape:window-y="148"
+     inkscape:window-maximized="1"
+     showguides="true"
+     inkscape:guide-bbox="true">
+    <sodipodi:guide
+       orientation="1,0"
+       position="817.21341,751.55349"
+       id="guide3990" />
+  </sodipodi:namedview>
   <metadata
      id="metadata7">
     <rdf:RDF>
@@ -54,154 +61,142 @@
     <rect
        style="fill:#fffcc3;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
        id="rect2985"
-       width="258.578"
-       height="283.18134"
-       x="40.488148"
+       width="321.20749"
+       height="167.01379"
+       x="-5.9788694"
        y="30.169863"
        ry="14.934553" />
     <text
        xml:space="preserve"
        style="font-size:28px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
-       x="98.489876"
+       x="6.0228586"
        y="62.917763"
        id="text3809"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan3811"
-         x="98.489876"
-         y="62.917763">joint limits</tspan></text>
+         x="6.0228586"
+         y="62.917763">Joint limits</tspan></text>
     <path
        style="fill:#fffcc3;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
-       d="m 39.929035,73.01929 259.104135,0"
+       d="m -6.5379821,73.01929 320.7234421,0"
        id="path3813"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cc" />
     <text
        xml:space="preserve"
        style="font-size:28px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
-       x="98.489876"
+       x="6.0228586"
        y="102.91772"
        id="text3809-9"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan3811-1"
-         x="98.489876"
-         y="102.91772">kinematic constraints</tspan></text>
+         x="6.0228586"
+         y="102.91772">Kinematic constraints</tspan></text>
     <path
        style="fill:#fffcc3;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
-       d="m 39.929035,113.01925 259.104125,0"
+       d="m -6.5379821,113.01925 320.7234321,0"
        id="path3813-4"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cc" />
     <text
        xml:space="preserve"
        style="font-size:28px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
-       x="98.489876"
+       x="6.0228586"
        y="142.91772"
        id="text3809-8"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan3811-4"
-         x="98.489876"
-         y="142.91772">static balance</tspan></text>
+         x="6.0228586"
+         y="142.91772">Static balance</tspan></text>
     <path
        style="fill:#fffcc3;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
-       d="m 39.929035,153.01925 259.104125,0"
+       d="m -6.5379821,153.01925 321.7335821,0"
        id="path3813-3"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cc" />
     <text
        xml:space="preserve"
        style="font-size:28px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
-       x="98.489876"
+       x="6.0228586"
        y="182.91772"
        id="text3809-7"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
          id="tspan3811-2"
-         x="98.489876"
-         y="182.91772">collision detection</tspan></text>
-    <path
-       style="fill:#fffcc3;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
-       d="m 39.929035,193.01925 259.104125,0"
-       id="path3813-7"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cc" />
+         x="6.0228586"
+         y="182.91772">Collision avoidance</tspan></text>
     <rect
-       style="fill:#fffcc3;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
-       id="rect2985-4"
-       width="258.578"
-       height="283.18134"
-       x="442.48813"
+       style="fill:#d6e3e3;fill-opacity:1;stroke:#000000;stroke-width:2;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+       id="rect2985-2"
+       width="321.20749"
+       height="167.01379"
+       x="430.02115"
        y="30.169882"
        ry="14.934553" />
     <text
        xml:space="preserve"
        style="font-size:28px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
-       x="500.48987"
+       x="442.02286"
        y="62.917786"
-       id="text3809-2"
+       id="text3809-77"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
-         id="tspan3811-5"
-         x="500.48987"
-         y="62.917786">joint limits</tspan></text>
+         id="tspan3811-21"
+         x="442.02286"
+         y="62.917786">Joint limits</tspan></text>
     <path
        style="fill:#fffcc3;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
-       d="m 441.92904,73.01931 259.10412,0"
-       id="path3813-1"
+       d="m 429.46202,73.01931 320.72345,0"
+       id="path3813-9"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cc" />
     <text
        xml:space="preserve"
        style="font-size:28px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
-       x="500.48987"
+       x="442.02286"
        y="102.91774"
-       id="text3809-9-9"
+       id="text3809-9-5"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
-         id="tspan3811-1-9"
-         x="500.48987"
-         y="102.91774">kinematic constraints</tspan></text>
+         id="tspan3811-1-5"
+         x="442.02286"
+         y="102.91774">Kinematic constraints</tspan></text>
     <path
        style="fill:#fffcc3;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
-       d="m 441.92904,113.01927 259.10412,0"
-       id="path3813-4-6"
+       d="m 429.46202,113.01927 320.72342,0"
+       id="path3813-4-3"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cc" />
     <text
        xml:space="preserve"
        style="font-size:28px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
-       x="500.48987"
+       x="442.02286"
        y="142.91774"
-       id="text3809-8-3"
+       id="text3809-8-7"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
-         id="tspan3811-4-6"
-         x="500.48987"
-         y="142.91774">static balance</tspan></text>
+         id="tspan3811-4-9"
+         x="442.02286"
+         y="142.91774">Dynamic balance</tspan></text>
     <path
        style="fill:#fffcc3;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
-       d="m 441.92904,153.01927 259.10412,0"
-       id="path3813-3-7"
+       d="m 429.46202,153.01927 321.73358,0"
+       id="path3813-3-0"
        inkscape:connector-curvature="0"
        sodipodi:nodetypes="cc" />
     <text
        xml:space="preserve"
        style="font-size:28px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Bitstream Vera Sans"
-       x="500.48987"
+       x="442.02286"
        y="182.91774"
-       id="text3809-7-1"
+       id="text3809-7-2"
        sodipodi:linespacing="125%"><tspan
          sodipodi:role="line"
-         id="tspan3811-2-1"
-         x="500.48987"
-         y="182.91774">collision detection</tspan></text>
-    <path
-       style="fill:#fffcc3;fill-opacity:1;fill-rule:nonzero;stroke:#000000;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0"
-       d="m 441.92904,193.01927 259.10412,0"
-       id="path3813-7-1"
-       inkscape:connector-curvature="0"
-       sodipodi:nodetypes="cc" />
+         id="tspan3811-2-0"
+         x="442.02286"
+         y="182.91774">Collision avoidance</tspan></text>
   </g>
 </svg>
