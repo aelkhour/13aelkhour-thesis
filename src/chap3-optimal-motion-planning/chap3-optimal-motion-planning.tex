@@ -3082,6 +3082,20 @@ each of the four foot vertices, which amounts to a total of 12
 forces. We set the motion duration to $0.6$s in order to create a fast
 trajectory.
 
+Let the \emph{center of pressure (CoP)} be the contact point
+barycenter, weighted by the normal contact forces. We plot the CoM,
+ZMP and CoP in Figure
+\ref{fig:chap3-contact-point6s-final-contact-edge}. Interestingly, the
+ZMP and the CoP coincide over the shooting nodes, and differ only in
+between, which confirms that the new dynamic balance formulation is
+equivalent to the one using the ZMP when all contact points lie in the
+horizontal plane. We also notice that the ZMP is not always inside the
+support polygon as the dynamic balance constraints are not enforced
+over the sub-intervals. Figure
+\ref{fig:chap3-contact-point6s-final-contact-reduced} shows the
+resulting ZMP and CoP trajectories when placing contact forces on a
+reduced support polygon vertices.
+
 \begin{figure}
   \centering
   \begin{subfigure}{0.49\linewidth}
@@ -3092,6 +3106,8 @@ trajectory.
                        {contact-point6s-final-contact.pdf_tex}
           }
         }
+        \caption{Contact forces applied at the foot edge vertices.}
+        \label{fig:chap3-contact-point6s-final-contact-edge}
   \end{subfigure}
   \begin{subfigure}{0.49\linewidth}
     \centering
@@ -3101,8 +3117,10 @@ trajectory.
                        {contact-point6s-final-point5contact-contact.pdf_tex}
           }
         }
+        \caption{Contact forces applied on reduced support polygon.}
+        \label{fig:chap3-contact-point6s-final-contact-reduced}
   \end{subfigure}
-  \caption{FIXME Martial arts scenario, phase 2: trajectories of the ZMP and
+  \caption{Martial arts scenario, phase 2: trajectories of the ZMP and
     the CoP computed from the contact forces. Left: the dynamic
     balance constraints are enforced at the nodes, but the ZMP goes
     out the support polygon in two sub-intervals. Right: the ZMP stays
@@ -3110,6 +3128,19 @@ trajectory.
     constraints and, leading to a reduced support polygon, are used.}
   \label{fig:chap3-contact-point6s-final-contact}
 \end{figure}
+
+We show in Figure \ref{fig:chap3-contact-point6s-final-f} the normal
+contact force values over time. Note that as the forces are required
+to be non-vanishing, their normal components remain positive during
+the whole motion. We also show the floating joint generalized force
+constraint value in Figure
+\ref{fig:chap3-contact-point6s-final-f-tau}; as expected, all
+components are equal to zero at the shooting nodes, but the constraint
+are not properly enforced in the sub-intervals. The values may seem
+high, but they should be compared with other forces to which the robot
+is subject, such as the gravity force. For instance the red and blue
+line correspond to linear force components, and they represent less
+than 5\% of the HRP2 weight, which is around 550N.
 
 \begin{figure}
   \centering
@@ -3131,9 +3162,14 @@ trajectory.
           }
         }
   \end{subfigure}
-  \caption{FIXME Martial arts scenario, phase 2: .}
+  \caption{Martial arts scenario, phase 2: Left and right normal
+    contact forces. All normal forces remain positive during the
+    motion, and are computed to ensure dynamic balance.}
   \label{fig:chap3-contact-point6s-final-f}
 \end{figure}
+
+Finally, we confirm in Figure \ref{fig:chap3-contact-point6s-final-d}
+that the collision avoidance constraints are properly enforced.
 
 \begin{figure}
   \centering
@@ -3143,7 +3179,9 @@ trajectory.
                      {contact-point6s-final-point5contact-tau.pdf_tex}
         }
       }
-  \caption{FIXME Martial arts scenario, phase 2}
+  \caption{Martial arts scenario, phase 2: floating joint generalized
+    torque evolution over time. It is required to be equal to 0 in
+    order to obtain dynamic balance.}
   \label{fig:chap3-contact-point6s-final-tau}
 \end{figure}
 
@@ -3155,9 +3193,18 @@ trajectory.
                      {contact-point6s-final-d.pdf_tex}
         }
       }
-  \caption{FIXME Martial arts scenario, phase 2}
+  \caption{Martial arts scenario, phase 2: collision avoidance
+    constraints evolution over time. The constraint violation does not
+    exceed 2mm on the sub-intervals.}
   \label{fig:chap3-contact-point6s-final-d}
 \end{figure}
+
+In this work, we only tried enforcing dynamic balance constraints with
+a contact force formulation in the case of horizontal coplanar contact
+points. The same formulation can luckily be used for cases where the
+contact points are not coplanar, e.g. where HRP-2 stands on an uneven
+floor or uses its upper limbs to go in contact with the
+environment. We leave this for future work.
 
 \section{Limitations and Discussions}
 \label{discussion}
@@ -3240,19 +3287,38 @@ finely discretized, constraints can be verified almost everywhere on
 the trajectory.
 
 \paragraph{Extension to non-coplanar contacts}
-first part limited to coplanar contact points, second part formulation
-allows optimization for non-coplanar contact points. But we still need
-to plan statically balanced paths see \cite{bretl2006motion}.
+We showed in Section \ref{sec:chap3-noncoplanar-contact-points}
+preliminary results of optimal control with a unilateral contact force
+formulation which ensures balance. While we only applied it to
+horizontal coplanar contact points, it can be used in the same way to
+generate optimal motions with non-coplanar contact points. If we want
+to handle correctly such cases in our optimal motion planning
+framework, we equally need to plan statically balanced paths for
+non-coplanar contact points. This implies redefining the planning
+manifold $\manifold$ in order to enforce a generic stability criterion,
+as described in \cite{bretl2006motion}, where a configuration and
+contact forces are computed such that static balance is obtained.
 
-\paragraph{Towards collision-free walking optimization}
-fixed set of contact points, although the framework can be extended to
-handle contact changes by sequentially optimizing identified contact
-phases, as it is the case in \cite{lengagne2011generation}. Another
-solution: reformulate problem to take into account changing contacts
-through a linear complementarity constraint between a contact point
-distance to the obstacles and the contact normal reaction force, such
-as in \cite{posa2012direct, tassa2012synthesis}. Use small-space for
-planning phase, nicolas perrin?
+\paragraph{Towards collision-free locomotion optimization}
+In this work, we focused on generation motions under the assumption
+that the set of contact points is fixed during the whole motion. It
+would be however interesting to consider optimal motion planning for
+the more general case of locomotion, manipulation, or both. As in
+\cite{lengagne2011generation}, our framework could be extended, by
+planning and optimizing sequentially for multiple phases, where each
+phase is defined by a fixed set of contact points. This approach
+requires us to first plan the contact stance sequence which cannot be
+changed later on.
+
+An alternative solution would be to reformulate the OCP so that
+changing contact point sets are taken into account, e.g. through a
+linear complementarity constraint between a contact point distance to
+obstacles and the normal contact force, as proposed in
+\cite{posa2012direct, tassa2012synthesis,
+  mordatch2012discovery}. Collision avoidance can be integrated in
+this process by first planning a draft path, using high-level planners
+such as the one we described in Chapter 2, and letting the optimizer
+decide which contact points to use, and when to use them.
 
 \section{Conclusion}
 In this chapter we propose a novel approach to tackle optimal control
@@ -3266,5 +3332,3 @@ Our framework can benefit from improvements to increase its
 usability. Future work will consider non-coplanar contacts, as well as
 release the robot from its fixed support constraints in order to
 accomplish optimal locomotion planning.
-
-FIXME: add transition towards general conclusion.
