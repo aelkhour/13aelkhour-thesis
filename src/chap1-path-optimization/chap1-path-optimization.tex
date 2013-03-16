@@ -1,34 +1,6 @@
 \chapter{Path Optimization for Humanoid Walk Planning: an Efficient Approach}
 \label{chap:path-optim}
 
-The problem of humanoid motion planning can be defined as the
-following: given a starting configuration, say a position, we would
-like an anthropomorphic system, say a humanoid robot or a digital
-actor, to reach a goal configuration if it is possible. Obviously such
-a system cannot move instantaneously, so it will have to travel
-continuously in the environment surrounding it to reach its goal. The
-environment will usually not be empty, as it will contain at least the
-floor that supports the system. It might also contain entities, moving
-or static, against which we do not want the system to collide in order
-to avoid damaging either the entities or the system, or
-both. Additionally, we want to avoid self-collisions between the
-different limbs of the system. Hence, finding a solution to the
-problem of humanoid walk planning consists in finding a continuous
-motion connecting the start configuration to the goal configuration,
-such that the anthropomorphic system is never in collision with the
-environment or itself when executing this motion.
-
-While the found solution is guaranteed to be collision-free, we still
-know nothing about its quality. Let us assume that we want to minimize
-the duration of the system motion when traveling from a configuration
-to another. We could then solve the same motion planning problem,
-i.e. a problem with the same start and goal configurations and the
-same environment, by finding either a collision-free fast motion or
-another motion that takes a very long time to reach the goal
-configuration. Hence, we would like to impose more constraints on the
-humanoid motion planning problem in order to find motions that are
-both collision-free and ``nice''.
-
 This chapter deals with path optimization for humanoid walk planning
 in cluttered environments. Under the assumption that the humanoid
 robot will walk on a flat floor in a perfectly modeled static
