@@ -1183,9 +1183,10 @@ sparse problems, such as \textsc{SNOPT} \cite{gill2002snopt} and \textsc{IPOPT}
   \end{array}
 \end{equation} 
 
-FIXME: state (and not control) parametrization: special case of direct
-collocation. works for problems where the input controls and state
-derivatives can be easily derived from the state. \cite{sirinesa1981}
+FIXME: Using splines : state (and not control) parametrization:
+special case of direct collocation. works for problems where the input
+controls and state derivatives can be easily derived from the
+state. \cite{sirinesa1981}
 
 To conclude, direct collocation methods transcribe the OCP into a
 large-scale, but very sparse NLP, which can be solved by efficient
@@ -2067,18 +2068,20 @@ bodies which are modeled by polyhedrons. The capsules allow us then to
 enforce collision-avoidance constraints between the robot, obstacles
 and itself.
 
-FIXME: ZMP balance at first, then move to multiple (non-coplanar?)
-contact points
+To ensure dynamic balance during the robot motion, most of the results
+we present on the ZMP criterion; we introduce later on some
+preliminary results when using a multiple contact force formulation.
 
 The full framework is successfully applied to generate optimal
 collision-free trajectories for a humanoid robot both in simulation
 and on the HRP-2.
 
-FIXME: Section \ref{path-planning} describes the path planning
-stage. The collision avoidance constraints are tackled in section
-\ref{distance-constraints}, and are used in the optimal control
-problem described in section \ref{framework}. Finally, section
-\ref{results} showcases results on the robot HRP-2.
+The collision avoidance constraints are tackled in Section
+\ref{distance-constraints}are used in the optimal control problem
+described in Section \ref{framework}. Section \ref{results} showcases
+obtained results for the robot HRP-2. We also show an extension to
+multiple contact points in Section
+\ref{sec:chap3-noncoplanar-contact-points}.
 
 \section{(Self-)Collision Avoidance Constraints}
 \label{distance-constraints}
