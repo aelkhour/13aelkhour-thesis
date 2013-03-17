@@ -37,7 +37,7 @@ run, jump, climb, write, carve, manipulate, etc. There are of course
 highly specialized robots that can achieve each one of those tasks,
 but very few exhibit such a high versatility. Also, we are witnessing
 a shift from industrial robotics to personal robotics. Humanoid robots
-can have access to the same environments as humans, and they are mode
+can have access to the same environments as humans, and they are made
 to look like them and be easily accepted: they can therefore be used
 as companions, assistants, guides, teachers, etc in various
 situations.
@@ -48,17 +48,19 @@ algorithms to control them and make them walk and manipulate objects
 without loosing their balance, allowing the generation of human-like
 motions. Conversely, humanoid robots are the perfect tool for
 neuroscientists to understand human motion and perception, as well as
-the invariants behind them; indeed humanoid robots allow the
-decomposition of complex problems into simpler ones. They also tend to
-be more cooperative than humans or monkeys when it comes to accomplish
-tedious and repetitive tasks during experiments.
+the invariants behind them; for instance, moving certain actuators
+while keeping others at a fixed position is very easy in robotics, and
+this allows decoupling different behaviors in order to observe
+them more clearly. Humanoid robots also tend to be more cooperative
+(so far) than humans or monkeys when it comes to accomplishing tedious
+and repetitive tasks during experiments.
 
 \begin{figure}
   \centering
       {\includegraphics[width = 0.7\linewidth]
         {src/chap0-introduction/hrp2-brick-wall.png}}
       \caption{The human-like mechanical structure of humanoid robots
-        allow them to accomplish complex tasks, such as avoiding
+        allows them to accomplish complex tasks, such as avoiding
         obstacles in constrained environments.}
       \label{fig:chap0-hrp2-brick-wall}
 \end{figure}
@@ -103,10 +105,9 @@ problem by the name of optimal motion planning.
   \centering
       {\includegraphics[width = 0.6\linewidth]
         {src/chap0-introduction/optimal-motion-planning.png}}
-      \caption{A robot solves a motion planning problem to connect
-        point A to point B. The solution is collision-free, but
-        obviously the robot can do much better (Courtesy of Jorge
-        Cham, PhD Comics).}
+      \caption{A robot solves a motion planning problem. The solution
+        is collision-free, but obviously the robot can do much better
+        (Jorge Cham, PhD Comics).}
       \label{fig:chap0-optimal-motion-planning}
 \end{figure}
 
@@ -160,9 +161,9 @@ executed on the HRP-2 humanoid robot \cite{kane04}.
 
 \section{Outline of This Thesis}
 
-The thesis is organized by contribution, and related state-of-the-art
-work is described when needed. Chapter \ref{chap:path-optim} describes
-the path optimization method for humanoid walk planning. Chapter
+The thesis is organized by contribution, and the related work is
+exposed when needed. Chapter \ref{chap:path-optim} describes the path
+optimization method for humanoid walk planning. Chapter
 \ref{chap:wholebody-planning} deals with the second contribution,
 namely whole body motion planning and the associated small-space
 controllability proof. Finally, the optimal motion planning framework
