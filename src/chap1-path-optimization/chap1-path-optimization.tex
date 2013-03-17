@@ -93,12 +93,11 @@ Probabilistic Roadmaps (PRM) \cite{kavr96} or Rapidly-exploring Random
 Trees (RRT) \cite{kuff00}, were developed in the past fifteen years.
 
 Instead of trying to build an explicit representation of \cfree,
-sampling-based algorithms rely on approximating the connectivity
-of \cfree through rejection sampling: random configurations
-\config{rand} are sampled in \cspace, and efficient Boolean collision
-detection techniques \cite{vand97, huds97, gott96} reject
-configurations that produce collisions, keeping only configurations
-\config{} $\in$ \cfree.
+sampling-based algorithms rely on approximating the connectivity of
+\cfree through rejection sampling: random configurations \config{rand}
+are sampled in \cspace, and efficient Boolean collision detection
+techniques \cite{huds97, gott96} reject configurations that produce
+collisions, keeping only configurations \config{} $\in$ \cfree.
 
 The classic RRT algorithm, as presented in \cite{kuff00}, relies on
 the Voronoi bias to efficiently explore \cfree and grow a random tree
