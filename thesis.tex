@@ -69,7 +69,7 @@
 pdfauthor = {Antonio El Khoury},
 pdftitle = {Planning Optimal Motions for Anthropomorphic Systems},
 pdfsubject = {Planning Optimal Motions for Anthropomorphic Systems},
-pdfkeywords = {Motion Planning, Optimal Control, Humanoid Robot},
+pdfkeywords = {Motion Planning, Optimal Control, Anthropomorphic System, Humanoid Robot},
 pdfcreator = {Antonio El Khoury},
 pdfproducer = {Antonio El Khoury}
 }
@@ -109,6 +109,16 @@ pdfproducer = {Antonio El Khoury}
 \makeatletter
 \renewcommand{\@biblabel}[1]{[#1]\hfill\hspace{0.cm}}
 \makeatother
+
+% Emulate abstract environment in book class
+\newenvironment{abstract}{
+    \onehalfspacing%
+    \chapter*{\centering Abstract}%
+}{}
+\newenvironment{resume}{
+    \onehalfspacing%
+    \chapter*{\centering R\'esum\'e}%
+}{}
 
 % Custom commands.
 \newcommand{\transformation}[2]{%
@@ -169,9 +179,6 @@ pdfproducer = {Antonio El Khoury}
 %\doublespacing
 %\onehalfspacing
 %
-\author{Antonio El Khoury}
-\title{Planning Optimal Motions for Anthropomorphic Systems}
-\maketitle
 %
 %% \thispagestyle{empty}
 %% \begin{tikzpicture}[remember picture, overlay]
@@ -180,13 +187,21 @@ pdfproducer = {Antonio El Khoury}
 %% };
 %% \end{tikzpicture}
 %
-%\frontmatter
-\tableofcontents{\thispagestyle{headings}}
-%
-%\mainmatter
-%\pagestyle{empty}
+\frontmatter
+\author{Antonio El Khoury}
+\title{Planning Optimal Motions for Anthropomorphic Systems}
+%\maketitle
+\include{src/title-page}
 %\include{src/remerciements}
-%\include{src/publis}
+%\include{src/abstract_fr}
+%\include{src/abstract_en}
+\tableofcontents{\thispagestyle{headings}}
+%\listoffigures{\thispagestyle{headings}}
+%\listoftables{\thispagestyle{headings}}
+
+%
+\mainmatter
+\pagestyle{empty}
 
 % Define headers
 \pagestyle{fancy}
@@ -202,21 +217,16 @@ pdfproducer = {Antonio El Khoury}
                                             % footer
 \fancyfootoffset[RO]{\marginparwidth - \marginparsep}
 
-%\include{src/chap0-introduction/chap0-introduction}
-%\include{src/chap1-path-optimization/chap1-path-optimization}
-%\include{src/chap2-wholebody-planning/chap2-wholebody-planning}
-%\include{src/chap3-optimal-motion-planning/chap3-optimal-motion-planning}
+\include{src/chap0-introduction/chap0-introduction}
+\include{src/chap1-path-optimization/chap1-path-optimization}
+\include{src/chap2-wholebody-planning/chap2-wholebody-planning}
+\include{src/chap3-optimal-motion-planning/chap3-optimal-motion-planning}
 \include{src/chap4-conclusion/chap4-conclusion}
 
-%\appendices
-%\include{src/appendix/appendix}
+\appendices
+\include{src/appendix/appendix}
 
-%% \backmatter
-
-%% \addcontentsline{toc}{chapter}{Liste of figures}
-%% \listoffigures
-%% \addcontentsline{toc}{chapter}{Liste of tables}
-%% \listoftables
+\backmatter
 
 %
 % Bibliography
