@@ -99,7 +99,7 @@ are sampled in \cspace, and efficient Boolean collision detection
 techniques \cite{huds97, gott96} reject configurations that produce
 collisions, keeping only configurations \config{} $\in$ \cfree.
 
-The classic RRT algorithm, as presented in \cite{kuff00}, relies on
+The classic RRT algorithm, as presented in \cite{kuff00}, make use of
 the Voronoi bias to efficiently explore \cfree and grow a random tree
 in it. Each iteration of the algorithm attempts to extend the tree by
 adding new vertices in the direction of a randomly selected
@@ -200,7 +200,7 @@ anthropomorphic systems. Such systems have a high number of DoF, and
 are capable of accomplishing human-like tasks: locomotion(such as
 walking, running and parkour), manipulation, or both. These tasks can
 be accomplished thanks to the fact that anthropomorphic systems are
-both underactuated and highly-redundant.
+both underactuated and highly redundant.
 
 In the remainder of this work, we will refer indistinguishably to
 anthropomorphic systems, humanoid robots and digital actors.
@@ -208,8 +208,8 @@ anthropomorphic systems, humanoid robots and digital actors.
 \subsection{Underactuated Systems}
 \label{subsec:chap1-underactuated-systems}
 
-A robot \robot usually composed of a set of rigid bodies \body{i}, $i
-\in 0..N_B$, and a set of joints \joint{i}, $i \in 1..N_J$, which
+A robot \robot is usually composed of a set of rigid bodies \body{i},
+$i \in 0..N_B$, and a set of joints \joint{i}, $i \in 1..N_J$, which
 constrain the body positions. A rigid body has a mass, an inertia, and
 a given geometry. We use the kinematic tree formalism proposed in
 \cite{feat08} to model a full robot: a node of the tree represents a
@@ -267,7 +267,7 @@ robot \robot is an element of the configuration space \cspace $=$
       {\def\svgwidth{0.8\linewidth}
         \subimport*{src/chap1-path-optimization/}
                    {robot-redundancy.pdf_tex}}
-      \caption{Anthropomorphic systems are highly-redundant
+      \caption{Anthropomorphic systems are highly redundant
         systems. For a desired Cartesian position (in blue) of the end
         effector \body{e}, there exists more than one configuration
         \config{} that accomplishes this task. Left and right: two
@@ -278,13 +278,13 @@ robot \robot is an element of the configuration space \cspace $=$
 We briefly introduce here the concept of kinematic redundancy. Figure
 \ref{fig:chap1-robot-redundancy} shows that for a same target
 Cartesian position of the end effector \body{e}, there exists more
-than one configuration of \robot that allows \body{e} to reach the
-target. The robot \robot is therefore kinematically redundant with
-respect to the task of reaching the object. One could imagine
-assigning multiple tasks to be accomplished at the same time, or even
-exploring \cspace while continuously accomplishing one or more
-tasks. This will be discussed in more thoroughly in Chapter
-\ref{chap:wholebody-planning}.
+than one configuration of \robot\thinspace that allows \body{e} to
+reach the target. The robot \robot\thinspace is therefore
+kinematically redundant with respect to the task of reaching the
+object. One could imagine assigning multiple tasks to be accomplished
+at the same time, or even exploring \cspace while continuously
+accomplishing one or more tasks. This will be discussed more
+thoroughly in Chapter \ref{chap:wholebody-planning}.
 
 \section{Walk Pattern Generation}
 \label{sec:chap1-pattern-generator}
@@ -297,38 +297,40 @@ methods have been proposed to generate walking motions efficiently.
 \subsection{Zero-Moment Point (ZMP)}
 \label{subsec:chap1-zmp}
 
-We assume here that the robot \robot is walking on a flat horizontal
-floor. We also assume that the robot is always making contact with the
-floor, i.e. that there are no jumps, and that all contacts are
-non-sliding. \robot is then subject to its weight and to contact
-forces.
+We assume here that the robot \robot\thinspace is walking on a flat
+horizontal floor. We also assume that the robot is always making
+contact with the floor, i.e. that there are no jumps, and that all
+contacts are non-sliding. \robot\thinspace is then subject to its
+weight and to contact forces.
 
-Under these assumptions, \cite{vukobratovic1969contribution} define
-the Zero-Moment Point (ZMP) as the point on the floor where the
-horizontal components of the sum of moments applied to \robot are
-zero. It is also established that \robot will not tilt around its foot
-edges as long as the ZMP lies inside the support polygon, i.e. the
-convex hull of all contact points, which are coplanar due to the
-previous assumptions. This is known as the condition of dynamic
-balance, and the robot \robot is then said to be dynamically
-balanced. We will discuss more the complete ZMP formulation in Chapter
+Under these assumptions, the \emph{Zero-Moment Point (ZMP)}
+\cite{vukobratovic1969contribution} is defined as the point on the
+floor where the horizontal components of the sum of moments applied to
+\robot\thinspace are zero. It is also established that
+\robot\thinspace will not tilt around its foot edges as long as the
+ZMP lies inside the support polygon, i.e. the convex hull of all
+contact points, which are coplanar due to the previous
+assumptions. This is known as the condition of dynamic balance, and
+the robot \robot\thinspace is then said to be dynamically balanced. We
+will further discuss the complete ZMP formulation in Chapter
 \ref{chap:optimal-motion-planning}.
 
 Note that in the particular case where speed and acceleration are
-zero, the ZMP will coincide with the CoM vertical projection on the
-floor; the robot \robot will then be said to be statically balanced if
-this projection lies inside the support polygon.
+zero, the ZMP will coincide with the \emph{center of mass (CoM)}
+vertical projection on the floor; the robot \robot will then be said
+to be statically balanced if this projection lies inside the support
+polygon.
 
 \subsection{Cart-Table Model}
 \label{subsec:chap1-cart-table}
 
 The above formulation of ZMP is rather hard to control.  One way to
 deal with the complexity of a humanoid robot kinematic tree is to use
-the so-called "cart-table" simplified model, where the walking robot
+the so-called ``cart-table'' simplified model, where the walking robot
 is modeled by a point mass at a fixed height.  The equations giving
-the ZMP horizontal coordinates $(p_x,p_y)$ as functions of the center
-of mass (CoM) horizontal coordinates $(x,y)$ in the cart-table model
-were presented in \cite{kaji03}:
+the ZMP horizontal coordinates $(p_x,p_y)$ as functions of the CoM
+horizontal coordinates $(x,y)$ in the cart-table model were presented
+in \cite{kaji03}:
 \begin{equation}
 \label{eq:chap1-walk-zmp}
 \left(
@@ -355,7 +357,8 @@ constant.
         represents the contact surface of the robot. Note that in its
         current state, the robot is dynamically balanced, as the ZMP
         lies on the table foot. The CoM vertical projection, on the
-        other hand, doe not, and static balance is not ensured.}
+        other hand, is outside the table foot and static balance is
+        not ensured.}
       \label{fig:chap1-robot-cart-table}
 \end{figure}
 
@@ -389,18 +392,19 @@ be found in literature.
 \label{subsec:chap1-footstep-planning}
 
 One possible way of addressing humanoid walk planning is by reasoning
-on the footstep level. Works of \cite{kuff01,ches05} describe humanoid
-footstep planning schemes. Starting from an initial footstep
+on the footstep level. In \cite{kuff01,ches05}, humanoid footstep
+planning schemes are described. Starting from an initial footstep
 placement, they use an A$^{*}$ graph search \cite{hart68} to explore a
 discrete set of footstep transitions. The search stops when the
 neighborhood of the goal footstep placement is reached. This approach
-is not practical in some environments with narrow passages, and
-\cite{xia09, perr11a} reduced the computational cost of footstep
-planning by adapting RRT planning algorithm and efficiently exploring
+is not practical in some environments with narrow passages; in
+\cite{xia09, perr11a}, the computational cost of footstep planning is
+reduced by adapting RRT planning algorithm and efficiently exploring
 the discrete footstep space. In their most recent work, \cite{perr11b,
-  perr12} give an elegant proof of the equivalence between discrete
-footstep planning and a continuous motion planning, which enables the
-use of off-the-shelf planning algorithms such as RRT.
+  perr12} give an elegant proof of the equivalence between the
+discrete footstep planning problem and a continuous motion planning
+problem, which enables the use of off-the-shelf planning algorithms
+such as RRT.
 
 \subsection{Constraints-Based Motion Generation}
 \label{subsec:chap1-constraints-motion-generation}
@@ -439,14 +443,14 @@ planner is introduced.
 It is interesting to note that while collision avoidance is a
 requirement in motion planning, some features of the environment can
 in fact be useful to solve the problem, especially in the case of
-underactuated systems. \cite{esca06, bouy12} propose a
-multiple-contact-point stance planner that looks for authorized
-contacts in order to help the robot reach its goal.
+underactuated systems. In \cite{esca06, bouy12}, a
+multiple-contact-point stance planner looks for authorized contacts in
+order to help the robot reach its goal.
 
 \subsection{Decoupled Planning}
 \label{subsec:chap1-bounding-box}
 
-Finally, Another strategy consists of dividing a high-dimensional
+Finally, another strategy consists of dividing a high-dimensional
 problem into smaller problems and solving them successively
 \cite{zhan09}. The idea of dividing the problem into a two-stage
 scheme is described in \cite{yosh08}: A 36-DoF humanoid robot is
@@ -458,7 +462,7 @@ places footsteps on it, and the walk pattern generator described in
 trajectory for the robot. In \cite{moul10}, this two-stage approach is
 also used; numerical optimization of the bounding box path produces a
 time-optimal trajectory that is constrained by foot speed and distance
-to obstacles. Optimization techniques will be discussed in detail in
+to obstacles. Optimization techniques will be discussed in details in
 Chapter \ref{chap:optimal-motion-planning}, where we describe an
 optimal motion planning framework.
 
@@ -501,7 +505,7 @@ narrow passages, a human would be forced to adopt holonomic motion in
 order to walk sideways.
 
 The path planning scheme in \cite{yosh08} is designed to this end; a
-PRM algorithm first builds a roadmap with Dubins curves \cite{dubi57};
+PRM algorithm first builds a roadmap with Dubins curves \cite{dubi57},
 but such curves impose a nonholonomic constraint and narrow passages
 cannot be crossed. The roadmap is therefore enriched with linear local
 paths. As a result this planning scheme generates motion such that the
@@ -525,7 +529,7 @@ trajectories is proposed. First the PRM algorithm and the Dubins local
 paths are replaced with an RRT-Connect algorithm and linear local
 paths. The path is then optimized by locally reorienting the robot
 bounding box on a discrete set of configurations of the path. Our
-heuristic gives priority to nonholonomic motion, holonomic motion is
+heuristic gives priority to nonholonomic motion; holonomic motion is
 used only to pass in narrow passages or avoid nearby obstacles, thus
 generating realistic walking trajectories.
 
@@ -565,15 +569,15 @@ optimization stage is introduced to address this issue in the next
 section.
 
 \subsection{Bounding Box Path Optimization}
-Note that each configuration \config{} can be written as $q =
+Note that each configuration \config{} can be written as $\mathbf{q} =
 (\mathbf{X},~\theta)$, where $\mathbf{X} = (x,~y)$ describes the
 bounding box position in the horizontal plane, and $\theta$ gives its
 orientation.  The optimizer reorients the bounding box along $P$ by
 changing $\theta$ while retaining the value of $\mathbf{X}$.
 
-For this purpose, an A$^{*}$ search algorithm is executed; first $P$ is
-regularly sampled. Using a discrete set of possible orientations for
-each sample configuration and an adequate heuristic estimation
+For this purpose, an A$^{*}$ search algorithm is executed. First, $P$
+is regularly sampled. Using a discrete set of possible orientations
+for each sample configuration and an adequate heuristic estimation
 function, the bounding box orientation is then modified along $P$. An
 optimized path $P_{opt}$ is created and leads to a realistic
 time-optimal trajectory.
@@ -581,34 +585,37 @@ time-optimal trajectory.
 \subsubsection{Preliminary Notations}
 After running RO on the piecewise linear path $P_{RRT}$, the
 path $P$ is also piecewise linear, and its first and last
-configurations are denoted by $q_s$ and $q_g$.
+configurations are denoted by $\mathbf{q}_s$ and $\mathbf{q}_g$.
 
 Let $d_{sample} \in \mathbb{R}_+^*$ be a sampling distance. Sampling
 $P$ with a distance $d_{sample}$ means dividing each local path $LP_j$
 of $P$ into smaller local paths of length $d_{sample}$; each new local
 path end is a sample configuration. The $n^{th}$ sample configuration
 of $P$ in its initial state can be obtained by indexing new local path
-ends starting from $q_s$, and is denoted by $q_n^{init}$.
+ends starting from $\mathbf{q}_s$, and is denoted
+$\mathbf{q}_n^{init}$.
 
 \begin{figure}
   \centering
       {\includegraphics[width = 0.75\linewidth]
         {src/chap1-path-optimization/A-star.pdf}}
       \caption{Each initial sample configuration can be rotated and be
-        in one of four states. Starting from $q_s$, the A$^{*}$ search
-        algorithm searches the graph $G$ that contains only valid
-        nodes and arcs to produce an optimized path $P_{opt}$.}
+        in one of four states. Starting from $\mathbf{q}_s$, the
+        A$^{*}$ search algorithm searches the graph $G$ that contains
+        only valid nodes and arcs to produce an optimized path
+        $P_{opt}$.}
       \label{fig:chap1-A-star}
 \end{figure}
 
 The possible orientation states need to be defined. We aim to make a
 humanoid robot reach its goal as soon as possible. Since the robot is
 faster while walking straight than side-stepping, we attempt to change
-the orientation of each initial sample configuration $q_n^{init}$ such
-that the bounding box is tangent to the local path and introduce a new
-configuration denoted by $q_n^{front}$. To take into account the fact
-that there may be obstacles that forbid a frontal orientation, we also
-create $q_n^{lat_1}$ and $q_n^{lat_2}$ that are rotated by
+the orientation of each initial sample configuration
+$\mathbf{q}_n^{init}$ such that the bounding box is tangent to the
+local path, and we introduce a new configuration denoted
+$\mathbf{q}_n^{front}$. To take into account the fact that there may
+be obstacles that forbid a frontal orientation, we also create
+$\mathbf{q}_n^{lat_1}$ and $\mathbf{q}_n^{lat_2}$ that are rotated by
 $\frac{\pi}{2}$ and $-\frac{\pi}{2}$ relative to the path tangent, see
 \autoref{fig:chap1-A-star}. One particular case is local path end
 configurations: the mean direction of the two adjacent local paths is
@@ -616,34 +623,36 @@ considered to define frontal and lateral configurations. This is done
 to ensure a smooth transition between two local paths.
 
 A sample configuration whose orientation is unknown will be denoted by
-$q_n^{state}$. It can have any orientation state of the set
-$\{init,~front,~lat_1,~lat_2\}$ except for $q_s$ and $q_g$ which
-remain in their initial state.  Ideally, the algorithm should be able
-(as long as there are no obstacles) to put each sample configuration
-in the frontal state, create a new path $P_{opt}$ and generate a
-time-optimal trajectory for the robot.
+$\mathbf{q}_n^{state}$. It can have any orientation state of the set
+$\{init,~front,~lat_1,~lat_2\}$ except for $\mathbf{q}_s$ and
+$\mathbf{q}_g$ which remain in their initial state.  Ideally, the
+algorithm should be able (as long as there are no obstacles) to put
+each sample configuration in the frontal state, create a new path
+$P_{opt}$ and generate a time-optimal trajectory for the robot.
 
 An A$^{*}$ search is run to achieve this goal; the algorithm functions are
 described in the following section.
 
 \subsubsection{A$^{*}$ Function Definition}
 \label{sec:chap1-A-star}
-An A$^{*}$ search algorithm can find an optimal path in a graph
-as long as a graph and an evaluation function are correctly
-defined. Starting from $q_s$, A$^{*}$ expands in each iteration the
-possible transitions from one sample to the next one in the graph and
-evaluates with the evaluation function the cost of going through each
-different state, see \autoref{fig:chap1-A-star}.
+An A$^{*}$ search algorithm can find an optimal path in a graph as
+long as the latter and an evaluation function are correctly
+defined. Starting from $\mathbf{q}_s$, A$^{*}$ expands in each
+iteration the possible transitions from one sample to the next one in
+the graph and evaluates with the evaluation function the cost of going
+through each different state, see \autoref{fig:chap1-A-star}.
 
 A graph $G$ is defined to be a set of nodes and arcs. A valid node
-$q_n^{state_n}$ is defined to be a configuration with no collisions,
-and a valid arc $q_n^{state_n}q_{n+1}^{state_{n+1}}$ is a
+$\mathbf{q}_n^{state_n}$ is defined to be a configuration with no
+collisions, and a valid arc
+$\mathbf{q}_n^{state_n}\mathbf{q}_{n+1}^{state_{n+1}}$ is a
 collision-free local path. The whole graph $G$ could be built before
 running A$^{*}$ by testing all nodes and arcs and making sure they are
-collision-free. But collision tests are slow, and A$^{*}$ uses a heuristic
-estimation function to avoid going through all nodes. An empty graph
-$G$ is thus initialized and nodes and arcs are built only when
-necessary. A successor operator needs to be defined for this purpose.
+collision-free. But collision tests are slow, and A$^{*}$ uses a
+heuristic estimation function to avoid going through all nodes. An
+empty graph $G$ is thus initialized and nodes and arcs are built only
+when necessary. A successor operator needs to be defined for this
+purpose.
 
 \begin{figure}
   \centering
@@ -655,15 +664,17 @@ necessary. A successor operator needs to be defined for this purpose.
       \label{fig:chap1-elliptic-constraint}
 \end{figure}
 
-\paragraph{The Successor operator $\Gamma(q_n^{state_n})$:}
-Its value for any node $q_n^{state_n}$ is a set
-$\{(q_{n+1}^{state_{n+1}},~c_{n,n+1})\}$, where
-$q_{n+1}^{state_{n+1}}$ denotes a successor node, and $c_{n,n+1}$ is
-the cost of going from $q_n^{state_n}$ to $q_{n+1}^{state_{n+1}}$. The
-cost $c_{n,n+1}$ is defined to be the distance
-$D(q_n^{state_n},~q_{n+1}^{state_{n+1}})$ between two nodes of $G$; it
-computes the walk time from $q_n^{state_n}$ to
-$q_{n+1}^{state_{n+1}}$. The speed constraint $C$ is defined as:
+\paragraph{The Successor operator $\Gamma(\mathbf{q}_n^{state_n})$:}
+Its value for any node $\mathbf{q}_n^{state_n}$ is a set
+$\{(\mathbf{q}_{n+1}^{state_{n+1}},~c_{n,n+1})\}$, where
+$\mathbf{q}_{n+1}^{state_{n+1}}$ denotes a successor node, and
+$c_{n,n+1}$ is the cost of going from $\mathbf{q}_n^{state_n}$ to
+$\mathbf{q}_{n+1}^{state_{n+1}}$. The cost $c_{n,n+1}$ is defined to
+be the distance
+$D(\mathbf{q}_n^{state_n},~\mathbf{q}_{n+1}^{state_{n+1}})$ between
+two nodes of $G$; it computes the walk time from
+$\mathbf{q}_n^{state_n}$ to $\mathbf{q}_{n+1}^{state_{n+1}}$. The speed
+constraint $C$ is defined as:
 \begin{equation}
 C = \left\{
 \begin{array}{l l l}
@@ -679,43 +690,48 @@ C = \left\{
 \end{array} \right.
 \end{equation}
 where $v^{f}$ and $v^{lat}$ are respectively the frontal and lateral
-speed, and $v_{min}^f$ $v_{max}^{f}$ and $v_{max}^{lat}$ their minimum
-and maximum values (See
-\autoref{fig:chap1-elliptic-constraint}). $D(q_n^{state_n},~q_{n+1}^{state_{n+1}})$
-can be then computed by integrating this speed constraint along it.
+speed, and $v_{min}^f$, $v_{max}^{f}$ and $v_{max}^{lat}$ their
+minimum and maximum values (See
+\autoref{fig:chap1-elliptic-constraint}). $D(\mathbf{q}_n^{state_n},
+~\mathbf{q}_{n+1}^{state_{n+1}})$ can be then computed by integrating
+this speed constraint along the edge.
 
 Having expressed the successor operator, which allows the optimizer to
 choose which node to expand at each iteration, the A$^{*}$ evaluation
 function can be defined.
 
-\paragraph{The Evaluation Function $\hat{f}(q_n^{state})$:}
+\paragraph{The Evaluation Function $\hat{f}(\mathbf{q}_n^{state})$:}
 It is the estimated cost of an optimal path going through
-$q_n^{state}$ from $q_s$ to $q_g$ and can be written as:
+$\mathbf{q}_n^{state}$ from $\mathbf{q}_s$ to $\mathbf{q}_g$ and can be written as:
 \begin{equation}
-  \hat{f}(q_n^{state}) = \hat{g}(q_n^{state}) + \hat{h}(q_n^{state})
+  \hat{f}(\mathbf{q}_n^{state}) = \hat{g}(\mathbf{q}_n^{state}) +
+  \hat{h}(\mathbf{q}_n^{state})
 \end{equation}
-where $\hat{g}(q_n^{state})$ is the estimated cost of the optimal path
-from $q_s$ to $q_n^{state}$ and $\hat{h}(q_n^{state})$ is a heuristic
-function giving the estimated cost of the optimal path from
-$q_n^{state}$ to $q_g$.
+where $\hat{g}(\mathbf{q}_n^{state})$ is the estimated cost of the
+optimal path from $\mathbf{q}_s$ to $\mathbf{q}_n^{state}$ and
+$\hat{h}(\mathbf{q}_n^{state})$ is a heuristic function giving the
+estimated cost of the optimal path from $\mathbf{q}_n^{state}$ to
+$\mathbf{q}_g$.
 
-$\hat{h}(q_n^{state})$ must verify $\hat{h}(q_n^{state}) \leq
-h(q_n^{state})$ to ensure that the algorithm is admissible, i.e. the
-path from $q_s$ to $q_g$ is optimal. Since the robot is fastest while
-walking straight forward in the absence of obstacles,
-$\hat{h}(q_n^{state})$ is defined as:
+$\hat{h}(\mathbf{q}_n^{state})$ must verify
+$\hat{h}(\mathbf{q}_n^{state}) \leq h(\mathbf{q}_n^{state})$ to ensure
+that the algorithm is admissible, i.e. the path from $\mathbf{q}_s$ to
+$\mathbf{q}_g$ is optimal. Since the robot is fastest while walking
+straight forward in the absence of obstacles,
+$\hat{h}(\mathbf{q}_n^{state})$ is defined as:
 \begin{equation}
   \begin{split}
-  \hat{h}(q_n^{state}) &= D(q_n^{state},~q_{n+1}^{front}) \\
-  &+ \sum_{k=1}^{N_{sample}-n-2} D(q_{n+k}^{front},~q_{n+k+1}^{front}) \\
-  &+ D(q_{n+1}^{front},~q_g)
+  \hat{h}(\mathbf{q}_n^{state}) &= D(\mathbf{q}_n^{state},~\mathbf{q}_{n+1}^{front}) \\
+  &+ \sum_{k=1}^{N_{sample}-n-2} D(\mathbf{q}_{n+k}^{front},~\mathbf{q}_{n+k+1}^{front}) \\
+  &+ D(\mathbf{q}_{n+1}^{front},~\mathbf{q}_g)
   \end{split}
 \end{equation}
 where $N_{sample}$ is the total number of initial sample
-configurations in $P$ including $q_s$ and
-$q_g$. $\hat{h}(q_n^{state})$ thus sums the cost of walking along $P$
-while staying tangential to the path with the start and
-end transition costs from $q_n^{state}$ and to $q_g$.
+configurations in $P$ including $\mathbf{q}_s$ and
+$\mathbf{q}_g$. $\hat{h}(\mathbf{q}_n^{state})$ thus sums the cost of
+walking along $P$ while staying tangential to the path with the start
+and end transition costs from $\mathbf{q}_n^{state}$ and to
+$\mathbf{q}_g$.
 
 Now that the A$^{*}$ functions are fully defined, a search algorithm can be
 run to compute an optimal path $P_{opt}$ by changing the orientation
@@ -724,7 +740,7 @@ of each sample node. An example is shown in
 
 \begin{figure}
   \centering
-      {\includegraphics[width = 0.75\linewidth]
+      {\includegraphics[width = 0.6\linewidth]
         {src/chap1-path-optimization/hash-direct-path.pdf}}
       \caption{Local paths are regularly sampled (light grey) and each
         sample configuration is reoriented (dark) while considering
@@ -761,8 +777,8 @@ whole-body trajectory.
   \multicolumn{1}{|c|}{Apartment} & $1.21$ & $2.43$ & $2.41$ & $223$ & $229$ \\
   \hline
 \end{tabular}
-\caption{Computational time (s) of each planning stage for the
-  presented scenarios.}
+\caption{Computational time, in seconds, of each planning stage for
+  the presented scenarios.}
 \label{tab:chap1-computation-time}
 \end{table}
 
@@ -779,14 +795,14 @@ whole-body trajectory.
   \multicolumn{1}{|c|}{Apartment} & $200$ & $120$ \\
   \hline
 \end{tabular}
-\caption{Humanoid robot walk time (s) for the presented scenarios
-  using RO alone and a RO-RSO combination.}
+\caption{Humanoid robot walk time, in seconds, for the presented
+  scenarios using RO alone and a RO-RSO combination.}
 \label{tab:chap1-walk-time}
 \end{table}
 
 \begin{figure}
   \centering
-      {\includegraphics[width = \linewidth]
+      {\includegraphics[width = 0.8\linewidth]
         {src/chap1-path-optimization/chairs-hash-optim-perspective-hrp2.png}}
       \caption{Perspective view of the simulated HRP-2 trajectory on
         the final optimized path passing between two chairs.}
@@ -802,17 +818,18 @@ priority to forward walking with respect to lateral and backwards
 walking, but do not hold any physical significance, hence the absence
 of units.
 
-Since the A$^{*}$ search only takes place over the graph of discretized
-configurations of the input path. It is important to choose a proper
-value of the sampling interval $d_{sample}$. If the value is too
-small, the search space will be much bigger, possibly leading to
-better trajectories, but leading to an explosion of the A$^{*}$ search
-time. If the value is too high, the A$^{*}$ search will be very fast in the
-small trajectory space, but we risk missing some optimizations on the
-trajectory. We found that setting $d_{sample}$ to be equal to
-$\frac{h}{6}$, where $h$ is the humanoid height provided a good
-comprise between computation time and trajectory quality: $d_{sample}$
-is then a broad approximation of the nominal human step length.
+Since the A$^{*}$ search only takes place over the graph of
+discretized configurations of the input path, it is important to
+choose a proper value of the sampling interval $d_{sample}$. If the
+value is too small, the search space will be much bigger, possibly
+leading to better trajectories, but leading to an explosion of the
+A$^{*}$ search time. If the value is too high, the A$^{*}$ search will
+be very fast in the small trajectory space, but we risk missing some
+optimizations on the trajectory. We found that setting $d_{sample}$ to
+be equal to $\frac{h}{6}$, where $h$ is the humanoid height, provided
+a good tradeoff between computation time and trajectory quality;
+$d_{sample}$ gives then a broad approximation of the nominal human
+step length.
 
 Tests are performed on a 2.13 GHz Intel Core 2 Duo PC with 2 GB RAM.
 Simulations of the humanoid robot HRP-2 are run in three scenarios.
@@ -821,38 +838,39 @@ two chairs. The second environment is uncluttered with few obstacles
 lying around, while the last one is a bigger apartment environment
 where the robot has to move from one room to another while passing
 through doors. The chairs scenario motion is also replayed on the real
-robot HRP-2 (See Figure \ref{fig:chap1-hrp2-chairs}).
+humanoid robot HRP-2 \cite{kane04}, see Figure
+\ref{fig:chap1-hrp2-chairs}.
 
 \begin{figure}
   \centering{
-    \includegraphics[width = 0.75\linewidth]
+    \includegraphics[width = 0.7\linewidth]
                     {src/chap1-path-optimization/hrp2-chairs.png}}
   \caption{Humanoid Robot HRP-2 uses holonomic motion, or
     side-stepping, to pass between two chairs.}
   \label{fig:chap1-hrp2-chairs}
 \end{figure}
 
-\ref{tab:chap1-computation-time} shows computation times for each
-stage of the planning scheme: RRT-Connect, RO, RSO, and the whole-body
-robot trajectory generation. In order to show the optimizer
+Table \ref{tab:chap1-computation-time} shows computation times for
+each stage of the planning scheme: RRT-Connect, RO, RSO, and the
+whole-body robot trajectory generation. In order to show the optimizer
 contribution, robot walk times are also measured by creating a
 trajectory directly after RO, and comparing it with a trajectory where
-the RSO was added, see \autoref{tab:chap1-walk-time}.
+the RSO was added, see Table \ref{tab:chap1-walk-time}.
 
 \subsection{``Chairs'' Scenario}
 \label{subsec:chap1-chairs}
 
-\autoref{fig:chap1-bb-plan-optim} shows the bounding box RRT path
-and the RO path for the chairs scenario. It is obvious that RO creates
-a shorter path, but the bounding box starts rotating from the
-beginning of the path even though the two chairs are still far. This
-causes the robot trajectory to be unrealistic on one hand and, since
-walking sideways takes a longer time than walking straight, to also
-not be time-optimal.
+\autoref{fig:chap1-bb-plan-optim} shows the bounding box RRT path and
+the RO path for the chairs scenario. It is obvious that RO creates a
+shorter path. However, the bounding box starts rotating from the
+beginning of the path even though both chairs are still far. This
+causes the robot trajectory to be unrealistic and, since walking
+sideways takes a longer time than walking straight, to not be
+time-optimal.
 
 \begin{figure}
   \centering
-      {\includegraphics[width = \linewidth]
+      {\includegraphics[width = 0.8\linewidth]
         {src/chap1-path-optimization/galton-hash-optim-perspective-hrp2.png}}
       \caption{Perspective view of HRP-2 optimized trajectory in the
         Galton board scenario.}
@@ -868,12 +886,12 @@ RSO takes 2,144 ms to be executed on the chairs path, which is less
 than 3\% of the total computation time.
 
 \subsection{``Galton'' Scenario}
-An uncluttered environment is considered in this case, and
-it can be seen that RRT-Connect and RSO computation times are very low
-compared to other environments. This can be explained by the fact that
-a tree connecting start and goal configurations is easier to find, and
-that the frontal orientation state is valid for all considered samples
-on the path (See \autoref{fig:chap1-galton-hash-optim-perspective-hrp2}).
+Here, an uncluttered environment is considered, and it can be seen
+that RRT-Connect and RSO computation times are very low compared to
+other environments. This can be explained by the fact that a tree
+connecting start and goal configurations is easier to find, and that
+the frontal orientation state is valid for all considered samples on
+the path, see Figure \ref{fig:chap1-galton-hash-optim-perspective-hrp2}.
 
 \subsection{``Apartment'' Scenario}
 The planning scheme is finally applied in the apartment scenario. In
@@ -881,8 +899,8 @@ The planning scheme is finally applied in the apartment scenario. In
 evident that HRP-2 walks facing forward through the doors. As with
 previous scenarios, the trajectory is more realistic than a trajectory
 where RSO is not used. The added computation time for RSO is 2,412 ms,
-which is insignificant compared to the 228 s it takes for the whole
-planning scheme.
+which is insignificant compared to the 228 seconds which are required
+by the whole planning scheme.
 
 Additionally, since the environment is significantly larger and more
 constrained than the previous ones, the walk time difference is more
@@ -891,7 +909,7 @@ striking: \autoref{tab:chap1-walk-time} shows that it takes the robot
 
 \begin{figure}
   \centering
-      {\includegraphics[width = \linewidth]
+      {\includegraphics[width = 0.8\linewidth]
         {src/chap1-path-optimization/apartment-hash-optim-perspective-hrp2.png}}
       \caption{Perspective view of HRP-2 optimized trajectory in the
         apartment scenario.}
@@ -916,21 +934,22 @@ to lay this behavior on the actor trajectory and produce realistic
 movements.
 
 Achieving humanoid walk planning using the bounding box approach is
-both simple and efficient; it allows using off-the shelf
+both simple and efficient; it allows using off-the-shelf
 sampling-based planners to efficiently explore the configurations
 space, thus removing the need to take into account additional
 kinematic and balance constraints when planning for the whole
 articulated robot. But it has one major drawback: in order to have a
 sound framework which always produces collision-free walking
 trajectories, the bounding box must contain all the robot geometries
-and take into account the robot swaying motion during walking. It is
-thus a rather conservative method, and it might not succeed in finding
-collision-free trajectories in cluttered environments. If we go back
-to the chairs example in \ref{subsec:chap1-chairs}, we can show that
-the lateral walking motion could have been avoided if the HRP-2 lifted
-its arms over the two chairs. Besides leading to an even faster
-motion, walking forward could be necessary if vision systems were
-needed to achieve robot localization and/or environment mapping.
+and take into account the robot swaying motion during walking. Thus,
+it is a rather conservative method, and it might not succeed in
+finding collision-free trajectories in cluttered environments. If we
+go back to the chairs example in Section \ref{subsec:chap1-chairs}, we
+can show that the lateral walking motion could have been avoided if
+the HRP-2 had lifted its arms over the two chairs. Besides leading to
+an even faster motion, walking forward could be necessary if vision
+systems were needed to achieve robot localization and/or environment
+mapping.
 
 In the next chapter, we introduce a sound whole-body motion planning
 algorithm that allows planning collision-free walking trajectories for
