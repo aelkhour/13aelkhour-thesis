@@ -30,8 +30,8 @@ in generating collision-free paths in high-dimension configuration
 spaces. When using sampling techniques on a humanoid robot, a major
 difficulty is to take into account balance constraints, i.e. to
 generate random configurations on zero volume submanifolds
-of \cspace. Indeed, the probability of sampling a configuration
-\config{rand} in \cspace such that it lies on a such manifolds is
+of {\cspace}. Indeed, the probability of sampling a configuration
+\config{rand} in {\cspace} such that it lies on a such manifolds is
 zero. In this section, we present recent advances in motion planning
 on constraint manifolds using inverse-kinematics (IK) solvers. 
 
@@ -47,7 +47,7 @@ one solution configuration, see Section
 \ref{subsec:chap1-kinematic-redundancy}. In the case of most robotics
 tasks, the set of solution configurations has a specific topological
 structure and forms a differentiable submanifold $\manifold$
-of \cspace, i.e. a set that locally ``looks like'' the euclidean
+of {\cspace}, i.e. a set that locally ``looks like'' the euclidean
 space \tspace{m}, and such that the tangent vector space
 $T_{\mathbf{q}}\manifold$ is defined for any \config{}. $m$ is called the
 dimension of the manifold $\manifold$.
@@ -123,7 +123,7 @@ constant for all scenarios in this work.
 \subsection{Randomized Motion Planning on Constraint Manifolds}
 \label{subsec:chap2-constraint-motion-planning}
 
-This problem of motion planning on constraint submanifolds of \cspace
+This problem of motion planning on constraint submanifolds of {\cspace}
 has been investigated with success during the last few years,
 \cite{berenson2011task} presents an exhaustive survey of
 Jacobian-based methods. Other recent contributions
@@ -131,10 +131,10 @@ Jacobian-based methods. Other recent contributions
 planning techniques based on higher-dimensional continuation.
 
 This section presents an algorithm for constrained motion planning on
-a submanifold $\manifold$ of the configuration space \cspace. It
+a submanifold $\manifold$ of the configuration space {\cspace}. It
 presents presents a simple adaptation of the RRT algorithm to
 constrained motion planning, that was first introduced in
-\cite{dalibard09}. A configuration \config{} of \cspace is said to be valid
+\cite{dalibard09}. A configuration \config{} of {\cspace} is said to be valid
 iff, besides being collision-free, it lies on the manifold
 $\manifold$; we call $\manifold$ the planning manifold.
 
@@ -156,7 +156,7 @@ for various reasons:
   defined as a specific robot hand pose, or a gaze direction.
 \item Configuration task: this adaptation of randomized motion
   planning algorithms uses tasks defined as the distance towards a
-  given configuration in \cspace. This will be detailed in the
+  given configuration in {\cspace}. This will be detailed in the
   following section.
 \end{itemize}
 
@@ -173,7 +173,7 @@ goals for manipulation planning was proposed in \cite{diankov2008bpc}.
 
 A goal configuration is generated using the following algorithm:
 \begin{enumerate}
-\item Shoot a random configuration \config{rand} in \cspace with
+\item Shoot a random configuration \config{rand} in {\cspace} with
   uniform distribution.
 \item Call \texttt{SolveConstraints} (Algorithm~\ref{algo:newton}) on
   \config{rand}, with $f(q)$ defined by the intersection of the planning
@@ -399,7 +399,7 @@ average number of iterations is 6.5 per call, and the success rate,
 i.e. the ratio of the number of successfully projected configurations
 over the total number of calls, is above 95 percent. This success
 rate, high as it is, could be further improved by sampling a better
-initial configuration of \cspace, for example by introducing a
+initial configuration of {\cspace}, for example by introducing a
 heuristic bias towards statically balanced configurations.
 
 \begin{figure}
@@ -454,7 +454,7 @@ heuristic bias towards statically balanced configurations.
 \label{subsec:chap2-constraint-walk-planning}
 
 While the previous algorithm considers motion planning on a single
-submanifold $\manifold$ of \cspace, similar strategies can be adopted
+submanifold $\manifold$ of {\cspace}, similar strategies can be adopted
 to explore the union of submanifolds $\cup\manifold_{i}$ and achieve
 quasi-static multi-step planning for walking and free-climbing robots,
 see \cite{bretl2006motion, haus10}. These methods can
@@ -532,8 +532,8 @@ particular for non-holonomic systems. A detailed proof can be found in
 about the corresponding algorithm.
 
 \begin{proof}[Proof of Theorem \ref{thm:ssc}]
-  Let \cspace\enspace be the configuration space of a small-space
-  controllable robot, and \cfree\thinspace $\subset$ \cspace\thinspace
+  Let {\cspace}\enspace be the configuration space of a small-space
+  controllable robot, and \cfree\thinspace $\subset$ {\cspace}\thinspace
   the set of collision-free configurations. We consider in-contact
   configurations as colliding, so \cfree\thinspace is an open set.
   Let $\tau : [0,1] \rightarrow $ \cfree\thinspace be a collision-free
@@ -605,7 +605,7 @@ limitations and potential future work of our method.
 
 The previous section has presented a simple algorithm that solves
 manipulation planning problems on a given constraint manifold
-$\manifold$ of \cspace. If we use this algorithm with static balance
+$\manifold$ of {\cspace}. If we use this algorithm with static balance
 constraints without fixing globally the robot foot positions, it
 generates statically balanced paths for a robot \textit{sliding} on
 the ground. Fig~\ref{fig:sliding} shows an example of a whole-body

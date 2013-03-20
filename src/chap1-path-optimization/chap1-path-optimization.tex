@@ -17,18 +17,18 @@ is validated in various scenarios on the humanoid robot HRP-2.
 The problem of motion planning is now well formalized in robotics and
 several books present the various approaches
 \cite{lato91,chos05,lava06}. One particularly useful concept is the
-one of configuration space (denoted by \cspace) \cite{loza83}, which
+one of configuration space (denoted by {\cspace}) \cite{loza83}, which
 is the set of all configurations \config{} of a robot \robot;
 \config{} is a vector comprised of the $n$ independent degrees of
 freedom (DoF) that are sufficient to know the full state of the robot
-at each instant. \cspace defines then a submanifold of \espace. Some
+at each instant. {\cspace} defines then a submanifold of {\espace}. Some
 of the robot body positions can generate (self-)collisions; the
 equivalent configurations will be said to be in collision, and the set
-of all configurations in collision is denoted by \cobs
-$\subset$ \cspace. Its complementary is denoted by \cfree and is
+of all configurations in collision is denoted by {\cobs}
+$\subset$ {\cspace}. Its complementary is denoted by {\cfree} and is
 called the free configuration space. Using these notations, we can
 redefine the motion planning problem as the answer to the following
-question: is there a continuous path $P: [0,1] \rightarrow$ \cfree
+question: is there a continuous path $P: [0,1] \rightarrow$ {\cfree}
 that connects a start configuration \config{s} to a goal configuration
 \config{g}, and what is it?
 
@@ -41,8 +41,8 @@ same valid path $P$.
 
 FIXME: not precise
 One class of algorithms, mainly developed in the past 30 years, relies
-on representing \cobs explicitly in order to build a graph, also
-called roadmap, that represents the connectivity of \cfree. Solving
+on representing {\cobs} explicitly in order to build a graph, also
+called roadmap, that represents the connectivity of {\cfree}. Solving
 the motion planning problem then boils down to a graph exploration to
 connect \config{s} to \config{g}. A non-exhaustive list of these
 methods includes cellular decomposition, Voronoi diagrams, visibility
@@ -53,8 +53,8 @@ always give a full answer to the motion planning problem as defined
 previously. But while they work well for solving path planning
 problems in low-dimensional configuration spaces, their computational
 cost becomes penalizing in high-dimensional configuration spaces. In
-fact building \cfree requires finding its frontiers, and computation
-time is at best exponential with respect to the dimension of \cspace.
+fact building {\cfree} requires finding its frontiers, and computation
+time is at best exponential with respect to the dimension of {\cspace}.
 
 Other approaches are inspired from real-time motion generation
 techniques, such as the one detailed in \cite{khat85}, which consists
@@ -92,30 +92,30 @@ resolution. In this perspective, sampling-based algorithms, such as
 Probabilistic Roadmaps (PRM) \cite{kavr96} or Rapidly-exploring Random
 Trees (RRT) \cite{kuff00}, were developed in the past fifteen years.
 
-Instead of trying to build an explicit representation of \cfree,
+Instead of trying to build an explicit representation of {\cfree},
 sampling-based algorithms rely on approximating the connectivity of
-\cfree through rejection sampling: random configurations \config{rand}
-are sampled in \cspace, and efficient Boolean collision detection
+{\cfree} through rejection sampling: random configurations \config{rand}
+are sampled in {\cspace}, and efficient Boolean collision detection
 techniques \cite{huds97, gott96} reject configurations that produce
-collisions, keeping only configurations \config{} $\in$ \cfree.
+collisions, keeping only configurations \config{} $\in$ {\cfree}.
 
 The classic RRT algorithm, as presented in \cite{kuff00}, make use of
-the Voronoi bias to efficiently explore \cfree and grow a random tree
+the Voronoi bias to efficiently explore {\cfree} and grow a random tree
 in it. Each iteration of the algorithm attempts to extend the tree by
 adding new vertices in the direction of a randomly selected
 configuration \config{rand}. Algorithm~\ref{alg:chap1-rrt} shows the
 pseudo-code of the RRT algorithm. It takes as input an initial
-configuration \config{s} and grows a tree \ctree rooted in \config{s}.
+configuration \config{s} and grows a tree {\ctree} rooted in \config{s}.
 
 \begin{algorithm}
 \caption{RRT(\config{s})}
 \label{alg:chap1-rrt}
 \begin{algorithmic}
-\STATE \ctree$.$Init$($\config{s}$)$
+\STATE {\ctree}$.$Init$($\config{s}$)$
 \FOR{$i$ = 1 to $K$}
-\STATE \config{rand} $ \leftarrow $ Rand$($\cspace$)$
-\STATE \config{near}$ \leftarrow $ Nearest$($\config{rand}$,$\ctree$)$
-\STATE Extend$($\ctree$,$\config{near}$,$\config{rand}$)$
+\STATE \config{rand} $ \leftarrow $ Rand$(${\cspace}$)$
+\STATE \config{near}$ \leftarrow $ Nearest$($\config{rand}$,${\ctree}$)$
+\STATE Extend$(${\ctree}$,$\config{near}$,$\config{rand}$)$
 \ENDFOR
 \end{algorithmic}
 \end{algorithm}
@@ -230,7 +230,7 @@ robots with closed kinematic chains such as parallel robots.
       \caption{Left: schematic view of a humanoid robot: bodies
         are connected with joints (yellow circles) which represent the
         actuators. A fictitious 6-DoF joint, or floating joint (purple
-        circle), is added to move the robot in \segroup. Right: A
+        circle), is added to move the robot in {\segroup}. Right: A
         kinematic tree view of the same robot, where bodies and joints
         are represented by nodes and joints respectively.}
       \label{fig:chap1-robot-kinematic-tree}
@@ -241,7 +241,7 @@ type of actuator will then have an equivalent type of joint
 (prismatic, revolute, etc). A configuration \config{} of such a robot
 can then be defined as the concatenation of all joint DoF values, and
 the set of all configurations is called the actuated configuration
-space \actcspace. This is however not sufficient in the particular
+space {\actcspace}. This is however not sufficient in the particular
 case of anthropomorphic systems, which rely on making and breaking
 contact with their environment -- the floor for instance -- in order
 to move in their workspace. Additional information in the
@@ -256,8 +256,8 @@ floating base. Note that any body of the kinematic tree can be chosen
 to be the floating base; in Figure
 \ref{fig:chap1-robot-kinematic-tree}, the floating base is the
 ``waist'' of the robot. Thus, a full configuration \config{} of the
-robot \robot is an element of the configuration space \cspace $=$
-\segroup $\times$ \actcspace.
+robot \robot is an element of the configuration space {\cspace} $=$
+{\segroup} $\times$ {\actcspace}.
  
 \subsection{Kinematic Redundancy}
 \label{subsec:chap1-kinematic-redundancy}
@@ -278,11 +278,11 @@ robot \robot is an element of the configuration space \cspace $=$
 We briefly introduce here the concept of kinematic redundancy. Figure
 \ref{fig:chap1-robot-redundancy} shows that for a same target
 Cartesian position of the end effector \body{e}, there exists more
-than one configuration of \robot\thinspace that allows \body{e} to
-reach the target. The robot \robot\thinspace is therefore
+than one configuration of {\robot} that allows \body{e} to
+reach the target. The robot {\robot} is therefore
 kinematically redundant with respect to the task of reaching the
 object. One could imagine assigning multiple tasks to be accomplished
-at the same time, or even exploring \cspace while continuously
+at the same time, or even exploring {\cspace} while continuously
 accomplishing one or more tasks. This will be discussed more
 thoroughly in Chapter \ref{chap:wholebody-planning}.
 
@@ -297,21 +297,21 @@ methods have been proposed to generate walking motions efficiently.
 \subsection{Zero-Moment Point (ZMP)}
 \label{subsec:chap1-zmp}
 
-We assume here that the robot \robot\thinspace is walking on a flat
+We assume here that the robot {\robot} is walking on a flat
 horizontal floor. We also assume that the robot is always making
 contact with the floor, i.e. that there are no jumps, and that all
-contacts are non-sliding. \robot\thinspace is then subject to its
+contacts are non-sliding. {\robot} is then subject to its
 weight and to contact forces.
 
 Under these assumptions, the \emph{Zero-Moment Point (ZMP)}
 \cite{vukobratovic1969contribution} is defined as the point on the
 floor where the horizontal components of the sum of moments applied to
-\robot\thinspace are zero. It is also established that
-\robot\thinspace will not tilt around its foot edges as long as the
+{\robot} are zero. It is also established that
+{\robot} will not tilt around its foot edges as long as the
 ZMP lies inside the support polygon, i.e. the convex hull of all
 contact points, which are coplanar due to the previous
 assumptions. This is known as the condition of dynamic balance, and
-the robot \robot\thinspace is then said to be dynamically balanced. We
+the robot {\robot} is then said to be dynamically balanced. We
 will further discuss the complete ZMP formulation in Chapter
 \ref{chap:optimal-motion-planning}.
 
@@ -428,7 +428,7 @@ solutions in more complex environments.
 \label{subsec:chap1-constrained-motion-planning}
 
 More recently, sampling-based motion planning algorithms were adapted
-to efficiently explore a constraint submanifold of \cspace. In
+to efficiently explore a constraint submanifold of {\cspace}. In
 \cite{bret06, haus10}, this strategy is used to plan on a union of
 submanifolds, where each manifold is defined by a contact limb
 position and static balance constraints, producing statically balanced

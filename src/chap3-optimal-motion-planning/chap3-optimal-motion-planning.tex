@@ -31,11 +31,11 @@ Sampling-based algorithms, such as Rapidly-exploring Random Trees
 (RRT) which were presented in Section
 \ref{subsec:chap1-sampling-algorithms}, are particularly powerful when
 it comes to solving path planning problems in
-high-dimension \cspace\thinspace and cluttered environments. In this
+high-dimension {\cspace}\thinspace and cluttered environments. In this
 chapter, we rely on the same constrained RRT algorithm which was
 described in Chapter \ref{subsec:chap2-constraint-motion-planning} in
 order to generate statically balanced paths on a submanifold
-of \cspace.
+of {\cspace}.
 
 Let us recall that an important feature of sampling-based algorithms
 is their probabilistic completeness, i.e. their capacity to avoid
@@ -1404,18 +1404,18 @@ shown that, in practice, the running time until an acceptable
 minimizer is reached is greater than the time needed to find any
 collision-free solution by only a constant factor. Of course, if we
 want to generate an optimal trajectory, we need to explore not only
-the configuration space \cspace, but at least the whole state space
-\sspace\thinspace (if not the space of both states and controls),
-where an element of \sspace\enspace is \state{}. In this case, the
-exploration might become too large to have tractable
-performance. Another problem arises from choosing the correct metric
-for choosing nearest neighbors, as well as the local optimal steering
-method. In \cite{Perez2012}, the authors propose a variant which uses
-the local linearization of a system to derive both coherent metric and
-extension method. Results have so far been only obtained on simple
-systems, and this method has yet to be tested on complex
-ones. Nevertheless, RRT$^*$ is an interesting approach as only one
-algorithm is needed to achieve global optimal motion planning.
+the configuration space {\cspace}, but at least the whole state space
+{\sspace} (if not the space of both states and controls), where an
+element of {\sspace} is \state{}. In this case, the exploration might
+become too large to have tractable performance. Another problem arises
+from choosing the correct metric for choosing nearest neighbors, as
+well as the local optimal steering method. In \cite{Perez2012}, the
+authors propose a variant which uses the local linearization of a
+system to derive both coherent metric and extension method. Results
+have so far been only obtained on simple systems, and this method has
+yet to be tested on complex ones. Nevertheless, RRT$^*$ is an
+interesting approach as only one algorithm is needed to achieve global
+optimal motion planning.
 
 \section{Anthropomorphic System Dynamics}
 
