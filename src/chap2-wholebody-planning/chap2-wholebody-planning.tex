@@ -1,13 +1,14 @@
 \chapter{Dynamic Walking and Whole-Body Motion Planning for Humanoid Robots: an Integrated Approach}
 \label{chap:wholebody-planning}
 
-The humanoid motion planning problem was tackled in Chapter
+The humanoid walk motion planning problem was tackled in Chapter
 \ref{chap:path-optim} by first planning a geometric path for the robot
 bounding box, then transforming the path into a dynamic walking
-trajectory by laying footprints along it and using a patter generator.
-However, in complex and difficult environments, such as the one
-presented in Section \ref{subsec:chap1-chairs}, it can be necessary to
-consider exact 3D models of a humanoid robot and its environment.
+trajectory by laying footprints along it and using a pattern
+generator.  However, in complex and difficult environments, such as
+the one presented in Section \ref{subsec:chap1-chairs}, it can be
+necessary to consider exact 3D models of a humanoid robot and its
+environment.
 
 This chapter presents a general method for planning collision-free
 whole-body walking motions for humanoid robots. We rely on a
@@ -29,11 +30,11 @@ Sampling-based planners, such as the ones presented in Section
 in generating collision-free paths in high-dimension configuration
 spaces. When using sampling techniques on a humanoid robot, a major
 difficulty is to take into account balance constraints, i.e. to
-generate random configurations on zero volume submanifolds
-of {\cspace}. Indeed, the probability of sampling a configuration
-\config{rand} in {\cspace} such that it lies on a such manifolds is
+generate random configurations on zero volume submanifolds of
+{\cspace}. Indeed, the probability of sampling a configuration
+\config{rand} in {\cspace} such that it lies on such manifolds is
 zero. In this section, we present recent advances in motion planning
-on constraint manifolds using inverse-kinematics (IK) solvers. 
+on constraint manifolds using inverse-kinematics (IK) solvers.
 
 \subsection{Inverse Kinematics}
 \label{subsec:chap2-inverse-kinematics}
@@ -41,16 +42,16 @@ on constraint manifolds using inverse-kinematics (IK) solvers.
 The problem of inverse kinematics for a humanoid robot, or any
 articulated structure, is to compute a configuration \config{} to
 achieve a task \task{}. This task is usually expressed in the
-Cartesian space, and can represent and end-effector position
-and/orientation, the CoM position, etc. Some tasks may have more than
-one solution configuration, see Section
+Cartesian space, and can represent and end-effector position and/or
+orientation, the CoM position, etc. Some tasks may have more than one
+solution configuration, see Section
 \ref{subsec:chap1-kinematic-redundancy}. In the case of most robotics
 tasks, the set of solution configurations has a specific topological
-structure and forms a differentiable submanifold $\manifold$
-of {\cspace}, i.e. a set that locally ``looks like'' the euclidean
+structure and forms a differentiable submanifold $\manifold$ of
+{\cspace}, i.e. a set that locally ``looks like'' the euclidean
 space \tspace{m}, and such that the tangent vector space
-$T_{\mathbf{q}}\manifold$ is defined for any \config{}. $m$ is called the
-dimension of the manifold $\manifold$.
+$T_{\mathbf{q}}\manifold$ is defined for any \config{}. $m$ is called
+the dimension of the manifold $\manifold$.
 
 As the robots we deal with are redundant, it is natural to take
 advantage of this redundancy by specifying multiple tasks, potentially
@@ -67,7 +68,7 @@ limitation. Note that when local methods find solutions, these are
 usually smoother and may look more natural. The choice of using global
 motion planners is justified by the need for complete algorithms.
 
-We show here a functional example of a IK solver: its purpose is to
+We show here a functional example of an IK solver: its purpose is to
 find the root \config{} of a non-linear $C^1$ function $f(q)$ with a
 tolerance of $\epsilon$. If we want to find a configuration on a
 manifold $\manifold$, $\mathbf{f}(\mathbf{q})$ can be defined as a
@@ -86,13 +87,13 @@ $\alpha$ denotes a gain and $\left(\frac{\partial \mathbf{f}}{\partial
   \mathbf{q}}(\mathbf{q})\right)^{+}$ denotes the Moore-Penrose
 pseudo-inverse of the Jacobian of $\mathbf{f}(\mathbf{q})$. The use of
 an adaptive gain $\alpha$, which increases iteratively from an initial
-value $\alpha$ to a maximum value $\alpha_{max}$, allows the overshoot
-avoidance and convergence acceleration. The update rule relies on a
-real factor $w \in [0,1]$; the greater $w$ is, the faster $\alpha$
-will reach $\alpha_{max}$. Obviously, the solver convergence depends
-on the initial value of \config{}, and a bad initialization can lead
-to either slow convergence or failure. A cutoff number of iterations
-$it_{max}$ is hence introduced to bypass these cases.
+value $\alpha$ to a maximum value $\alpha_{max}\in[0,1]$, allows the
+overshoot avoidance and convergence acceleration. The update rule
+relies on a real factor $w \in [0,1]$; the greater $w$ is, the faster
+$\alpha$ will reach $\alpha_{max}$. Obviously, the solver convergence
+depends on the initial value of \config{}, and a bad initialization
+can lead to either slow convergence or failure. A cutoff number of
+iterations $it_{max}$ is hence introduced to bypass these cases.
 
 In practice, we observe that values of $\epsilon=10^{-6}$,
 $\alpha=0.1$, $\alpha_{max}=0.95$ and $w=0.8$ lead to good behavior,
@@ -123,20 +124,20 @@ constant for all scenarios in this work.
 \subsection{Randomized Motion Planning on Constraint Manifolds}
 \label{subsec:chap2-constraint-motion-planning}
 
-This problem of motion planning on constraint submanifolds of {\cspace}
-has been investigated with success during the last few years,
-\cite{berenson2011task} presents an exhaustive survey of
-Jacobian-based methods. Other recent contributions
+This problem of motion planning on constraint submanifolds of
+{\cspace} has been investigated with success during the last few
+years; the work of \cite{berenson2011task} presents an exhaustive
+survey of Jacobian-based methods. Other recent contributions
 \cite{porta2012randomized} present sophisticated constrained motion
 planning techniques based on higher-dimensional continuation.
 
 This section presents an algorithm for constrained motion planning on
 a submanifold $\manifold$ of the configuration space {\cspace}. It
-presents presents a simple adaptation of the RRT algorithm to
-constrained motion planning, that was first introduced in
-\cite{dalibard09}. A configuration \config{} of {\cspace} is said to be valid
-iff, besides being collision-free, it lies on the manifold
-$\manifold$; we call $\manifold$ the planning manifold.
+presents a simple adaptation of the RRT algorithm to constrained
+motion planning, that was first introduced in \cite{dalibard09}. A
+configuration \config{} of {\cspace} is said to be valid iff, besides
+being collision-free, it lies on the manifold $\manifold$ up to the
+tolerance $\epsilon$; we call $\manifold$ the planning manifold.
 
 The problem solved here differs from classic approaches in two ways:
 \begin{enumerate}
@@ -198,8 +199,8 @@ constraints for the HRP-2 robot.
 }
 
 \caption{Random goal configurations solving a reaching task. All the
-  configurations are balanced and collision-free, and the right hand of the character
-  reaches the orange ball.}
+  configurations are balanced and collision-free, and the right hand
+  of the robot reaches the orange ball.}
 \label{fig:goal}
 \end{figure}
 
@@ -207,7 +208,7 @@ constraints for the HRP-2 robot.
 \label{sec:extension}
 
 Figure~\ref{fig:rrt-extend} shows an extension of the classic RRT
-algorithm, from a configuration already in the tree \config{rand} towards
+algorithm, from a configuration already in the tree \config{near} towards
 a random configuration \config{rand}.
 
 \begin{figure}
@@ -219,7 +220,7 @@ a random configuration \config{rand}.
     \node [draw,circle,inner sep=2pt] (1) at (1,1) {};
     \node [draw,circle,inner sep=2pt] (2) at (2.4,1) {};
     \node [draw,circle,inner sep=2pt,fill=gray] (qn) at (3.4,2) {};
-    \node [above left] at (qn) {\config{rand}};
+    \node [above left] at (qn) {\config{near}};
     \node (t) at (1.5,-0.5) {$\mathcal{T}$};
     \draw (0) -- (1) -- (2) -- (qn) ; 
 
@@ -242,29 +243,29 @@ a random configuration \config{rand}.
   \end{tikzpicture}
 
   \caption{One step of extension of the RRT algorithm. The algorithm
-    tries to add the longest possible edge from \config{rand} towards
+    tries to add the longest possible edge from \config{near} towards
     \config{rand}, while avoiding collisions.}
   \label{fig:rrt-extend}
 \end{figure}
 
 The equivalent random extension on a constrained manifold $\manifold$,
 defined by the constraint function $f$, starts from a valid
-configuration \config{near}$ \in \manifold$, and extends the tree
+configuration {\config{near}} $ \in \manifold$, and extends the tree
 towards a random configuration \config{rand}, while keeping the
-constraints satisfied. Extension attempts orthogonal to $\manifold$
-are useless, as newly added edges have to be included in
-$\manifold$. To extend in directions that follow the directions of
-$\manifold$, we rely on Jacobian-based inverse
-kinematics. Algorithm~\ref{alg:constrained} presents the adaptation of
-the classic extend function, and Figure~\ref{fig:gikrrt} illustrates
-this extension. The idea is to first project \config{rand} on the
-tangent space to $\manifold$ at \config{rand}. Let us call the
-projected configuration \config{rand}$'$. Let \config{rand}$''$ be the
-result of a call to
+constraints satisfied. Note that {\config{rand}} $ \notin\manifold$.
+Extension attempts orthogonal to $\manifold$ are useless, as newly
+added edges have to be included in $\manifold$. To extend in
+directions that follow the directions of $\manifold$, we rely on
+Jacobian-based inverse kinematics. Algorithm~\ref{alg:constrained}
+presents the adaptation of the classic extend function, and
+Figure~\ref{fig:gikrrt} illustrates this extension. The idea is to
+first project \config{rand} on the tangent space to $\manifold$ at
+\config{near}. Let us call the projected configuration
+\config{rand}$'$. Let \config{rand}$''$ be the result of a call to
 $\texttt{SolveConstraints}($\config{rand}$',\mathbf{f},\epsilon)$.  It
 is the projection of \config{rand}$'$ on $\manifold$. Instead of
-extending the tree from \config{rand} towards \config{rand}, the
-algorithm tries to extend from \config{rand} towards \config{rand}$''$
+extending the tree from \config{near} towards \config{rand}, the
+algorithm tries to extend from \config{near} towards \config{rand}$''$
 while remaining on $\manifold$. While extending the tree, the
 configurations along the new edge are automatically projected onto
 $\manifold$. These projections are not very costly if the edge is
@@ -291,11 +292,11 @@ algorithm.
   (88.8934,277.5752) .. controls (196.3490,276.5363) and (532.8532,213.7494) ..
 (434.3656,81.6056) node [above = 0.1cm, color=dg, text width=1.8cm] {\small{Constrained manifold $\manifold$}};
 \node [draw,circle,inner sep=2pt,fill = gray] (qn) at (97,277) {};
-\node [above = 0.15cm] at (qn) {\config{rand}};
+\node [above = 0.15cm] at (qn) {\config{near}};
 \node [draw,circle,inner sep=2pt] (qr1) at (367,99) {};
 \node [left = 0.2cm] at (qr1) {\config{rand}};
 \draw [dashed,thin] (qn) -- (450,277);
-\node [right = 0.2cm] at (450,277) {\small{$T_q\manifold$}};
+\node [right = 0.2cm] at (450,277) {\small{$T_\mathbf{q}\manifold$}};
 \node [draw,circle,inner sep=2pt] (qr2) at (367,277) {};
 \node [below right = 0.1cm] at (qr2) {\config{rand}$'$};
 \node [draw,circle,inner sep=2pt,fill = gray] (qr3) at (345,225) {};
@@ -338,10 +339,11 @@ algorithm.
 
 \caption{One step of constrained extension illustrating Algorithm
   \ref{alg:constrained}: \config{rand} is first projected on
-  $T_{\mathbf{q}}\manifold$ the tangent space of $\manifold$. \config{rand}$'$ is then
-  projected onto $\manifold$. A classic RRT extension tries to go as
-  far as possible from \config{rand} towards \config{rand}$''$ while remaining
-  on $\manifold$. \config{new} is then returned.}
+  $T_{\mathbf{q}}\manifold$ the tangent space of
+  $\manifold$. \config{rand}$'$ is then projected onto $\manifold$ at
+  \config{rand}$''$. A classic RRT extension tries to go as far as
+  possible from \config{near} towards \config{rand}$''$ while
+  remaining on $\manifold$. \config{new} is then returned.}
 \label{fig:gikrrt}
 \end{figure}
 
@@ -350,7 +352,7 @@ algorithm.
   \label{alg:constrained}
   \begin{algorithmic}
     \STATE $d \leftarrow$ \texttt{Distance}(\config{near}$,$ \config{rand})
-    \STATE $q \leftarrow$ \config{rand}
+    \STATE $q \leftarrow$ \config{near}
     \WHILE{$d > \epsilon$}
     \STATE \config{rand}$' \leftarrow$ \texttt{OrthogonalProject}(\config{rand}$, T_q\manifold$)
     \STATE \config{rand}$'' \leftarrow$ \texttt{SolveConstraints}(\config{rand}$',f,\epsilon$)
@@ -379,17 +381,17 @@ defined by hand and gaze constraints that correspond to the position
 of the ball on the higher shelf. Finally, we define the rest
 configuration as the single goal configuration for problem (iii).
 
-Note that for phases (i) and (iii) the ball is also considered as an
+The goal configuration in phase (i) is in a narrow passage. Note that
+for phases (i) and (iii) the ball is also considered as an
 obstacle. This is necessary to prevent the robot grasping hand from
-colliding with the ball during the approach (respectively retraction)
-phase.
+colliding with the ball during the approach and retraction phase.
 
 For the two reaching motions in (i) and (ii), we first generate 8
 random goal configurations
 (Section~\ref{subsubsec:chap2-goal-sampling}), then we solve the three
 constrained motion planning problems separately. As randomized motion
-planning algorithms produce, a classic shortcut method is used to
-optimize and shorten the paths.
+planning algorithms produce log paths, a classic shortcut method is
+used to optimize and shorten them.
 
 This set of motion planning problems was run 20 times; results are
 compiled in Table~\ref{table:reaching}. The performance of
@@ -466,8 +468,8 @@ Other recent contributions to the field of locomotion planning include
 algorithms considering the dynamics at the planning phase
 \cite{glassman2010quadratic, shkolnik2011bounding}. This leads to a
 growth of algorithmic complexity, particularly costly for
-high-dimensional systems such as humanoid robots. To the authors'
-knowledge such techniques have not been used on humanoid robotic
+high-dimensional systems such as humanoid robots, which can explain
+why such techniques have not yet been used on humanoid robotic
 platforms so far.
 
 \section{From Geometric Paths to Feasible Motions: Small-Space Controllability}
@@ -532,12 +534,12 @@ particular for non-holonomic systems. A detailed proof can be found in
 about the corresponding algorithm.
 
 \begin{proof}[Proof of Theorem \ref{thm:ssc}]
-  Let {\cspace}\enspace be the configuration space of a small-space
-  controllable robot, and \cfree\thinspace $\subset$ {\cspace}\thinspace
+  Let {\cspace} be the configuration space of a small-space
+  controllable robot, and {\cfree} $\subset$ {\cspace}
   the set of collision-free configurations. We consider in-contact
-  configurations as colliding, so \cfree\thinspace is an open set.
-  Let $\tau : [0,1] \rightarrow $ \cfree\thinspace be a collision-free
-  path. Thus for all $x \in [0,1]$, $\tau(x) \in $ \cfree\thinspace,
+  configurations as colliding, so {\cfree} is an open set.
+  Let $\tau : [0,1] \rightarrow $ {\cfree} be a collision-free
+  path. Thus for all $x \in [0,1]$, $\tau(x) \in $ {\cfree},
   there exists $\epsilon_x$ such that the open ball
   $B(\tau(x),\epsilon_x)$ of center $\tau(x)$ and radius $\epsilon_x$
   is included in \cfree. The small-space controllability property
@@ -656,9 +658,9 @@ between the feet and the mass. The robot is walking on a flat terrain,
 and the feet are assumed to have a positive surface. For our
 presentation, it is not necessary to consider the foot height, so the
 configuration space of the robot is:
-\[
-\mathcal{CS} = SE(2) \times SE(2) \times \mathbb{R}^3
-\]
+\begin{equation}
+  \mathcal{CS} = SE(2) \times SE(2) \times \mathbb{R}^3
+\end{equation}
 It is of dimension 9.
 
 The balanced walking conditions for a quasi-static walking robot are
@@ -732,7 +734,7 @@ achieve dynamically balanced walking, we aim at making $p_y(t)$
 oscillate between $-L$ and $L$. To move the ZMP under a given foot,
 only the $y$ coordinate of the CoM is of interest. Thus, we will keep
 the $x$ coordinates of the CoM and ZMP constant equal to $0$. By
-hypothesis, the feet have a positive surface, let $l>0$ be such that
+assumption, the feet have a positive surface, let $l>0$ be such that
 the length of the section of a foot along the $y$-axis is greater than
 $l$. Figure~\ref{fig:simple-humanoid} summarizes the notations used in
 the following.
@@ -832,7 +834,7 @@ axis and the corresponding ZMP motion. Once in permanent in-place
 walking state, the robot can come back to a static state by applying a
 symmetric transient state used to decrease gradually the amplitude of
 the oscillations of the CoM without generating a discontinuity in the
-first derivative of the command.
+first derivative of the control.
 
 We have thus exhibited a continuous control scheme that allows to move
 any of the feet in any direction, while keeping the CoM inside an
