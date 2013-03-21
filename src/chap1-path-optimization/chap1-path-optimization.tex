@@ -18,19 +18,19 @@ The problem of motion planning is now well formalized in robotics and
 several books present the various approaches
 \cite{lato91,chos05,lava06}. One particularly useful concept is the
 one of configuration space (denoted by {\cspace}) \cite{loza83}, which
-is the set of all configurations \config{} of a robot \robot;
+is the set of all configurations \config{} of a robot {\robot};
 \config{} is a vector comprised of the $n$ independent degrees of
 freedom (DoF) that are sufficient to know the full state of the robot
-at each instant. {\cspace} defines then a submanifold of {\espace}. Some
-of the robot body positions can generate (self-)collisions; the
-equivalent configurations will be said to be in collision, and the set
-of all configurations in collision is denoted by {\cobs}
-$\subset$ {\cspace}. Its complementary is denoted by {\cfree} and is
-called the free configuration space. Using these notations, we can
-redefine the motion planning problem as the answer to the following
-question: is there a continuous path $P: [0,1] \rightarrow$ {\cfree}
-that connects a start configuration \config{s} to a goal configuration
-\config{g}, and what is it?
+at each instant. {\cspace} defines then a manifold of dimension
+$n$. Some of the robot body positions can generate (self-)collisions;
+the equivalent configurations will be said to be in collision, and the
+set of all configurations in collision is denoted by {\cobs} $\subset$
+{\cspace}. Its complement is denoted by {\cfree} and is called the
+free configuration space. Using these notations, we can redefine the
+motion planning problem as the answer to the following question: is
+there a continuous path $P: [0,1] \rightarrow$ {\cfree} that connects
+a start configuration \config{s} to a goal configuration \config{g},
+and what is it?
 
 \subsection{Deterministic Algorithms}
 \label{subsec:chap1-deterministic algorithms}
@@ -49,12 +49,13 @@ methods includes cellular decomposition, Voronoi diagrams, visibility
 graphs, and Canny's algorithm \cite{good04}.
 
 Such algorithms offer the nice property of completeness, i.e. they can
-always give a full answer to the motion planning problem as defined
+always provide an answer to the motion planning problem as defined
 previously. But while they work well for solving path planning
 problems in low-dimensional configuration spaces, their computational
 cost becomes penalizing in high-dimensional configuration spaces. In
 fact building {\cfree} requires finding its frontiers, and computation
-time is at best exponential with respect to the dimension of {\cspace}.
+time is at best exponential with respect to the dimension of
+{\cspace}.
 
 Other approaches are inspired from real-time motion generation
 techniques, such as the one detailed in \cite{khat85}, which consists
@@ -136,16 +137,16 @@ both the initial and goal configurations, see Figure
       \label{fig:chap1-rrt}
 \end{figure}
 
-While not being resolution complete (i.e. they cannot tell whether a
-solution exists or not), sampling-based algorithms have the less
-strong property of probabilistic completeness: if a solution path
-exists, the algorithm will be able to compute it with a probability of
-$1$ when the number of iterations $K$ reaches infinity. This may seem
-like a very weak property, but in practice these algorithms can
-compute paths in complex real-life environments in a reasonable time
-on regular computers and have been used to solve problems for various
-systems, ranging from 6-DoF floating objects, 50-DoF anthropomorphic
-systems, to 1000-DoF proteins.
+While not being complete (i.e. they cannot tell whether a solution
+exists or not), sampling-based algorithms have the less strong
+property of probabilistic completeness: if a solution path exists, the
+algorithm will be able to compute it with a probability of $1$ when
+the number of iterations $K$ reaches infinity. This may seem like a
+very weak property, but in practice these algorithms can compute paths
+in complex real-life environments in a reasonable time on regular
+computers and have been used to solve problems for various systems,
+ranging from 6-DoF floating objects, 50-DoF anthropomorphic systems,
+to 1000-DoF proteins.
 
 \subsection{Path Optimization}
 \label{subsec:chap1-path-optimization}
@@ -162,7 +163,7 @@ sure that the output path is still valid.
 A greedy optimizer, such as the one shown in Figure
 \ref{fig:chap1-optimizers}, uses the greedy approach to shorten and
 smooth a path. First, it tries to connect directly \config{s} to
-\config{g}; if the path is collision-free, it tries to connect
+\config{g}; if the path is not collision-free, it tries to connect
 \config{s} to the node preceding \config{g}, and so on until it
 reaches \config{s}. This process is then restarted similarly on the
 following nodes.
@@ -208,15 +209,16 @@ anthropomorphic systems, humanoid robots and digital actors.
 \subsection{Underactuated Systems}
 \label{subsec:chap1-underactuated-systems}
 
-A robot \robot is usually composed of a set of rigid bodies \body{i},
-$i \in 0..N_B$, and a set of joints \joint{i}, $i \in 1..N_J$, which
-constrain the body positions. A rigid body has a mass, an inertia, and
-a given geometry. We use the kinematic tree formalism proposed in
-\cite{feat08} to model a full robot: a node of the tree represents a
-body of the robot, while an arc (or edge) represents a joint \joint{i}
-of the robot which constrains the motion of the successor body
-\body{i} with respect to its parent body \body{\lambda_{i}} (see
-Figure \ref{fig:chap1-robot-kinematic-tree}). Note that in the tree
+A robot {\robot} is usually composed of a set of rigid bodies
+\body{i}, $i \in 0..N_B$, and a set of joints \joint{i}, $i \in
+1..N_J$, which constrain the body positions. A rigid body has a mass,
+an inertia, and a given geometry. We use the kinematic tree formalism
+proposed in \cite{feat08} to model a full robot: a node of the tree
+represents a body of the robot, while an arc (or edge) represents a
+joint \joint{i} of the robot which constrains the motion of the
+successor body \body{i} with respect to its parent body
+\body{\lambda_{i}} (see Figure
+\ref{fig:chap1-robot-kinematic-tree}). Note that in the tree
 representation, each body has one and exactly one parent body, except
 for the root body which has no parents; this means that additional
 constraints have to be added later on in order to correctly model
@@ -247,7 +249,7 @@ contact with their environment -- the floor for instance -- in order
 to move in their workspace. Additional information in the
 configuration vector is needed to model the general position of the
 system, and not only its actuators. Anthropomorphic systems are
-therefore said to be unactuated systems.
+therefore said to be underactuated systems.
 
 We therefore introduce a 6-DoF floating joint, which we attach to the
 root of the existing kinematic tree containing the actuated
@@ -256,7 +258,7 @@ floating base. Note that any body of the kinematic tree can be chosen
 to be the floating base; in Figure
 \ref{fig:chap1-robot-kinematic-tree}, the floating base is the
 ``waist'' of the robot. Thus, a full configuration \config{} of the
-robot \robot is an element of the configuration space {\cspace} $=$
+robot {\robot} is an element of the configuration space {\cspace} $=$
 {\segroup} $\times$ {\actcspace}.
  
 \subsection{Kinematic Redundancy}
@@ -269,8 +271,8 @@ robot \robot is an element of the configuration space {\cspace} $=$
                    {robot-redundancy.pdf_tex}}
       \caption{Anthropomorphic systems are highly redundant
         systems. For a desired Cartesian position (in blue) of the end
-        effector \body{e}, there exists more than one configuration
-        \config{} that accomplishes this task. Left and right: two
+        effector \body{e}, there exist more than one configuration
+        \config{} that accomplish this task. Left and right: two
         possible solution configurations.}
       \label{fig:chap1-robot-redundancy}
 \end{figure}
@@ -317,7 +319,7 @@ will further discuss the complete ZMP formulation in Chapter
 
 Note that in the particular case where speed and acceleration are
 zero, the ZMP will coincide with the \emph{center of mass (CoM)}
-vertical projection on the floor; the robot \robot will then be said
+vertical projection on the floor; the robot {\robot} will then be said
 to be statically balanced if this projection lies inside the support
 polygon.
 
@@ -363,10 +365,10 @@ constant.
 \end{figure}
 
 Based on this model, planning a trajectory for the ZMP is reduced to
-planning a trajectory for CoM of the robot. Given a trajectory of the
-CoM and footprint positions, inverse kinematics solvers can animate
-the whole set of DoF of the robot to generate a dynamically balanced
-walk trajectory.
+planning a trajectory for the CoM of the robot. Given a trajectory of
+the CoM and footprint positions, inverse kinematics solvers can
+animate the whole set of DoF of the robot to generate a dynamically
+balanced walk trajectory.
 
 \begin{figure}
   \centering
@@ -386,7 +388,7 @@ walk trajectory.
 The motion planning problem is certainly a complex one in the case of
 humanoid robots, which are high-DoF redundant systems that have to
 verify bipedal stability constraints. Various planning strategies can
-be found in literature.
+be found in the literature.
 
 \subsection{Footstep Planning}
 \label{subsec:chap1-footstep-planning}
@@ -417,12 +419,12 @@ algorithm has to verify during the whole motion. The trajectory is
 then generated by specifying a set of goal tasks -- which could be a
 goal configuration -- and let this set act as an attractor, in a way
 similar to the simpler example shown in
-\ref{subsec:chap1-deterministic algorithms}. Using such as scheme,
-\cite{kano09} defines a robot augmented with a sequence of footprints
-and formulates the problem of locomotion planning as an optimization
-problem. Such as scheme works well in the presence of simple
-obstacles, but is prone to falling and local minima failing to find
-solutions in more complex environments.
+\ref{subsec:chap1-deterministic algorithms}. Using such as scheme, the
+work in \cite{kano09} defines a robot augmented with a sequence of
+footprints and formulates the problem of locomotion planning as an
+optimization problem. Such a scheme works well in the presence of
+simple obstacles, but is prone to falling in local minima, failing to
+find solutions in more complex environments.
 
 \subsection{Constrained Motion Planning}
 \label{subsec:chap1-constrained-motion-planning}
@@ -483,11 +485,11 @@ with $\mathbf{\overset{.}{\mathbf{q}}=}\frac{d\mathbf{q}}{dt}$, cannot
 be integrated into a form similar to \ref{eq:chap1-holonomic_constraint},
 this constraint is called \emph{nonholonomic}.
 
-Practically, a nonholonomic constraint implies that a device's
-velocity vector cannot take an arbitrary direction. For instance, you
-cannot drive a car sideways (what makes life harder for us when
-parking), and therefore it has a nonholonomic constraint. On the other
-hand, a spherical ball can roll in any direction, which means it has a
+Practically, a nonholonomic constraint implies that a system velocity
+vector cannot take an arbitrary direction. For instance, you cannot
+drive a car sideways (this makes life harder for us when parking), and
+therefore it has a nonholonomic constraint. On the other hand, a
+spherical ball can roll in any direction, which means it has a
 holonomic constraint.
 
 So is there a particular constraint that governs human gait? Studies,
@@ -508,8 +510,8 @@ The path planning scheme in \cite{yosh08} is designed to this end; a
 PRM algorithm first builds a roadmap with Dubins curves \cite{dubi57},
 but such curves impose a nonholonomic constraint and narrow passages
 cannot be crossed. The roadmap is therefore enriched with linear local
-paths. As a result this planning scheme generates motion such that the
-robot remains tangent to its path most of the time and uses
+paths. As a result, this planning scheme generates motions such that
+the robot remains tangent to its path most of the time and uses
 sidestepping only in narrow passages.
 
 \section{Contribution: Regular Sampling Optimization}
@@ -587,13 +589,13 @@ After running RO on the piecewise linear path $P_{RRT}$, the
 path $P$ is also piecewise linear, and its first and last
 configurations are denoted by $\mathbf{q}_s$ and $\mathbf{q}_g$.
 
-Let $d_{sample} \in \mathbb{R}_+^*$ be a sampling distance. Sampling
-$P$ with a distance $d_{sample}$ means dividing each local path $LP_j$
-of $P$ into smaller local paths of length $d_{sample}$; each new local
-path end is a sample configuration. The $n^{th}$ sample configuration
-of $P$ in its initial state can be obtained by indexing new local path
-ends starting from $\mathbf{q}_s$, and is denoted
-$\mathbf{q}_n^{init}$.
+Let $d_{sample} \in \mathbb{R}^+\setminus\{0\}$ be a sampling
+distance. Sampling $P$ with a distance $d_{sample}$ means dividing
+each local path $LP_j$ of $P$ into smaller local paths of length
+$d_{sample}$; each new local path end is a sample configuration. The
+$n^{th}$ sample configuration of $P$ in its initial state can be
+obtained by indexing new local path ends starting from $\mathbf{q}_s$,
+and is denoted $\mathbf{q}_n^{init}$.
 
 \begin{figure}
   \centering
@@ -694,7 +696,8 @@ speed, and $v_{min}^f$, $v_{max}^{f}$ and $v_{max}^{lat}$ their
 minimum and maximum values (See
 \autoref{fig:chap1-elliptic-constraint}). $D(\mathbf{q}_n^{state_n},
 ~\mathbf{q}_{n+1}^{state_{n+1}})$ can be then computed by integrating
-this speed constraint along the edge.
+this speed constraint along the linear path connecting
+$\mathbf{q}_n^{state_n}$ to $\mathbf{q}_{n+1}^{state_{n+1}}$.
 
 Having expressed the successor operator, which allows the optimizer to
 choose which node to expand at each iteration, the A$^{*}$ evaluation
@@ -713,12 +716,12 @@ $\hat{h}(\mathbf{q}_n^{state})$ is a heuristic function giving the
 estimated cost of the optimal path from $\mathbf{q}_n^{state}$ to
 $\mathbf{q}_g$.
 
-$\hat{h}(\mathbf{q}_n^{state})$ must verify
-$\hat{h}(\mathbf{q}_n^{state}) \leq h(\mathbf{q}_n^{state})$ to ensure
-that the algorithm is admissible, i.e. the path from $\mathbf{q}_s$ to
-$\mathbf{q}_g$ is optimal. Since the robot is fastest while walking
-straight forward in the absence of obstacles,
-$\hat{h}(\mathbf{q}_n^{state})$ is defined as:
+$\hat{h}(\mathbf{q})$ must verify $\hat{h}(\mathbf{q}) \leq
+h(\mathbf{q})$ for any $\mathbf{q}$ to ensure that the algorithm is
+admissible, i.e. that the path from $\mathbf{q}_s$ to $\mathbf{q}_g$
+is optimal. Since the robot is fastest while walking straight forward
+in the absence of obstacles, $\hat{h}(\mathbf{q}_n^{state})$ is
+defined as:
 \begin{equation}
   \begin{split}
   \hat{h}(\mathbf{q}_n^{state}) &= D(\mathbf{q}_n^{state},~\mathbf{q}_{n+1}^{front}) \\
@@ -752,7 +755,7 @@ of each sample node. An example is shown in
 
 A collision-free path $P$ for the 3-DoF bounding box can be found
 using RRT-Connect and RO. The regular sampling optimization (RSO),
-which is the subject of this paper, is then applied on the path and
+which is the subject of this work, is then applied on the path and
 produces a path $P_{opt}$ that gives priority to nonholonomic motion.
 
 Once the bounding box trajectory is computed, the robot has to walk
@@ -926,7 +929,7 @@ a realistic time-optimal walk trajectory. Results show that new
 trajectories are more satisfactory while the added computation time is
 insignificant compared to the whole planning time.
 
-This approach can be used in other fields such as graphical animation
+This approach can be used in other fields such as computer graphics
 for digital actors to adapt the body orientation with respect to the
 goal during locomotion. With a motion capture library containing
 prerecorded nonholonomic and holonomic walk behaviors, it is possible
