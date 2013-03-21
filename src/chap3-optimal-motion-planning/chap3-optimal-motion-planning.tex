@@ -2343,14 +2343,16 @@ helps obtain smooth and natural looking motions.
 \label{path}
 \end{figure}
 
-We use the constrained planner in \cite{dali09}, which is
-implemented with the motion planning library KineoWorks\texttrademark
-\cite{Laumond2006}. This planner allows generating a collision-free
-path, while guaranteeing that the solution path lies on a manifold of
-the configuration space. We want to generate for HRP-2 a
-collision-free path that guarantees its quasi-static balance when it
-is standing on both feet. We then define the manifold $\manifold$
-with the following stack of equality constraints:
+We use the constrained planner in \cite{dalibard09}, which we
+described in Section \ref{subsec:chap2-constraint-motion-planning},
+and which is implemented with the motion planning library
+KineoWorks\texttrademark \cite{laumond2006kcs}. This planner allows
+generating a collision-free path, while guaranteeing that the solution
+path lies on a manifold of the configuration space. We want to
+generate for HRP-2 a collision-free path that guarantees its
+quasi-static balance when it is standing on both feet. We then define
+the manifold $\manifold$ with the following stack of equality
+constraints:
 
 \begin{enumerate}
   \item Right foot has a fixed 6D transformation,
