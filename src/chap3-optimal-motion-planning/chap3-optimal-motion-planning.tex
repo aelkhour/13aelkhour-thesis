@@ -48,7 +48,7 @@ parametrization in order to transform the path into a trajectory. This
 is a non-trivial task in the particular case of a humanoid robot, as
 we must ensure its dynamic balance along the trajectory. Third, the
 resulting paths are continuous but not $C^1$; to enforce this
-constraint, he time-parametrized motion would need to stop at each
+constraint, the time-parameterized motion would need to stop at each
 waypoint, or would leave the planned path around waypoints. Additional
 processing is thus needed to provide a reshaped collision-free
 trajectory that can be executed on the robot.
@@ -56,8 +56,8 @@ trajectory that can be executed on the robot.
 \section{Numerical Optimization}
 
 We give here an overview of the most successful numerical optimization
-techniques that can be found in literature. We focus on Jacobian-based
-methods, i.e. methods that use information given by the
+techniques that can be found in the literature. We focus on
+Jacobian-based methods, i.e. methods that use information given by the
 \emph{variations} of the function we want to minimize to find its
 minimizer. As this section is largely based on
 \cite{nocedal1999numerical}, we invite the interested reader to refer
@@ -88,11 +88,11 @@ that $\exists$ a neighborhood $\mathcal{N}$ of $\argmin{x}$ and:
 
 \begin{equation}
 \label{eq:chap3-local-min}
-  f(\argmin{x} \le f(\mathbf{x})~\forall \mathbf{x} \in \mathcal{N}.
+  f(\argmin{x}) \le f(\mathbf{x})~\forall \mathbf{x} \in \mathcal{N}.
 \end{equation}
 
 Obviously, a local minimizer is weaker than a global minimizer, as
-Equation \ref{eq:chap3-local-min} implies that there is no other
+Equation \equref{eq:chap3-local-min} implies that there is no other
 minimizer only in the vicinity of $\argmin{x}$, and it does not ensure
 the nonexistence of another point $\mathbf{x}^\star_g$ such that
 $f(\mathbf{x}^\star_g) \le f(\argmin{x})$. Therefore, there is no
@@ -166,7 +166,7 @@ using the Rosenbrock function \cite{rosenbrock1960automatic}, or banana
 function, defined as:
 
 \begin{equation}
-\mathbf{x} = (x,y) \in \mathbb R^2 R(\mathbf{x}) =
+\mathbf{x} = (x,y) \in \mathbb R^2,\quad R(\mathbf{x}) =
 (1-x^2)+100(y-x^2)^2.
 \end{equation}
 
@@ -236,9 +236,9 @@ f(\mathbf{x_k}+c_1\alpha_k\nabla f_k^{\top}\mathbf{p_k}),
 \mathbf{p}_k)^{\top}\mathbf{p_k} \ge c_2 \nabla f_k^{\top}\mathbf{p_k},
 \end{equation}
 
-where $0 < c_1 < c_2 < 1$. Equation \ref{eq:chap3-wolfe-1} is called
+where $0 < c_1 < c_2 < 1$. Equation \equref{eq:chap3-wolfe-1} is called
 the \emph{sufficient decrease} or \emph {Armijo condition}; it rejects
-too small decreases in $f$. Equation \ref{eq:chap3-wolfe-2} is called
+too small decreases in $f$. Equation \equref{eq:chap3-wolfe-2} is called
 the \emph{curvature condition}, and it rejects too negative slopes
 which might slow down convergence. In practice, $c_1$ is very small
 and set to $10^{-4}$, while $c_2$ is set to a value ranging from $0.1$
@@ -371,7 +371,7 @@ The Newton line search is very efficient and exhibits a
 \le M \text{ for all } k \text{ sufficiently large}, \quad M>0,
 \end{equation}
 
-which is faster than a linear convergence rate. However, besides
+which is faster than a linear convergence rate. However, beside
 knowing how to compute the Jacobian of $f$, we also need to derive the
 Hessian of $f$ and this is not always a trivial task.
 
@@ -526,7 +526,7 @@ e) & \lambda_i^{\star} c_i(\argmin{x}) & = & 0 \qquad \forall i \in \mathcal{E}\
 
 Note that $f(\argmin{x}) = \mathcal{L}(\argmin{x},
 \boldsymbol{\lambda}^\star)$ because of the complementarity condition
-$e)$ in Equation \ref{eq:chap3-kkt}.
+$e)$ in Equation \equref{eq:chap3-kkt}.
 
 \subsection{Quadratic Programming}
 
@@ -559,7 +559,7 @@ q(\mathbf{x})=\frac{1}{2}\mathbf{x}^{\top}\mathbf{G}\mathbf{x}
 \qquad \mathbf{A} \text{ full rank.}
 \end{equation}
 
-The KKT conditions given in Theorem \ref{eq:chap3-kkt} imply that the
+The KKT conditions given in Theorem \equref{eq:chap3-kkt} imply that the
 solution $\argmin{x}$ verifies:
 
 \begin{equation}
@@ -597,7 +597,7 @@ solution $\argmin{x}$ verifies:
     \end{matrix}\right.
 \end{equation}
 
-The final linear system in Equation \ref{eq:chap3-qp-kkt} is called
+The final linear system in Equation \equref{eq:chap3-qp-kkt} is called
 the \emph{KKT system}. It can be solved using standard linear algebra
 techniques, and its solution gives the update $\mathbf{p}$ which leads
 directly to the minimizer $\argmin{x}$ of $q$.
@@ -625,11 +625,12 @@ minimizer to keep it away from the unconstrained minimum.
 
 \subsubsection{Inequality-Constrained QP}
 
-Now that we can solve an equality-constrained QP, we can move to solve
-the general QP presented in Equation \ref{eq:chap3-qp}. Several types
-of method such as active-set, gradient-projection and
-interior-point. We describe here the active-set method for solving
-inequality-constrained QP.
+Now that we can solve an equality-constrained QP, we can move on to
+solve the general QP presented in Equation
+\equref{eq:chap3-qp}. Several types of method such as active-set,
+gradient-projection and interior-point can be used to this end. We
+describe here the active-set method for solving inequality-constrained
+QP.
 
 The active-set method, described in detail in Algorithm
 \ref{alg:chap3-active-set}, consists in iteratively estimating the
@@ -638,7 +639,7 @@ with the active constraints, and repeat until the optimal active set
 is correctly found. We implement an active-set method to solve a QP as
 shown in Figure \ref{fig:chap3-qp-inequality}. One linear equality
 constraint and two linear inequality constraints are added. Starting
-from a point $\arginit{x_0}$, the optimal solution and active set are
+from a point $\arginit{x}$, the optimal solution and active set are
 found iteratively.
 
 \begin{algorithm}
@@ -695,7 +696,7 @@ found iteratively.
 \subsection{Nonlinear Programming}
 
 We are now ready to tackle \emph{Nonlinear programming (NLP)}, i.e. to
-solve the general problem from Equation \ref{eq:chap3-nlp}. Two of the
+solve the general problem from Equation \equref{eq:chap3-nlp}. Two of the
 most successful methods used nowadays to solve large-scale problems
 are \emph{Sequential Quadratic Programming (SQP)} and
 \emph{Interior-Point Methods (IPM)}.
@@ -709,11 +710,11 @@ linearized approximation of the constraints in order to obtain a
 \emph{QP subproblem}:
 
 \begin{equation}
-\min_{\mathbf{p}}\frac{1}{2}\mathbf{p}_k^{\top}\nabla_{\mathbf{x}\mathbf{x}}^2\mathcal{L}(\mathbf{x}_k,\boldsymbol{\lambda}_k)\mathbf{p}+\nabla f(\mathbf{x}_k)^{\top}\mathbf{p}+f(\mathbf{x}_k)
-\text{ s.t. }
+\min_{\mathbf{p}}\frac{1}{2}\mathbf{p}_k^{\top}\nabla_{\mathbf{x}\mathbf{x}}^2\mathcal{L}(\mathbf{x}_k,\boldsymbol{\lambda}_k)\mathbf{p}_k+\nabla f(\mathbf{x}_k)^{\top}\mathbf{p}_k+f(\mathbf{x}_k)
+\text{ s.t.}
 \left\{\begin{array}{cc}
-\nabla c_i(\mathbf{x}_k)^{\top}+c_i(\mathbf{x}_k) = 0, & i \in \mathcal{E} \\
-\nabla c_i(\mathbf{x}_k)^{\top}+c_i(\mathbf{x}_k) \ge 0, & i \in \mathcal{I}
+\nabla c_i(\mathbf{x}_k)^{\top}\mathbf{p}_k+c_i(\mathbf{x}_k) = 0, & i \in \mathcal{E} \\
+\nabla c_i(\mathbf{x}_k)^{\top}\mathbf{p}_k+c_i(\mathbf{x}_k) \ge 0, & i \in \mathcal{I}
 \end{array}\right.
 \end{equation}
 
@@ -842,7 +843,7 @@ z_i=\frac{\mu}{c_i(\mathbf{x})},
 
 and substituted in
 $\nabla_{\mathbf{x}}\mathcal{L}(\mathbf{x},\mathbf{y},\mathbf{z})$
-in Equation \ref{eq:chap3-kkt-perturbed}$a)$:
+in Equation \equref{eq:chap3-kkt-perturbed}$a)$:
 
 \begin{equation}
 \begin{array}{c}
@@ -861,13 +862,13 @@ problem is then equivalent to minimizing the equality-constrained
 \emph{log-barrier function} $P(\mathbf{x};\mu)$ and making $\mu
 \rightarrow 0$.
 
-One way to solve the NLP is to is to start with an initial value of
-the parameter $\mu_0$. The associated log-barrier function problem is
-then solved, and the process is repeated while decreasing $\mu_k$
-towards 0. The log-barrier function problem solutions for the
-\emph{central path} $\{\mathbf{x}^\star(\mu_k)\}_k$, with the
-particularity that each iterate is feasible with respect to the
-original equality and inequality constraints.
+One way to solve the NLP is to start with an initial value of the
+parameter $\mu_0$. The associated log-barrier function problem is then
+solved, and the process is repeated while decreasing $\mu_k$ towards
+0. The log-barrier function problem solutions for the \emph{central
+  path} $\{\mathbf{x}^\star(\mu_k)\}_k$, with the particularity that
+each iterate is feasible with respect to the original equality and
+inequality constraints.
 
 \subsubsection{Conclusion}
 
@@ -994,7 +995,7 @@ v(\mathbf{x},T)=\Phi(\mathbf{x}(T)).
 \end{equation}
 
 $v$ is also called the \emph{value function}. Equation
-\ref{eq:chap3-hjb} is the PDE which gives the necessary and sufficient
+\equref{eq:chap3-hjb} is the PDE which gives the necessary and sufficient
 conditions for finding an optimal control policy. It can be solved
 backwards in time, just as in discrete-time dynamic programming,
 starting from $t=T$ and ending at $ t=0$. However, as it contains
@@ -1038,8 +1039,8 @@ sufficient and necessary conditions:
 \end{array}
 \end{equation}
 
-Remarkably, this transformation turns the HJB PDE into an
-$2n$-dimensional which can be solved with standard boundary value
+Remarkably, this transformation turns the HJB PDE into a
+$2n$-dimensional ODE which can be solved with standard boundary value
 problems with linear complexity. Furthermore, deriving the optimal
 control policy consists in minimizing the Hamiltonian, which is very
 easy in the particular case where controls appear linearly in the
@@ -1074,7 +1075,7 @@ in order to obtain, starting from an initial state $\mathbf{x}(0)$,
 the state as a function $\mathbf{x}(t,\mathbf{q})$ of finitely many
 control parameters
 $\mathbf{q}=(\mathbf{q}_0,\mathbf{q}_1,\ldots,\mathbf{q}_{N-1})$. Examples
-of possible parametrizations include but are not limited to piecewise
+of possible parameterizations include but are not limited to piecewise
 constant, piecewise linear, continuous piecewise linear functions.
 
 Once the control discretization is achieved and a numerical ODE
@@ -1098,7 +1099,7 @@ solution is found, we obtain the following finite-dimension NLP:
 
 Figure \ref{fig:chap3-optimal-control-problem-single-shoot} shows an
 example of the control discretization and state numerical integration,
-using a piecewise constant control parametrization $\mathbf{q}$.
+using a piecewise constant control parameterization $\mathbf{q}$.
 
 \begin{figure}
   \centering
@@ -1114,7 +1115,7 @@ using a piecewise constant control parametrization $\mathbf{q}$.
 \end{figure}
 
 Single-shooting methods present several advantages: they only need an
-initial guess of the control parametrization $\mathbf{q}$, and they
+initial guess of the control parameterization $\mathbf{q}$, and they
 can rely on state-of-the-art ODE solvers to obtain the corresponding
 state $\mathbf{x}(t,\mathbf{q})$. Due to this fact, the underlying SQP
 problem has few degrees of freedom, even for large-scale ODE
@@ -1183,7 +1184,7 @@ sparse problems, such as \textsc{SNOPT} \cite{gill2002snopt} and \textsc{IPOPT}
   \end{array}
 \end{equation} 
 
-FIXME: Using splines : state (and not control) parametrization:
+FIXME: Using splines : state (and not control) parameterization:
 special case of direct collocation. works for problems where the input
 controls and state derivatives can be easily derived from the
 state. \cite{sirinesa1981}
@@ -1278,7 +1279,7 @@ one single vector as:
 \in \mathbb R^{2nN},
 \end{equation} 
 
-and let us regroup continuity (including boundary), equality and
+and let us gather continuity (including boundary), equality and
 inequality constraints in three vectors $\mathbf{C}$,$\mathbf{G}$ and
 $\mathbf{H}$ respectively. We can then rewrite the NLP problem as:
 
@@ -1351,7 +1352,7 @@ the vector:
 
 The eliminated variables can then be reconstructed, starting from
 $\Delta\mathbf{s}_0$, using the recurrence relation from Equation
-\ref{eq:chap3-ms-recurrence}.
+\equref{eq:chap3-ms-recurrence}.
 
 The condensing strategy allows then to make advantage of the QP
 subproblem sparsity, and leads to an efficient SQP strategy. Such a
@@ -1473,7 +1474,7 @@ Let us define the 6D spatial velocity vector:
   \end{matrix}\right)
 \end{equation}
 
-We can then rewrite Equation \ref{eq:chap3-transf-3d-vectors} as:
+We can then rewrite Equation \equref{eq:chap3-transf-3d-vectors} as:
 
 \begin{equation}
   \tensor*[^B]{\mathbf{v}}{^s}=
@@ -1611,7 +1612,7 @@ control applications.
 
 In \emph{Forward dynamics}, on the opposite of the inverse dynamics
 problem, the generalized position, velocity and actuated torque
-vectors are known, and we the accelerations $\ddot{\mathbf{q}}$ are
+vectors are known, and the accelerations $\ddot{\mathbf{q}}$ are
 unknown.
 
 The \emph{Composite Rigid Body Algorithm (CRBA)} is an efficient
@@ -1648,11 +1649,10 @@ condition in an OCP.
 As we previously introduced in Section \ref{subsec:chap1-zmp} the ZMP,
 we simply recall that it gives simple dynamic balance conditions,
 namely that the ZMP must remain inside the contact support polygon, as
-long as the humanoid robot is moving on a flat horizontal floor. We
-saw in Section \ref{subsec:chap1-cart-table} how the ZMP can be
-derived for the cart-table model, and we briefly describe here a
-method to compute the ZMP for whole-body motions of an anthropomorphic
-system.
+long as the humanoid robot is moving on a flat floor. We saw in
+Section \ref{subsec:chap1-cart-table} how the ZMP can be derived for
+the cart-table model, and we briefly describe here a method to compute
+the ZMP for whole-body motions of an anthropomorphic system.
 
 Given the rigid-body system generalized position, velocity and
 acceleration vectors $\mathbf{q}$,$\dot{\mathbf{q}}$ and
@@ -1697,14 +1697,14 @@ through the complete dynamics of the robot.
 
 \paragraph{Forward Dynamics}
 
-We present here a method that ensure the dynamic balance constraint
+We present here a method that ensures the dynamic balance constraint
 for optimal control, as seen in \cite{mombaur2005open}. It relies on
 forward dynamics, where the system is torque-controlled. The state
 contains both the acceleration $\ddot{\mathbf{q}}$ and contact forces
 $\mathbf{f}^s_{c_k}$. 
 
-As we work under the assumption a contact point does not move during
-the motion, we have:
+As we work under the assumption that a contact point does not move
+during the motion, we have:
 
 \begin{equation}
 \mathbf{p}_{c_k}(t)=\mathbf{p}_{c_k}(0),\quad k = 1,\ldots,n_c,
@@ -1712,7 +1712,7 @@ the motion, we have:
 
 where $\mathbf{p}_{c_k}$ denotes the 6D position of contact $c_k$.
 
-By deriving it twice we obtain the contact condition:
+By derivating it twice we obtain the contact condition:
 
 \begin{equation}
 \mathbf{J}_{c_k}\ddot{\mathbf{q}} +
@@ -1756,7 +1756,7 @@ all $\mathbf{f}^s_{c_k}$.
   \mathbf{f}^s_{c}
   \end{matrix}\right)
   = \left(\begin{matrix} \mathbf{S}^\top\boldsymbol{\tau}-\mathbf{b}
-    \\ \mathbf{f}_{c}
+    \\ -\dot{\mathbf{J}}_{c}\dot{\mathbf{q}}
   \end{matrix}\right)
 \end{equation}
 
@@ -1771,32 +1771,33 @@ constraints \cite{koch2012optimization}, need to be added.
 
 \paragraph{Inverse Dynamics}
 
-We saw in Equation \ref{eq:chap3-dynamic-balance-inverse} that if we
+We saw in Equation \equref{eq:chap3-dynamic-balance-inverse} that if we
 apply feasible contact forces and the floating-joint torques are zero,
 then the humanoid robot is dynamically balanced. If we chose to
 control our system with the generalized acceleration vector
-$\mathbf{\dot{q}}$ and contact forces $\mathbf{f}^s_{c_k}$, we can use
+$\mathbf{\ddot{q}}$ and contact forces $\mathbf{f}^s_{c_k}$, we can use
 a simple integration scheme to retrieve the generalized position and
 velocity vectors $\mathbf{q}$ and $\mathbf{\dot{q}}$, compute the
 torques $\boldsymbol{\tau}_{fl}$, and add Equation
-\ref{eq:chap3-dynamic-balance-inverse} as an equality constraint in
+\equref{eq:chap3-dynamic-balance-inverse} as an equality constraint in
 the OCP formulation. This gives an efficient way of integrating the
 dynamics and enforcing the dynamic balance of the humanoid robot
 through a single equality constraint, given any set of contact forces,
 even when some of them are exerted on the same bodies. In order to
 ensure that only feasible contact forces are applied, the inequalities
-from Equation \ref{eq:chap3-friction-cone} also need to be taken into
+from Equation \equref{eq:chap3-friction-cone} also need to be taken into
 account.
 
 \section{(Self-)Collision Avoidance}
 \label{sec:chap3-collision-avoidance}
 
-Besides generating dynamically feasible motions for an anthropomorphic
-system, we need make sure no collision occurs during the motion. Let
-us assume a collision-free initial guess is fed to the OCP solver. The
-optimization process iteratively reshapes motion and collision between
-the robot and itself or the environment might ensue. This motivates
-the need to take into account (self-)collision avoidance in the OCP.
+Beside generating dynamically feasible motions for an anthropomorphic
+system, we need to make sure no collision occurs during the
+motion. Let us assume a collision-free initial guess is fed to the OCP
+solver. The optimization process iteratively reshapes motion and
+collision between the robot and itself or the environment might
+ensue. This motivates the need to take into account (self-)collision
+avoidance in the OCP.
 
 \subsection{Distance Pairs}
 
@@ -1838,7 +1839,7 @@ A geometry can be represented accurately by a cloud of vertices, and a
 set of facets, usually triangles, which define the surface of the
 geometry. One could then express inequality constraints using the
 exact distance between the polyhedral geometries. Thanks to bounding
-volume hierarchy representations of the polyhedrons, the distance
+volume hierarchy representations of the polyhedra, the distance
 computation can be precise and relatively efficient \cite{Larsen2000},
 especially when the algorithms are parallelized on graphics processing
 unit (GPU) \cite{lauterbach2010gproximity}. However, such algorithms
@@ -1890,7 +1891,7 @@ generated in the absence of obstacles.
 
 We briefly present the signed distance transform
 \cite{felzenszwalb2004distance}, which is an alternative method for
-computing distances: assuming that the environment is static, a
+computing distances: assuming that the environment is static, an
 offline voxelized grid can be built, and the minimum distance to the
 obstacles is computed for each voxel. If there is a collision, the
 distance is negative and is equal to the penetration depth. This
@@ -1907,7 +1908,7 @@ minimizing time can for instance be modeled as an OCP and solved
 thanks to state-of-the-art solvers, see
 \cite{bobrow1985time,verscheure2009time,suleiman2010time}. In this
 case, the initial path is assumed to be collision-free; as solving the
-path tracking problem consists in applying a time parametrization
+path tracking problem consists in applying a time parameterization
 without deforming the path, collision avoidance constraints are not
 taken into account.
 
@@ -1924,8 +1925,9 @@ stability. Finding the best control can be done through an optimal
 control formulation over a receding time horizon, in order to ensure
 maximum dynamic balance for instance. This has led to online control
 applications for a biped walking motion of a humanoid robot
-\cite{herdt2010online}, and more complex locomotion on uneven terrains
-for animated avatars \cite{coros2010generalized,tassa2012synthesis}.
+\cite{kaji03,herdt2010online}, and more complex locomotion on non-flat
+terrains for animated avatars
+\cite{coros2010generalized,tassa2012synthesis}.
 
 From a biomechanics point of view, some aspects of human motion can be
 represented as the resulting optimal policies of OCP. Conversely,
@@ -1977,12 +1979,12 @@ NLP and leads to very short optimizations times of the order of a few
 seconds. An obstacle avoidance penalty term is also added in the
 objective function, and enables the robot to avoid both
 self-collisions and collision with simple planar obstacles. In this
-work, the initial trajectory can potentially generate collisions,
-although there is no guarantee that the optimization process will
-succeed in finding a collision-free solution in more complex
-environments. Furthermore, as no contact body position or dynamic
-balance tasks are considered, fast motions cannot be generated with
-this framework without compromising the robot dynamic balance.
+latter work, the initial trajectory can potentially generate
+collisions, although there is no guarantee that the optimization
+process will succeed in finding a collision-free solution in more
+complex environments. Furthermore, as no contact body position or
+dynamic balance tasks are considered, fast motions cannot be generated
+with this framework without compromising the robot dynamic balance.
 
 In the general case, minimizing an objective function which contains
 constraints transcribed as penalty terms allows building unconstrained
@@ -2049,12 +2051,12 @@ contact stance, we first \emph{plan} a collision-free \emph{statically
   balanced} path that satisfies all kinematic constraints. We use the
 constrained RRT planner, which we presented in Section
 \ref{subsec:chap1-sampling-algorithms}, to this end. We convert the
-path to an initial trajectory using a suitable time parametrization,
+path to an initial trajectory using a suitable time parameterization,
 and we then \emph{optimize} it to generate a locally-optimal
 collision-free \emph{dynamically-balanced} trajectory. The
 \textsc{MUSCOD-II} solver uses a direct multiple shooting method to
 solve the formulated optimal control problem. Note that this involves
-both finding a new time parametrization for the trajectory, and
+both finding a new time parameterization for the trajectory, and
 reshaping the path in a geometrical sense, so it is not simply a
 problem of optimal path tracking.
 
@@ -2064,7 +2066,7 @@ body geometries. In previous applications, the capsule parameters were
 set by hand by the user for a given body. We therefore provide an
 automatic bounding capsule generation tool; it relies on a NLP
 formulation that allows us to find the minimum-volume capsules around
-bodies which are modeled by polyhedrons. The capsules allow us then to
+bodies which are modeled by polyhedra. The capsules allow us then to
 enforce collision-avoidance constraints between the robot, obstacles
 and itself.
 
@@ -2079,7 +2081,7 @@ and on the HRP-2.
 The collision avoidance constraints are tackled in Section
 \ref{distance-constraints}are used in the optimal control problem
 described in Section \ref{sec:chap3-omp-framework}. Section
-\ref{results} showcases obtained results for the robot HRP-2. We also
+\ref{results} showcases results obtained for the robot HRP-2. We also
 show an extension to multiple contact points in Section
 \ref{sec:chap3-noncoplanar-contact-points}.
 
@@ -2102,9 +2104,9 @@ radius $r$. Capsules are convex geometries, and have been widely used
 in Robotics and Computer Graphics as they provide a simple
 representation of more complex polyhedral geometries.
 
-In \cite{Kanoun2011}, bounding the capsules parameters are set by hand
+In \cite{Kanoun2011}, the bounding capsules parameters are set by hand
 to obtain the best fitting capsules around the body geometries, which
-is not very practical especially if we want to use multiple robot
+is not very practical especially if we want to use various robot
 geometric models. In \cite{eberly20073d}, a method is proposed to
 compute a bounding capsule of a set of vertices, but not necessarily
 the best fitting one. This method is based on first determining the
@@ -2144,8 +2146,8 @@ $r_0$. Luckily, a good initial guess can be provided by the bounding
 capsule method we presented earlier, as all constraints are satisfied
 and the initial volume is not far off the optimal volume.
 
-It can be proved that a geometry is a bounding volume of a set of
-points $\mathcal{P}$ if and only if it is a bounding volume of its
+It can be proved that a convex geometry is a bounding volume of a set
+of points $\mathcal{P}$ if and only if it is a bounding volume of its
 convex hull $\mathcal{H}_{\mathcal{P}}$, which is characterized by a
 lower vertex count than $\mathcal{P}$. We can use this property to our
 advantage: by first computing the convex hull and finding the
@@ -2163,9 +2165,9 @@ the optimal bounding capsules for both HRP-2 and Romeo humanoid
 robots. Table \ref{tab:chap3-minimum-capsule} demonstrates how solving
 optimization problem instances for $\mathcal{H}_\mathcal{P}$ instead
 of $\mathcal{P}$ accelerates their convergence. Figures
-\ref{fig:chap3-hrp2-capsule} and \ref{fig:chap3-hrp2-capsule} show the
-best fitting bounding capsules superimposed over the original robot
-geometries.
+\ref{fig:chap3-hrp2-capsule} and \ref{fig:chap3-romeo-capsule} show
+the best fitting bounding capsules superimposed over the original
+robot geometries.
 
 \begin{table}
   \renewcommand{\arraystretch}{1.3}
@@ -2256,16 +2258,16 @@ geometries.
 The optimal capsule parameters can now be used to compute distances
 for body-body and body-environment pairs. With respect to body-body
 distance pairs, we can compute their minimum distance by first
-computing the distance between the two capsule axes, then subtract
+computing the distance between the two capsule segments, then subtract
 their radii in order to obtain the real distance. We rely on the Wild
 Magic geometric library \cite{schneider2003geometric, wildmagic} to
 compute this distance in an average time of 2 $\mu$s.
 
 Concerning capsule-environment pairs, as the environment is modeled by
 polyhedral meshes, we can compute their distance by computing the
-distance between the capsule axis and mesh, then subtract the capsule
-radius. State-of-the-art distance computation algorithms rely on
-building a hierarchical tree of simple bounding volumes around the
+distance between the capsule segment and mesh, then subtract the
+capsule radius. State-of-the-art distance computation algorithms rely
+on building a hierarchical tree of simple bounding volumes around the
 mesh. In our work, we rely on an implementation of OBB-Trees in the
 Kineo Collision Detection (KCD) library to compute distances for
 capsule-environment pairs. For the environment in figure \ref{path},
@@ -2276,7 +2278,7 @@ implementations, the tree traversal scheme in bounding volume
 hierarchies implies running multiple proximity queries and we cannot
 hope for good performance unless GPU-based implementations are used.
 
-\subsection{Body Distance Pairs Selection}
+\subsection{Body Distance Pair Selection}
 
 We mentioned in Section \ref{sec:chap3-collision-avoidance} that if we
 were to take into account all body distance pairs of a robot, we could
@@ -2321,12 +2323,12 @@ automated tool. Out of 41 potential capsule-environment pairs, we keep
 Now that we have defined collision avoidance constraints, we can build
 the full optimal motion planning framework. It can be decomposed into
 two main stages, namely constrained path planning and optimal control,
-with an intermediate stage which builds a time parametrization over
+with an intermediate stage which builds a time parameterization over
 the path that is generated by the planner.
 
-In our work, we focus on generating collision-free trajectories
-for the HRP-2 in the case both its feet remain in the same position on
-a horizontal floor. We choose to minimumize the integral, over a fixed
+In our work, we focus on generating collision-free trajectories for
+the HRP-2 in the case both its feet remain in the same position on a
+horizontal floor. We choose to minimize the integral, over a fixed
 duration, of the generalized square jerk $\dddot{\mathbf{q}}(t)$; this
 helps obtain smooth and natural looking motions.
 
@@ -2382,12 +2384,12 @@ and shorten the solution path. Figure \ref{path} shows an example
 where HRP-2 has to grab an object on the lower shelf and place it on
 the upper shelf.
 
-\subsection{Time Parametrization for Initial Trajectory}
-\label{subsec:chap3-time-parametrization}
+\subsection{Time Parameterization for Initial Trajectory}
+\label{subsec:chap3-time-parameterization}
 
 The constrained path planner generates a collision-free statically
 balanced path where the kinematic constraints are enforced, but we
-still need to apply a time parametrization before feeding it to the
+still need to apply a time parameterization before feeding it to the
 optimal control solver. We want to minimize the sum of square jerks;
 it is shown in \cite{Flash1985} that an unconstrained minimum-jerk
 trajectory is a polynomial of degree 5 which can be explicitly
@@ -2453,7 +2455,7 @@ the control representation and successive time integrations.
     milestone. The state nodes (blue dots) are similarly chosen, and
     the controls are integrated over each sub-interval to obtain the
     full trajectory (in blue). Note that discontinuities are observed
-    because of the control parametrization.}
+    because of the control parameterization.}
   \label{fig:chap3-time-param}
 \end{figure}
 
@@ -3047,9 +3049,9 @@ points, even inside time the sub-intervals.
 
 While the previous OCP allows us to successfully generate optimal
 collision-free trajectories, it is limited to the case where all
-contact points lie on the same horizontal plane, which allows us to
-ensure dynamic balance through ZMP constraints. We propose to extend
-our framework in order to handle dynamic balance with potentially
+contact points lie on the same plane, which allows us to ensure
+dynamic balance through ZMP constraints. We propose to extend our
+framework in order to handle dynamic balance with potentially
 non-coplanar contact points and provide some preliminary results.
 
 Therefore, we modify our formulation a bit by keeping the state vector
@@ -3072,10 +3074,10 @@ in \cite{saab-tro-12}.
 
 As the ZMP is no longer useful in this case, we replace the ZMP
 inequality constraints by the dynamic balance equality constraint from
-Equation \ref{eq:chap3-dynamic-balance-inverse}. For now we assume
+Equation \equref{eq:chap3-dynamic-balance-inverse}. For now we assume
 that the limiting coefficient of static friction $\mu_s$ is infinite,
 i.e. that the friction cone is the positive half-space. We therefore
-only add the first constraint from \ref{eq:chap3-friction-cone}, which
+only add the first constraint from \equref{eq:chap3-friction-cone}, which
 ensure that the contact force normals are positive.
 
 We use the second phase of the martial arts scenario to verify our
@@ -3092,9 +3094,9 @@ ZMP and CoP in Figure
 ZMP and the CoP coincide over the shooting nodes, and differ only in
 between, which confirms that the new dynamic balance formulation is
 equivalent to the one using the ZMP when all contact points lie in the
-horizontal plane. We also notice that the ZMP is not always inside the
-support polygon as the dynamic balance constraints are not enforced
-over the sub-intervals. Figure
+same plane. We also notice that the ZMP is not always inside the support
+polygon as the dynamic balance constraints are not enforced over the
+sub-intervals. Figure
 \ref{fig:chap3-contact-point6s-final-contact-reduced} shows the
 resulting ZMP and CoP trajectories when placing contact forces on a
 reduced support polygon vertices.
@@ -3209,7 +3211,7 @@ contact points are not coplanar, e.g. where HRP-2 stands on an uneven
 floor or uses its upper limbs to go in contact with the
 environment. We leave this for future work.
 
-\section{Limitations and Discussions}
+\section{Discussions and Future Work}
 \label{discussion}
 
 In subsection \ref{test-case}, we demonstrate in a simple example the
@@ -3226,8 +3228,8 @@ balance.
 Note however that with this method, only locally optimal trajectories
 are found; further investigation can be done in order to try to
 transform the OCP into an equivalent convex optimization problem, as
-this would both allow both using simpler and more efficient solvers
-and ensuring that global minimizers are computed. Such an approach has
+this would allow both using simpler and more efficient solvers and
+ensuring that global minimizers are computed. Such an approach has
 been applied for time-optimal path tracking problem, see
 \cite{verscheure2009time}. Alternatively, it might be interesting to
 solve the optimal motion planning problem in one step using the
@@ -3303,15 +3305,15 @@ as described in \cite{bretl2006motion}, where a configuration and
 contact forces are computed such that static balance is obtained.
 
 \paragraph{Towards collision-free locomotion optimization}
-In this work, we focused on generation motions under the assumption
-that the set of contact points is fixed during the whole motion. It
-would be however interesting to consider optimal motion planning for
-the more general case of locomotion, manipulation, or both. As in
-\cite{lengagne2011generation}, our framework could be extended, by
-planning and optimizing sequentially for multiple phases, where each
-phase is defined by a fixed set of contact points. This approach
-requires us to first plan the contact stance sequence which cannot be
-changed later on.
+In this work, we focused on generating motions under the assumption
+that the set of contact points does not change during the whole
+motion. It would be however interesting to consider optimal motion
+planning for the more general case of locomotion, manipulation, or
+both. As in \cite{lengagne2011generation}, our framework could be
+extended, by planning and optimizing sequentially for multiple phases,
+where each phase is defined by a fixed set of contact points. This
+approach requires us to first plan the contact stance sequence which
+cannot be changed later on.
 
 An alternative solution would be to reformulate the OCP so that
 changing contact point sets are taken into account, e.g. through a
