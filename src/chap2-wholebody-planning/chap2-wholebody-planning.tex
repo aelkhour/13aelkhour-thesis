@@ -944,15 +944,16 @@ controllability  property   of  the  system  shown   in  the  previous
 section. The way  we use this property is  inspired by similar results
 in non-holonomic mobile robot control presented in \cite{taix-94}.
 
-If the animated  trajectory collides with the environment,  we cut the
-initial  path   $P$  into  two   sub-paths,  that  we  try   to  animate
-recursively. When the  paths to animate are too  short for the robot
-nominal  walk parameters, we  accelerate the  steps, and  decrease the
-maximum height of  the moving foot. As shown  in previous section, the
-walk trajectory  corresponding to  smaller and faster  steps converges
-toward the  sliding path.  Algorithm ~\ref{alg:walk} shows pseudo-code
-that takes  a sliding path $P$  as input and  returns a collision-free
-walk trajectory.
+If the animated trajectory collides with the environment, we cut the
+initial path $P$ into two sub-paths, that we try to animate
+recursively. When the paths to animate are too short for the robot
+nominal walk parameters, we accelerate the steps, and decrease the
+maximum height of the moving foot. As shown in previous section, the
+walk trajectory corresponding to smaller and faster steps converges
+toward the sliding path.  Algorithm ~\ref{alg:walk} shows pseudo-code
+that takes a sliding path $P$ as input and returns a collision-free
+walk trajectory. Figure \ref{fig:chap2-ssc-algorithm} shows a sketch
+of the method.
 
 \begin{algorithm}
 \caption{FindDynamicTrajectory(Path $P$)}
@@ -986,6 +987,25 @@ walk trajectory.
 \ENDIF
 \end{algorithmic}
 \end{algorithm}
+
+\begin{figure}
+  \centering
+      {\def\svgwidth{\linewidth}
+        {\footnotesize
+          \subimport*{src/chap2-wholebody-planning/pics/inkscape/}
+                     {ssc-algorithm.pdf_tex}}
+      }
+      \caption{The first three steps of algorithm \ref{alg:walk} are
+        shown (top left and right, bottom left). Starting from a
+        sliding collision-free path (dashed), a walking trajectory is
+        computed using nominal walk parameters. If collisions are
+        detected, the path is recursively cut and animated until a
+        collision-free dynamic walking trajectory is found (bottom
+        right). Notice that shorter and faster steps in the middle of
+        the trajectory lead to smaller deviations of the CoM
+        trajectory (in red) from the original path.}
+      \label{fig:chap2-ssc-algorithm}
+\end{figure}
 
 \section{Experimental Results}
 
