@@ -17,20 +17,20 @@ is validated in various scenarios on the humanoid robot HRP-2.
 The problem of motion planning is now well formalized in robotics and
 several books present the various approaches
 \cite{lato91,chos05,lava06}. One particularly useful concept is the
-one of configuration space (denoted by {\cspace}) \cite{loza83}, which
-is the set of all configurations \config{} of a robot {\robot};
-\config{} is a vector comprised of the $n$ independent degrees of
-freedom (DoF) that are sufficient to know the full state of the robot
-at each instant. {\cspace} defines then a manifold of dimension
-$n$. Some of the robot body positions can generate (self-)collisions;
-the equivalent configurations will be said to be in collision, and the
-set of all configurations in collision is denoted by {\cobs} $\subset$
-{\cspace}. Its complement is denoted by {\cfree} and is called the
-free configuration space. Using these notations, we can redefine the
-motion planning problem as the answer to the following question: is
-there a continuous path $P: [0,1] \rightarrow$ {\cfree} that connects
-a start configuration \config{s} to a goal configuration \config{g},
-and what is it?
+one of \emph{configuration space} {\cspace} \cite{loza83}, which is
+the set of all configurations \config{} of a robot {\robot}; \config{}
+is a vector comprised of the $n$ independent \emph{degrees of freedom
+  (DoF)} that are sufficient to uniquely identify the full state of
+the robot at each instant. {\cspace} defines then a manifold of
+dimension $n$. Some of the robot body positions can generate
+(self-)collisions; the equivalent configurations will be said to be in
+collision, and the set of all configurations in collision is denoted
+by {\cobs} $\subset$ {\cspace}. Its complement is denoted by {\cfree}
+and is called the \emph{free configuration space}. Using these
+notations, we can redefine the motion planning problem as the answer
+to the following question: is there a continuous path $P: [0,1]
+\rightarrow$ {\cfree} that connects a start configuration \config{s}
+to a goal configuration \config{g}, and what is it?
 
 \subsection{Deterministic Algorithms}
 \label{subsec:chap1-deterministic algorithms}
@@ -144,8 +144,8 @@ the number of iterations $K$ reaches infinity. This may seem like a
 very weak property, but in practice these algorithms can compute paths
 in complex real-life environments in a reasonable time on regular
 computers and have been used to solve problems for various systems,
-ranging from 6-DoF floating objects, 50-DoF anthropomorphic systems,
-to 1000-DoF proteins.
+ranging from 6-DoF floating objects, to 50-DoF anthropomorphic
+systems, to 1000-DoF proteins.
 
 \subsection{Path Optimization}
 \label{subsec:chap1-path-optimization}
@@ -154,7 +154,7 @@ As shown in Figure \ref{fig:chap1-rrt}, RRT returns the shortest path
 $P$ inside the graph that connects \config{s} to \config{g}. Due to
 the probabilistic nature of RRT, it is clear that $P$ is not optimal
 in terms of length. Path optimization methods take a valid,
-i.e. collision-free, path as input and try to shorten while making
+i.e. collision-free, path as input and try to shorten it while making
 sure that the output path is still valid.
 
 \subsubsection{Greedy Optimization}
