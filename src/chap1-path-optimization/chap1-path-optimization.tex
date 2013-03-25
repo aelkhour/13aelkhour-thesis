@@ -39,7 +39,6 @@ This question can be answered through the use of deterministic
 algorithms; for a given number of tries, they will always compute the
 same valid path $P$.
 
-FIXME: not precise
 One class of algorithms, mainly developed in the past 30 years, relies
 on representing {\cobs} explicitly in order to build a graph, also
 called roadmap, that represents the connectivity of {\cfree}. Solving
@@ -51,11 +50,11 @@ graphs, and Canny's algorithm \cite{good04}.
 Such algorithms offer the nice property of completeness, i.e. they can
 always provide an answer to the motion planning problem as defined
 previously. But while they work well for solving path planning
-problems in low-dimensional configuration spaces, their computational
-cost becomes penalizing in high-dimensional configuration spaces. In
-fact building {\cfree} requires finding its frontiers, and computation
-time is at best exponential with respect to the dimension of
-{\cspace}.
+problems in low-dimensional configuration spaces, using them in
+high-dimensional configuration spaces is either impossible by design,
+or is computationally expensive, as building {\cfree} requires finding
+its frontiers, and computation time is at best exponential with
+respect to the dimension of {\cspace}.
 
 Other approaches are inspired from real-time motion generation
 techniques, such as the one detailed in \cite{khat85}, which consists
