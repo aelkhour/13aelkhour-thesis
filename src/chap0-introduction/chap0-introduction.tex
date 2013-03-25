@@ -46,7 +46,7 @@ From a research point of view, anthropomorphic systems are very
 interesting as they give researchers the means to devise new
 algorithms to control them and make them walk and manipulate objects
 without loosing their balance, allowing the generation of human-like
-motions. Conversely, humanoid robots are the perfect tool for
+motions. Conversely, humanoid robots are perfect tools for
 neuroscientists to understand human motion and perception, as well as
 the invariants behind them; for instance, moving certain actuators
 while keeping others at a fixed position is very easy in robotics, and
@@ -82,11 +82,16 @@ will contain at least the floor that supports the system. It might
 also contain moving or static entities with which we do not want the
 system to collide in order to avoid damaging either the entities, the
 system, or both. Additionally, we want to avoid self-collisions
-between the different limbs of the system. Therefore, finding a
-solution to the problem of humanoid walk planning consists in finding
-a continuous motion connecting the start configuration to the goal
-configuration, such that the anthropomorphic system is never in
-collision with the environment or itself when executing this motion.
+between the different limbs of the system. Finally, as anthropomorphic
+systems rely on making and breaking contact with their environment in
+order to move, great care must be given to make sure the system can
+realize the required motions and does not fall. This requires a good
+definition of a system \emph{balance} and the means to ensure
+it. Therefore, finding a solution to the problem of humanoid walk
+planning consists in finding a continuous motion connecting the start
+configuration to the goal configuration, such that the anthropomorphic
+system is never in collision with the environment or itself when
+executing this motion, and such that it is always balanced.
 
 While the found solution is guaranteed to be collision-free, we still
 know nothing about its quality. In the case of anthropomorphic system
@@ -161,7 +166,7 @@ path optimization method for humanoid walk planning. Chapter
 \ref{chap:wholebody-planning} deals with the second contribution,
 namely whole body motion planning and the associated small-space
 controllability proof. Finally, the optimal motion planning framework
-and the automatic bounding capsule generator are portrayed in Chapter
+and the automatic bounding capsule generator are detailed in Chapter
 \ref{chap:optimal-motion-planning}.
 
 \section{Publications in This Thesis}
@@ -193,6 +198,10 @@ and the automatic bounding capsule generator are portrayed in Chapter
   \textit{IEEE International Conference on Robotics and Automation,
     2013.}
 \end{itemize}
+
+\section{Videos of Simulations and Experiments}
+
+FIXME add permanent link to videos.
 
 \section{Software Contributions in This Thesis}
 
