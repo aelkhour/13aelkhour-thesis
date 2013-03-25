@@ -1184,10 +1184,15 @@ sparse problems, such as \textsc{SNOPT} \cite{gill2002snopt} and \textsc{IPOPT}
   \end{array}
 \end{equation} 
 
-FIXME: Using splines : state (and not control) parameterization:
-special case of direct collocation. works for problems where the input
-controls and state derivatives can be easily derived from the
-state. \cite{sirinesa1981}
+\paragraph{State Parameterization}
+One particular case occurs when the control and state derivatives can
+be directly derived from the states. There is thus no need to
+discretize the controls, which are here dependant variables, and only
+the states are discretized. The states can be then be represented by
+smooth functions such as polynomials or splines
+\cite{sirinesa1981}. This approach offers the advantage of leading to
+a NLP with a smaller number of variables than in the general case of
+direct collocation, and is quite common in robotics.
 
 To conclude, direct collocation methods transcribe the OCP into a
 large-scale, but very sparse NLP, which can be solved by efficient
@@ -2855,8 +2860,7 @@ phase is needed to find a collision-free transfer path.
 
 We successfully apply our framework to generate feasible motions for
 both scenarios as seen in figures \ref{self-collision} and
-\ref{shelves}. Videos of both scenarios are available in FIXME: add
-permanent link for videos. Computation times are shown in Tables
+\ref{shelves}. Computation times are shown in Tables
 \ref{table-martial-art} and \ref{table-shelves}. Figures
 \ref{fig:chap3-karate-zmp-2s-final-d} and
 \ref{fig:chap3-grasping-zmp-2s-final-d} show the collision avoidance
