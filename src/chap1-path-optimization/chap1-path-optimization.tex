@@ -248,7 +248,7 @@ contact with their environment -- the floor for instance -- in order
 to move in their workspace. Additional information in the
 configuration vector is needed to model the general position of the
 system, and not only its actuators. Anthropomorphic systems are
-therefore said to be underactuated systems.
+therefore said to be \emph{underactuated systems}.
 
 We therefore introduce a 6-DoF floating joint, which we attach to the
 root of the existing kinematic tree containing the actuated
@@ -292,8 +292,9 @@ thoroughly in Chapter \ref{chap:wholebody-planning}.
 
 An important field of humanoid robotics research is the generation of
 dynamically balanced walk patterns. Since the introduction of the
-Zero-Moment Point (ZMP) \cite{vukobratovic1969contribution}, several
-methods have been proposed to generate walking motions efficiently.
+\emph{Zero-Moment Point (ZMP)} \cite{vukobratovic1969contribution},
+several methods have been proposed to generate walking motions
+efficiently.
 
 \subsection{Zero-Moment Point (ZMP)}
 \label{subsec:chap1-zmp}
@@ -386,7 +387,7 @@ balanced walk trajectory.
 
 The motion planning problem is certainly a complex one in the case of
 humanoid robots, which are high-DoF redundant systems that have to
-verify bipedal stability constraints. Various planning strategies can
+verify bipedal balance constraints. Various planning strategies can
 be found in the literature.
 
 \subsection{Footstep Planning}
@@ -423,7 +424,7 @@ work in \cite{kano09} defines a robot augmented with a sequence of
 footprints and formulates the problem of locomotion planning as an
 optimization problem. Such a scheme works well in the presence of
 simple obstacles, but is prone to falling in local minima, failing to
-find solutions in more complex environments.
+find solutions more complex environments.
 
 \subsection{Constrained Motion Planning}
 \label{subsec:chap1-constrained-motion-planning}
@@ -459,13 +460,13 @@ reduced to a 3-DoF bounding box. Using the robot simplified model, the
 PRM algorithm solves the path planning problem and generates a valid
 path for the bounding box. A geometric decomposition of the path
 places footsteps on it, and the walk pattern generator described in
-\ref{sec:chap1-pattern-generator} finally produces the whole-body
-trajectory for the robot. In \cite{moul10}, this two-stage approach is
-also used; numerical optimization of the bounding box path produces a
-time-optimal trajectory that is constrained by foot speed and distance
-to obstacles. Optimization techniques will be discussed in details in
-Chapter \ref{chap:optimal-motion-planning}, where we describe an
-optimal motion planning framework.
+Section \ref{sec:chap1-pattern-generator} finally produces the
+whole-body trajectory for the robot. In \cite{moul10}, this two-stage
+approach is also used; numerical optimization of the bounding box path
+produces a time-optimal trajectory that is constrained by foot speed
+and distance to obstacles. Optimization techniques will be discussed
+in details in Chapter \ref{chap:optimal-motion-planning}, where we
+describe an optimal motion planning framework.
 
 \subsection{Holonomic vs Nonholonomic Walking Motion}
 \label{subsec:chap1-holonomic}
@@ -496,8 +497,8 @@ like the one described in \cite{momb10}, established a model that
 presents trajectory planning as an optimization problem of a cost
 function. Basically, it is shown that for small distances and small
 orientation variations between the start and goal configurations,
-motion obeys a holonomic constraint, and sidestepping is allowed.
-However for greater distances and orientation variations, a
+humanoid motion obeys a holonomic constraint, and sidestepping is
+allowed. However, for greater distances and orientation variations, a
 nonholonomic constraint rules human gait, and sidestepping is
 forbidden, i.e. the human direction is always tangent to its path.
 But one should note that this model is only applicable in the case of
@@ -760,8 +761,8 @@ produces a path $P_{opt}$ that gives priority to nonholonomic motion.
 Once the bounding box trajectory is computed, the robot has to walk
 along it. A footstep sequence is thus generated along $P_{opt}$ by
 geometric decomposition of the path, and the pattern generator cited
-in \autoref{sec:chap1-humanoid-walk-planning} then produces the robot
-whole-body trajectory.
+in Section \ref{sec:chap1-humanoid-walk-planning} then produces the
+robot whole-body trajectory.
 
 \section{Examples}
 \label{sec:chap1-examples}
@@ -814,11 +815,11 @@ whole-body trajectory.
 This section presents experimental results of the path optimizer after
 it has been inserted in the previously described walk planning
 scheme. Distance parameters $v_{max}^f$, $v_{max}^{lat}$, $v_{min}^f$
-are set to 0.5, 0.1, and 0.25 respectively. Note that these parameters
-give an idea of the robot walking speed and play a key role in giving
-priority to forward walking with respect to lateral and backwards
-walking, but do not hold any physical significance, hence the absence
-of units.
+are set to 0.5, 0.1, and 0.25 $m.s^{-1}$ respectively. Note that these
+parameters play a key role in giving priority to forward walking with
+respect to lateral and backwards walking. Indeed, beside the fact that
+we want to produce natural walks, kinematic constraints are usually
+such that it is very hard to achieve fast lateral walking.
 
 Since the A$^{*}$ search only takes place over the graph of
 discretized configurations of the input path, it is important to
@@ -862,9 +863,9 @@ the RSO was added, see Table \ref{tab:chap1-walk-time}.
 \subsection{``Chairs'' Scenario}
 \label{subsec:chap1-chairs}
 
-\autoref{fig:chap1-bb-plan-optim} shows the bounding box RRT path and
-the RO path for the chairs scenario. It is obvious that RO creates a
-shorter path. However, the bounding box starts rotating from the
+Figure \ref{fig:chap1-bb-plan-optim} shows the bounding box RRT path
+and the RO path for the chairs scenario. It is obvious that RO creates
+a shorter path. However, the bounding box starts rotating from the
 beginning of the path even though both chairs are still far. This
 causes the robot trajectory to be unrealistic and, since walking
 sideways takes a longer time than walking straight, to not be
@@ -875,7 +876,7 @@ time-optimal.
       {\includegraphics[width = 0.8\linewidth]
         {src/chap1-path-optimization/galton-hash-optim-perspective-hrp2.png}}
       \caption{Perspective view of HRP-2 optimized trajectory in the
-        Galton board scenario.}
+        boxes scenario.}
       \label{fig:chap1-galton-hash-optim-perspective-hrp2}
 \end{figure}
 
@@ -887,7 +888,7 @@ s and the final trajectory for HRP-2 is more realistic. Note that the
 RSO takes 2,144 ms to be executed on the chairs path, which is less
 than 3\% of the total computation time.
 
-\subsection{``Galton'' Scenario}
+\subsection{``Boxes'' Scenario}
 Here, an uncluttered environment is considered, and it can be seen
 that RRT-Connect and RSO computation times are very low compared to
 other environments. This can be explained by the fact that a tree

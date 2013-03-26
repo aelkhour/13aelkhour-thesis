@@ -36,7 +36,7 @@
   }%
   \providecommand\rotatebox[2]{#2}%
   \ifx\svgwidth\undefined%
-    \setlength{\unitlength}{642.51948242bp}%
+    \setlength{\unitlength}{507.59208984bp}%
     \ifx\svgscale\undefined%
       \relax%
     \else%
@@ -48,14 +48,14 @@
   \global\let\svgwidth\undefined%
   \global\let\svgscale\undefined%
   \makeatother%
-  \begin{picture}(1,0.70380023)%
+  \begin{picture}(1,0.89088339)%
     \put(0,0){\includegraphics[width=\unitlength]{robot-kinematic-tree.pdf}}%
-    \put(0.62003007,0.01477626){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{world}}}%
-    \put(0.69751761,0.33586688){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$B_i$}}}%
-    \put(0.68815338,0.39352226){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$J_i$}}}%
-    \put(0.69343585,0.45691229){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$B_{\lambda(i)}$}}}%
-    \put(0.34619337,0.41993477){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$B_{\lambda(i)}$}}}%
-    \put(0.39768344,0.35478392){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$J_i$}}}%
-    \put(0.40320013,0.29667634){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$B_i$}}}%
+    \put(0.78484556,0.01870406){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{world}}}%
+    \put(0.88293073,0.42514653){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$B_i$}}}%
+    \put(0.87107731,0.49812777){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$J_i$}}}%
+    \put(0.88293073,0.57836806){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$B_{\lambda(i)}$}}}%
+    \put(0.43821799,0.53156122){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$B_{\lambda(i)}$}}}%
+    \put(0.50339508,0.44909206){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$J_i$}}}%
+    \put(0.51037821,0.37553841){\color[rgb]{0,0,0}\makebox(0,0)[lb]{\smash{$B_i$}}}%
   \end{picture}%
 \endgroup%
