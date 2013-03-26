@@ -5,10 +5,18 @@ The humanoid walk motion planning problem was tackled in Chapter
 \ref{chap:path-optim} by first planning a geometric path for the robot
 bounding box, then transforming the path into a dynamic walking
 trajectory by laying footprints along it and using a pattern
-generator.  However, in complex and difficult environments, such as
-the one presented in Section \ref{subsec:chap1-chairs}, it can be
-necessary to consider exact 3D models of a humanoid robot and its
-environment.
+generator. However, this approach reasons only on the walking level,
+and does not take into consideration the fact that the upper body
+could move. Indeed, some difficult and complex situations may require
+considering exact 3D models of a humanoid robot and its
+environment. This applies when passing between two chairs for instance
+(see Section \ref{subsec:chap1-chairs}), as lifting the arms of the
+robot outside of the bounding box could enable the humanoid robot to
+use forward walking during the whole motion, which will lead to faster
+execution time. Furthermore, as the robot arms are primarily used for
+manipulation, freeing them from the bounding box can allow the
+generation of whole-body motions involving both locomotion and
+manipulation.
 
 This chapter presents a general method for planning collision-free
 whole-body walking motions for humanoid robots. We rely on a
@@ -29,12 +37,13 @@ Sampling-based planners, such as the ones presented in Section
 \ref{subsec:chap1-sampling-algorithms}, have encountered wide success
 in generating collision-free paths in high-dimension configuration
 spaces. When using sampling techniques on a humanoid robot, a major
-difficulty is to take into account balance constraints, i.e. to
-generate random configurations on zero volume submanifolds of
-{\cspace}. Indeed, the probability of sampling a configuration
-\config{rand} in {\cspace} such that it lies on such manifolds is
-zero. In this section, we present recent advances in motion planning
-on constraint manifolds using inverse-kinematics (IK) solvers.
+difficulty is to take into account kinematic and balance constraints,
+which is equivalent to generating random configurations on zero volume
+submanifolds of {\cspace}. Indeed, the probability of sampling a
+configuration \config{rand} in {\cspace} such that it lies on such
+manifolds is zero. In this section, we present recent advances in
+motion planning on constraint manifolds using inverse-kinematics (IK)
+solvers.
 
 \subsection{Inverse Kinematics}
 \label{subsec:chap2-inverse-kinematics}
@@ -90,10 +99,11 @@ an adaptive gain $\alpha$, which increases iteratively from an initial
 value $\alpha$ to a maximum value $\alpha_{max}\in[0,1]$, allows the
 overshoot avoidance and convergence acceleration. The update rule
 relies on a real factor $w \in [0,1]$; the greater $w$ is, the faster
-$\alpha$ will reach $\alpha_{max}$. Obviously, the solver convergence
-depends on the initial value of \config{}, and a bad initialization
-can lead to either slow convergence or failure. A cutoff number of
-iterations $it_{max}$ is hence introduced to bypass these cases.
+$\alpha$ will reach $\alpha_{max}$. Obviously, beside the solver
+parameters, the solver convergence depends of the initial value of
+\config{}, and a bad initialization can lead to either slow
+convergence or failure. A cutoff number of iterations $it_{max}$ is
+thus introduced to bypass these cases.
 
 In practice, we observe that values of $\epsilon=10^{-6}$,
 $\alpha=0.1$, $\alpha_{max}=0.95$ and $w=0.8$ lead to good behavior,
@@ -207,9 +217,10 @@ constraints for the HRP-2 robot.
 \subsubsection{Random Extensions on a Constrained Manifold}
 \label{sec:extension}
 
+The RRT algorithm is described in Algorithm \ref{alg:chap1-rrt}.
 Figure~\ref{fig:rrt-extend} shows an extension of the classic RRT
-algorithm, from a configuration already in the tree \config{near} towards
-a random configuration \config{rand}.
+algorithm, from a configuration already in the tree \config{near}
+towards a random configuration \config{rand}.
 
 \begin{figure}
   \centering
@@ -456,13 +467,17 @@ heuristic bias towards statically balanced configurations.
 \label{subsec:chap2-constraint-walk-planning}
 
 While the previous algorithm considers motion planning on a single
-submanifold $\manifold$ of {\cspace}, similar strategies can be adopted
-to explore the union of submanifolds $\cup\manifold_{i}$ and achieve
-quasi-static multi-step planning for walking and free-climbing robots,
-see \cite{bretl2006motion, haus10}. These methods can
-be seen as very generic and offer the property of probabilistic
-completeness; they are not however directly applicable to humanoid
-dynamically balanced locomotion.
+submanifold $\manifold$ of {\cspace}, similar strategies can be
+adopted to explore the union of submanifolds $\cup\manifold_{i}$ and
+achieve quasi-static multi-step planning for walking and free-climbing
+robots, see \cite{bretl2006motion, haus10}. These methods can be seen
+as very generic and offer the property of probabilistic completeness;
+they are not however directly applicable to humanoid dynamically
+balanced locomotion: they can only produce statically balanced walking
+paths, which restricts the scope of feasible motions. Furthermore, it
+is not obvious how they can be transformed to dynamically balanced
+motions while guaranteeing that this transformation will always
+succeed and not lead to unforeseen collisions.
 
 Other recent contributions to the field of locomotion planning include
 algorithms considering the dynamics at the planning phase
@@ -505,9 +520,10 @@ controllability property:
 
 \begin{theorem}
   \label{thm:ssc}
-  Any collision-free path of a small-space controllable system can be approximated
-  by a sequence of both collision-free and admissible trajectories. Thus, small-space 
-  controllability reduces trajectory planning problems to geometric path planning problems.
+  Any collision-free path of a small-space controllable system can be
+  approximated by a sequence of both collision-free and admissible (or
+  feasible) trajectories. Thus, small-space controllability reduces
+  trajectory planning problems to geometric path planning problems.
 \end{theorem}
 
 Figure \ref{fig:ssc2} shows an example of collision-free path
@@ -754,10 +770,10 @@ this idea.
 
 For $\omega >0$, assuming the CoM follows the trajectory
 $y(t) = \epsilon \sin(\omega t)$,  Eq. (\ref{eq:walk-zmp}) gives:
-\[
+\begin{equation}
 p_y(t) = (1+\left(\frac{\omega}{\omega_0}\right)^2)\epsilon\sin(\omega
 t)
-\]
+\end{equation}
 
 The amplitude of the oscillations of $y$ is multiplied by a factor
 $(1+\left(\frac{\omega}{\omega_0}\right)^2)$.  Choosing $\omega =
@@ -784,7 +800,7 @@ inequalities will be used to bound the trajectory of the ZMP. We can
 guarantee them by choosing $T$ large enough. Let us now consider the
 following CoM motion:
 
-\[
+\begin{equation}
 y(t) = \left\{
 \begin{array}{ll}
 f(t)\epsilon\sin(\omega t) 
@@ -793,7 +809,7 @@ f(t)\epsilon\sin(\omega t)
 \epsilon\sin(\omega t) 
 & \text{if } t \geq T \end{array}
 \right.
-\]
+\end{equation}
 
 One can check that $y$ is of class $C^2$ over $\mathbb{R}_+$, and that
 $\dot{f}(0) = 0$. When $t\geq T$, the robot is in the permanent state
@@ -802,14 +818,14 @@ small neighborhoods.  The last point to check is that for $t \in
 [0,T]$ $p_y(t)$ stays inside the support polygon of the robot. The
 calculation of the successive derivatives of $y$ gives:
 
-\[
+\begin{equation}
 \begin{array}{cl}
 p_y(t) = &  f(t) \epsilon (1 + \left(\frac{\omega}{\omega_0}\right)^2)
 \sin (\omega  t) \\ &  + 2\epsilon \dot{f}(t)\frac{\omega}{\omega_0^2}
 \cos  (\omega t)  \\ &  +  \frac{\epsilon}{\omega_0^2}\ddot{f}(t) \sin
 (\omega t)
 \end{array}
-\]
+\end{equation}
 
 \begin{figure}
 \centering
@@ -956,7 +972,7 @@ of the method.
 \caption{FindDynamicTrajectory(Path $P$)}
 \label{alg:walk}
 \begin{algorithmic}
-\STATE $Footprints \leftarrow \text{ComputeFootprints}(p)$
+\STATE $Footprints \leftarrow \text{ComputeFootprints}(P)$
 
 \STATE $GikTasks$.addFootprintTask($Footprints$)
 
@@ -1206,36 +1222,52 @@ taken from the motion execution on the real robot HRP-2.
 This section lists some limitations of the current methods, and
 discusses potential future work to overcome them.
 
-\subsection{Stepping over obstacles}
+\paragraph{Stepping over obstacles}
 
 Because of the kinematic constraints we apply at the planning stage,
 we are not able yet to plan motions where the robot steps over
 obstacles, while this is an important feature of humanoid
 robots. Nevertheless, because we compute collision queries on an exact
 model of the robot, our method is able to generate paths where
-obstacles pass between the feet of the robot.  In future work, we plan
-to develop mixed methods, where collision avoidance at the leg level
-can be solved by footstep planning techniques, while whole-body
-collision-avoidance can be solved by the algorithm presented in this
-chapter.
+obstacles pass between the feet of the robot. One way of dealing with
+this issue would be to incorporate the continuous footstep planner
+described in \cite{perr11b} in the planning phase; it would allow
+stepping over obstacles, while whole-body collision-avoidance would be
+solved by the algorithm presented in this chapter. The main challenge
+with this approach would be then to verify that the small-space
+controllability property still holds.
 
-\subsection{Environment representation}
+\paragraph{Environment representation}
 
 The experimental setup assumes perfect knowledge of the
 environment. This can be guaranteed during experiments by using
 calibrated objects and motion capture systems. This indeed allows us
 to focus on complex motion planning problems. The perception problem,
 interesting as it is, is thus completely decoupled from the planning
-problem in our presentation. From previous experiences however, we are
-confident that our algorithm will work as well in environments modeled
-by vision \cite{Nakhei4755945,DanLauLam2012}.
+problem in this work. Experiments in
+\cite{Nakhei4755945,DanLauLam2012} have shown that is possible to
+build a representation of the environment using stereo vision, and use
+it to plan collision-free motions for humanoid robots.
 
-\subsection{Trajectory following}
+FIXME cite bennewitz, octomap?
+keep ddang?
+
+\paragraph{Trajectory following}
 
 The setup also assumes perfect execution of the plan. It can be
 critical here, since non-nominal stepping may cause the robot to drift
-away from the planned trajectory. Future experiments will include
-trajectory following during plan execution.
+away from the planned trajectory, and collide with obstacles. It is
+thus necessary to devise a localization-based controller which, based
+on the current state of the robot, will locally modify the robot
+future states to make sure the planned trajectory is followed, see
+\cite{moulard2012trajectory}. This approach works only if local
+perturbations are applied to the system or environment between the
+planning and execution phases. One way to guarantee a proper motion
+execution would be to establish a planning-control loop; under the
+assumption that each component is fast enough, this loop could take
+into account all modifications in the environment or the robot global
+position by continuously re-planning new trajectories, see
+\cite{baudouin2011real}.
 
 \section{Conclusion}
 
