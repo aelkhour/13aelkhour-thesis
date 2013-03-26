@@ -75,9 +75,10 @@ configuration is found (see Figure
       \caption{Left: A valid path is computed by the deterministic
         algorithm. Arrows show the attractive and repulsive potential
         fields. Thin lines show the potential lines. Right: Example of
-        problem where the stable local minimum does not coincide with
-        the goal configuration. $P$ is thus not a solution to the path
-        planning problem.}
+        problem where the stable local minimizer does not coincide
+        with the goal configuration, which is the global
+        minimizer. $P$ is thus not a solution to the path planning
+        problem.}
       \label{fig:chap1-deterministic-algorithm}
 \end{figure}
 
@@ -160,8 +161,8 @@ sure that the output path is still valid.
 \subsubsection{Greedy Optimization}
 
 A greedy optimizer, such as the one shown in Figure
-\ref{fig:chap1-optimizers}, uses the greedy approach to shorten and
-smooth a path. First, it tries to connect directly \config{s} to
+\ref{fig:chap1-optimizers}, left, uses the greedy approach to shorten
+and smooth a path. First, it tries to connect directly \config{s} to
 \config{g}; if the path is not collision-free, it tries to connect
 \config{s} to the node preceding \config{g}, and so on until it
 reaches \config{s}. This process is then restarted similarly on the
@@ -179,7 +180,7 @@ iteration, two random configurations are sampled on the path, and the
 optimizer tries to connect \config{s} to the first, the first one to
 the second one, and the second one to \config{g}. The local paths that
 are still collision-free are then kept to make a shorter path, as
-shown in Figure \ref{fig:chap1-optimizers}.
+shown in Figure \ref{fig:chap1-optimizers}, right.
 
 \begin{figure}
   \centering
@@ -329,10 +330,11 @@ polygon.
 The above formulation of ZMP is rather hard to control.  One way to
 deal with the complexity of a humanoid robot kinematic tree is to use
 the so-called ``cart-table'' simplified model, where the walking robot
-is modeled by a point mass at a fixed height.  The equations giving
-the ZMP horizontal coordinates $(p_x,p_y)$ as functions of the CoM
-horizontal coordinates $(x,y)$ in the cart-table model were presented
-in \cite{kaji03}:
+is modeled by a point mass at a fixed height, see Figure
+\ref{fig:chap1-robot-cart-table}. The equations giving the ZMP
+horizontal coordinates $(p_x,p_y)$ as functions of the CoM horizontal
+coordinates $(x,y)$ in the cart-table model were presented in
+\cite{kaji03}:
 \begin{equation}
 \label{eq:chap1-walk-zmp}
 \left(
@@ -445,9 +447,16 @@ dynamically-balanced locomotion planner is introduced.
 It is interesting to note that while collision avoidance is a
 requirement in motion planning, some features of the environment can
 in fact be useful to solve the problem, especially in the case of
-underactuated systems. In \cite{esca06, bouy12}, a
-multiple-contact-point stance planner looks for authorized contacts in
-order to help the robot reach its goal.
+underactuated systems. In \cite{bouy12, escande2013planning}, a
+multiple-contact-point stance planner looks for authorized contact
+surfaces in order to help the robot reach its goal. The contact points
+do not have to be coplanar, and the planner produces a sequence of
+statically balanced postures for a humanoid robot which can press his
+feet and hands against objects in the environment. A heuristic method
+is used to direct the search towards the goal, so this planner does
+not offer a completeness property. Once the contact stance sequence is
+obtained, motion generation tools can be used to generate
+statically-balanced or dynamically balanced locomotion trajectories.
 
 \subsection{Decoupled Planning}
 \label{subsec:chap1-bounding-box}
@@ -485,7 +494,7 @@ with $\mathbf{\overset{.}{\mathbf{q}}=}\frac{d\mathbf{q}}{dt}$, cannot
 be integrated into a form similar to \ref{eq:chap1-holonomic_constraint},
 this constraint is called \emph{nonholonomic}.
 
-Practically, a nonholonomic constraint implies that a system velocity
+In practice, a nonholonomic constraint implies that a system velocity
 vector cannot take an arbitrary direction. For instance, you cannot
 drive a car sideways (this makes life harder for us when parking), and
 therefore it has a nonholonomic constraint. On the other hand, a
@@ -540,7 +549,7 @@ integrated in the motion planning scheme. Examples of different
 scenarios, including a real one with the HRP-2 platform, are shown in
 \autoref{sec:chap1-examples}.
 
-\section{Optimization by Regular Sampling}
+\section{Regular Sampling Optimization}
 \label{sec:chap1-regular-sampling-optim}
 
 \begin{figure}
@@ -736,10 +745,45 @@ walking along $P$ while staying tangential to the path with the start
 and end transition costs from $\mathbf{q}_n^{state}$ and to
 $\mathbf{q}_g$.
 
-Now that the A$^{*}$ functions are fully defined, a search algorithm can be
-run to compute an optimal path $P_{opt}$ by changing the orientation
-of each sample node. An example is shown in
-\autoref{fig:chap1-hash-direct-path}.
+Now that the A$^{*}$ functions are fully defined, a search algorithm
+can be run to compute an optimal path $P_{opt}$ by changing the
+orientation of each sample node. Algorithm \ref{algo:chap1-rso}
+describes the \emph{Regular Sampling Optimization (RSO)} method, and
+an example is shown in \autoref{fig:chap1-hash-direct-path}.
+
+\begin{algorithm}
+\caption{\texttt{RSO}($P$, $d_{sample}$)}
+\label{algo:chap1-rso}
+\begin{algorithmic}
+  \STATE {\color{red} // Closed set}
+  \STATE $\mathcal{C} \leftarrow \emptyset$
+  \STATE {\color{red} // Open set}
+  \STATE $\mathcal{O} \leftarrow \{(\mathbf{q}_s,\hat{f}(\mathbf{q}_s))\}$
+  \STATE $\mathbf{q}_n^{state_n} \leftarrow \mathbf{q}_s$
+  \WHILE{$\mathbf{q}_n^{state_n} \neq \mathbf{q}_g$}
+  \STATE $\mathcal{C} \leftarrow \mathcal{C}\cup\{(\mathbf{q}_n^{state_n},\hat{f}(\mathbf{q}_n^{state_n}))\}$
+  \STATE {\color{red} // Expand node}
+  \STATE $\mathcal{E}_{n+1} \leftarrow \{(\mathbf{q}_{n+1}^{state_{n+1}},~c_{n,n+1})\} \leftarrow \text{Expand}(\mathbf{q}_n^{state_n}, P, d_{sample})$
+  \FOR{$\mathbf{q}_{n+1}^{state_{n+1}} \in \mathcal{E}_{n+1}$}
+  \STATE {\color{red} // Mark as ``open'' each successor not already marked ``closed''}
+  \IF{$(\mathbf{q}_{n+1}^{state_{n+1}},\hat{f}) \notin \mathcal{C}$}
+  \STATE $\mathcal{O} \leftarrow \mathcal{O}\cup\{(\mathbf{q}_{n+1}^{state_{n+1}},\hat{f}(\mathbf{q}_{n+1}^{state_{n+1}})\}$
+  \ELSE
+  \STATE {\color{red} // Remark as open each closed successor for which evaluation function is now smaller than stored value}
+  \IF{$\hat{f}(\mathbf{q}_{n+1}^{state_{n+1}}) < \hat{f}$}
+  \STATE $\mathcal{O} \leftarrow \mathcal{O}\cup\{(\mathbf{q}_{n+1}^{state_{n+1}},\hat{f}(\mathbf{q}_{n+1}^{state_{n+1}})\}$
+  \ENDIF
+  \ENDIF
+  \ENDFOR
+  \STATE {\color{red} // Select open node whose value evaluation function value is the smallest}
+  \STATE $\mathbf{q}_n^{state_n} \leftarrow
+  \text{arg}\min_{\mathbf{q}\in\mathcal{O}}\hat{f}(\mathbf{q})$
+  \ENDWHILE
+  \STATE $\mathcal{C} \leftarrow \mathcal{C}\cup\{(\mathbf{q}_g,0)\}$
+  \STATE {\color{red} // Return closed set which makes up optimized path.}
+  \RETURN $\mathcal{C}$
+\end{algorithmic}
+\end{algorithm}
 
 \begin{figure}
   \centering
@@ -883,8 +927,8 @@ time-optimal.
 However, after applying RSO, it is clear that the bounding box stays
 oriented towards the front and rotates only when it reaches the
 chairs. \autoref{fig:chap1-chairs-hash-optim-perspective-hrp2} and
-\autoref{tab:chap1-walk-time} show that the walk time is shorter by 5
-s and the final trajectory for HRP-2 is more realistic. Note that the
+\autoref{tab:chap1-walk-time} show that the walk time is 12\% shorter
+and the final trajectory for HRP-2 is more realistic. Note that the
 RSO takes 2,144 ms to be executed on the chairs path, which is less
 than 3\% of the total computation time.
 
@@ -908,7 +952,8 @@ by the whole planning scheme.
 Additionally, since the environment is significantly larger and more
 constrained than the previous ones, the walk time difference is more
 striking: \autoref{tab:chap1-walk-time} shows that it takes the robot
-80 s less to cross the apartment when an RO-RSO combination is used.
+40\% less time to cross the apartment when an RO-RSO combination is
+used.
 
 \begin{figure}
   \centering
@@ -929,13 +974,6 @@ a realistic time-optimal walk trajectory. Results show that new
 trajectories are more satisfactory while the added computation time is
 insignificant compared to the whole planning time.
 
-This approach can be used in other fields such as computer graphics
-for digital actors to adapt the body orientation with respect to the
-goal during locomotion. With a motion capture library containing
-prerecorded nonholonomic and holonomic walk behaviors, it is possible
-to lay this behavior on the actor trajectory and produce realistic
-movements.
-
 Achieving humanoid walk planning using the bounding box approach is
 both simple and efficient; it allows using off-the-shelf
 sampling-based planners to efficiently explore the configurations
@@ -945,9 +983,10 @@ articulated robot. But it has one major drawback: in order to have a
 sound framework which always produces collision-free walking
 trajectories, the bounding box must contain all the robot geometries
 and take into account the robot swaying motion during walking. Thus,
-it is a rather conservative method, and it might not succeed in
-finding collision-free trajectories in cluttered environments. If we
-go back to the chairs example in Section \ref{subsec:chap1-chairs}, we
+it is a rather conservative method which cannot be used for
+manipulation tasks, and which might not even succeed in finding
+collision-free walk trajectories in cluttered environments. If we go
+back to the chairs example in Section \ref{subsec:chap1-chairs}, we
 can show that the lateral walking motion could have been avoided if
 the HRP-2 had lifted its arms over the two chairs. Beside leading to
 an even faster motion, walking forward could be necessary if vision
