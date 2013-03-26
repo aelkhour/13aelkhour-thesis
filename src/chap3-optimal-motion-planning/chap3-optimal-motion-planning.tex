@@ -688,7 +688,7 @@ found iteratively.
         method. The blue line represents the linear equality
         constraint, while the green and red half-planes represent the
         linear inequalities (the infeasible set is filled). Starting
-        from a $\arginit{x_0}$, the optimal solution $\argmin{x}$ and
+        from $\arginit{x}$, the optimal solution $\argmin{x}$ and
         active set are found iteratively.}
       \label{fig:chap3-qp-inequality}
 \end{figure}
@@ -710,6 +710,7 @@ linearized approximation of the constraints in order to obtain a
 \emph{QP subproblem}:
 
 \begin{equation}
+\label{eq:chap3-sqp}
 \min_{\mathbf{p}}\frac{1}{2}\mathbf{p}_k^{\top}\nabla_{\mathbf{x}\mathbf{x}}^2\mathcal{L}(\mathbf{x}_k,\boldsymbol{\lambda}_k)\mathbf{p}_k+\nabla f(\mathbf{x}_k)^{\top}\mathbf{p}_k+f(\mathbf{x}_k)
 \text{ s.t.}
 \left\{\begin{array}{cc}
@@ -738,8 +739,8 @@ described in Algorithm \ref{alg:chap3-sqp}.
 \end{algorithm}
 
 This requires us to derive the Hessian of both objective function and
-constraints. One solution to avoid computing them exactly is to use
-the BFGS method as seen in Section
+constraints, see Equation \ref{eq:chap3-sqp}. One solution to avoid
+computing them exactly is to use the BFGS method as seen in Section
 \ref{subsubsec:chap3-quasi-newton-line-search}. Note that iterates can
 be infeasible and that only the final solution is guaranteed to be
 feasible. Also, as in the case of line search methods in unconstrained
@@ -777,12 +778,13 @@ process (up to a specified tolerance) to retrieve a feasible solution.
                      {sqp.pdf_tex}
         }
       }
-      \caption{Minimization of the Rosenbrock function under nonlinear
-        equality and inequality constraints, starting from three
-        different initial points. Only $\mathbf{x_{0a}}$ leads to the
-        global minimizer $\mathbf{x}_a^\star$, while $\mathbf{x_{0b}}$
-        and $\mathbf{x_{0c}}$ lead only to different local
-        minimizers.}
+      \caption{Minimization of the Rosenbrock function under the
+        nonlinear circle equality constraint $x^2+y^2-4=0$ and the
+        disk inequality constraint $(x-1)^2+(y-2)^2-2.25 \le 0$,
+        starting from three different initial points. Only
+        $\mathbf{x_{0a}}$ leads to the global minimizer
+        $\mathbf{x}_a^\star$, while $\mathbf{x_{0b}}$ and
+        $\mathbf{x_{0c}}$ lead only to different local minimizers.}
       \label{fig:chap3-sqp}
 \end{figure}
 
@@ -995,13 +997,15 @@ v(\mathbf{x},T)=\Phi(\mathbf{x}(T)).
 \end{equation}
 
 $v$ is also called the \emph{value function}. Equation
-\equref{eq:chap3-hjb} is the PDE which gives the necessary and sufficient
-conditions for finding an optimal control policy. It can be solved
-backwards in time, just as in discrete-time dynamic programming,
-starting from $t=T$ and ending at $ t=0$. However, as it contains
-partial derivatives with respect to time and state, it suffers from
-the curse of dimensionality and is not used for large-scale systems in
-practice.
+\equref{eq:chap3-hjb} is the PDE which gives the necessary and
+sufficient conditions for finding an optimal control policy. It can be
+solved backwards in time, just as in discrete-time dynamic
+programming, starting from $t=T$ and ending at $
+t=0$. State-of-the-art solvers which rely on finite-element methods
+are then used to solve it. However, as the PDE contains partial
+derivatives with respect to both time and state, solvers suffer from
+the curse of dimensionality and the HJB equation is not used for
+large-scale systems in practice.
 
 \subsection{Indirect Methods}
 
@@ -1110,7 +1114,10 @@ using a piecewise constant control parameterization $\mathbf{q}$.
       \caption{Solving the OCP with direct single-shooting methods:
         the controls are discretized on a coarse grid, and the state
         trajectory is found by numerical integration of the model ODE
-        starting from an initial value.}
+        starting from an initial value. In this example, the
+        discretized control $\mathbf{u}(t,\mathbf{q})$ is a piecewise
+        constant function, and it is equal to $\mathbf{q}_i$ on
+        sub-interval $i$.}
       \label{fig:chap3-optimal-control-problem-single-shoot}
 \end{figure}
 
@@ -1596,7 +1603,8 @@ and actuator torque limits
   \overbar{\boldsymbol{\tau}}
 \end{equation}
 
-These additional constraints will also have to be taken into account
+These additional constraints, shown in Figure
+\ref{fig:chap3-robot-dynamics} will also have to be taken into account
 in the OCP formulation in order to generate feasible motions.
 
 \subsection{Inverse Dynamics}
@@ -1605,13 +1613,13 @@ When the generalized position, velocity and acceleration vectors are
 known, we can use the dynamics equation \ref{dynamics-equation} to
 retrieve the unknown actuated torques $\mathbb{\tau}$. This is a
 problem of \emph{inverse dynamics}; the \emph{Recursive Newton-Euler
-  Algorithm} is an efficient algorithm which relies on a loop of
-forward propagation of spatial velocities and accelerations starting
-from the floating base, then a second loop of backward propagation of
-torques and forces starting from the leaves of the kinematic tree
-until the floating base. Its complexity is $\mathcal{O}(n)$ and it has
-a low count of operations, which makes them very suitable for optimal
-control applications.
+  Algorithm (RNEA)} is an efficient algorithm which relies on a loop
+of forward propagation of spatial velocities and accelerations
+starting from the floating base, then a second loop of backward
+propagation of torques and forces starting from the leaves of the
+kinematic tree until the floating base. Its complexity is
+$\mathcal{O}(n)$ and it has a low count of operations, which makes
+them very suitable for optimal control applications.
 
 \subsection{Forward Dynamics}
 
@@ -2181,7 +2189,7 @@ robot geometries.
   \centering
   \begin{tabular}{|c|C{0.11\linewidth}|C{0.2\linewidth}|C{0.18\linewidth}|C{0.18\linewidth}|}
     \hline
-    Robot & Body count & Mean vertex count per body & Computation time without convex hull (s) & Computation time with convex hull (s) \\
+    Robot & Body count & Mean vertex count per body & Total computation time without convex hull (s) & Total computation time using convex hull (s) \\
     \hline
     HRP-2 & 41 & 1526 & 46.8 & 7.50 \\ 
     \hline
@@ -2254,7 +2262,8 @@ robot geometries.
     \caption{Optimization result.}
     \label{simple-path-sol-shortcutb}
   \end{subfigure}
-  \caption{Minimum-volume bounding capsule generation for the Romeo.}
+  \caption{Minimum-volume bounding capsule generation for the Romeo
+    robot.}
   \label{fig:chap3-romeo-capsule}
 \end{figure}
 
@@ -2405,7 +2414,7 @@ place minimum-jerk trajectories between each pair of path waypoints,
 assuming they start and end at zero velocity and acceleration. This
 ensures that the configuration $\mathbf{q}(t)$ follows exactly the
 solution path and that collision avoidance constraints are not
-violated.
+violated around the waypoints.
 
 As we rely on a direct multiple-shooting optimal control solver, the
 minimum-jerk trajectories that have been computed are discretized
@@ -2532,10 +2541,11 @@ positions of the left and right foot, $\mathbf{p}_{zmp}$ and
 $\mathcal{P}_{sup}$ are the 2D ZMP coordinates and the support polygon
 respectively. Note that in order to ensure $\mathbf{p}_{lf}$ and
 $\mathbf{p}_{rf}$ are continuous functions, we do not use Euler angles
-(such as roll, pitch and yaw), and each contact body position is
-written as the concatenation of a 3D translation vector and a 3D
-rotation vector; the rotation vector direction gives the rotation
-axis, and its norm gives the rotation angle around this axis.
+(such as roll, pitch and yaw) to represent 3D rotations, and each
+contact body position is written as the concatenation of a 3D
+translation vector and a 3D rotation vector; the rotation vector
+direction gives the rotation axis, and its norm gives the rotation
+angle around this axis.
 
 \paragraph{Collision avoidance constraints}
 We use the capsule-capsule and capsule-environment pairs defined in
@@ -2690,7 +2700,7 @@ guess have disappeared.
   \label{fig:chap3-zmp-2s-final-ux}
 \end{figure}
 
-Figure \ref{fig:chap3-zmp-2s-final-d} shows the evolution of all 12
+Figure \ref{fig:chap3-zmp-2s-final-p} shows the evolution of all 12
 components of the kinematic equality constraints on both feet. As the
 constraints are only enforced on the shooting nodes, we observe slight
 deviations on the sub-intervals; they are luckily sufficiently small
@@ -2866,11 +2876,18 @@ both scenarios as seen in figures \ref{self-collision} and
 \ref{fig:chap3-grasping-zmp-2s-final-d} show the collision avoidance
 constraint evolution for the second phase of each scenario. The ZMP is
 plotted in Figure \ref{fig:chap3-karate-zmp-2s-final-zmp} for the
-martial arts scenario, and in Figure
-\ref{fig:chap3-grasping-zmp-2s-final-zmp}, we show how it is necessary
-to implement balance constraints with a reduced support polygon to
-ensure that the ZMP remains inside the convex hull of the foot contact
-points, even inside time the sub-intervals.
+martial arts scenario. In the shelves scenario, Figure
+\ref{fig:chap3-grasping-zmp-2s-final-zmp}, left, shows that the ZMP
+inequality constraint which correseponds to the front edge of the feet
+is active at three nodes; as this constraint is not necessarily
+enforced on the sub-intervals, it is violated, and this leads to a
+fall of the robot. One solution would be to increase the trajectory
+execution time so that the ZMP is closer to the CoM projection. As we
+still want to generate fast motions, it is necessary to implement
+balance constraints with a reduced support polygon to ensure that the
+ZMP remains entirely inside the convex hull of the foot contact
+points, even inside the time sub-intervals, see Figure
+\ref{fig:chap3-grasping-zmp-2s-final-zmp}, right.
 
 \begin{figure}
   \centering
@@ -3089,7 +3106,7 @@ ensure that the contact force normals are positive.
 We use the second phase of the martial arts scenario to verify our
 approach with a set of coplanar contact points. As both feet of the
 HRP-2 are on the horizontal floor, we first place one contact force on
-each of the four foot vertices, which amounts to a total of 12
+each of the four foot vertices, which amounts to a total of 8
 forces. We set the motion duration to $0.6$s in order to create a fast
 trajectory.
 
@@ -3136,7 +3153,7 @@ reduced support polygon vertices.
     balance constraints are enforced at the nodes, but the ZMP goes
     out the support polygon in two sub-intervals. Right: the ZMP stays
     inside the support polygon when more restrictive balance
-    constraints and, leading to a reduced support polygon, are used.}
+    constraints, leading to a reduced support polygon, are used.}
   \label{fig:chap3-contact-point6s-final-contact}
 \end{figure}
 
@@ -3243,13 +3260,23 @@ RRT$^*$ sampling-based planner, as described in Section
 \ref{subsec:chap3-non-jacobian}.
 
 \paragraph{Trajectory duration}
-The trajectory duration is for the moment fixed. This means that if it
-is not properly set, the optimization solver might fail as some
-constraints such as velocity limits would never be enforced. If it is
-included as a free variable in the optimal control problem, we will
-have a guarantee of success for the second stage. The complete
-framework would then always succeed in generating optimal
-trajectories.
+In this work, the trajectory duration is fixed in the OCP
+formulation. This means that if it is not properly set, the
+optimization solver might fail as some constraints such as velocity
+limits would never be enforced. This issue could be solved by
+including time as a variable in the OCP in order to guarantee the
+complete framework succeeds in generating optimal
+trajectories. However, this has to be done carefully: indeed, if time
+is a free variable, the minimum-jerk trajectory will have an infinite
+duration. One could choose to include time in the objective function,
+so that both jerk and time are minimized, but a suitable weight ratio
+for both terms then needs to be found, and the optimal trajectory
+quality would be directly affected by those weights. An alternative
+solution would be to add an additional stage in the framework: the
+initial path would be first parameterized to an infinite-duration
+trajectory, then a constrained minimum-time OCP would be solved, and
+the solution would be finally used as an initial guess to solve the
+constrained fixed-time minimum-jerk OCP we described in this work.
 
 \paragraph{Computation time}
 Obviously the optimal motion planning we described is still not meant
