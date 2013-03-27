@@ -368,7 +368,7 @@ the ZMP formulation in Chapter \ref{chap:optimal-motion-planning}.
 
 Note that in the particular case where the dynamic wrench is zero,
 i.e. when body speeds and accelerations are zero, the point defined in
-Equation \ref{eq:chap1-dynamic-balance} coincides with the CoM. This
+Equation \equref{eq:chap1-dynamic-balance} coincides with the CoM. This
 allows us to guarantee that a quasi-static walking motion is
 \emph{statically balanced} if and only if the vertical projection of
 the CoM is always in the interior of the support polygon.
@@ -422,7 +422,7 @@ connects the footprint centers and remains inside the support
 polygon. The support polygon consists of one footprint in
 single-support phases, and of the convex hull of two consecutive
 footprints in double-support phases. A preview-control method uses
-then Equation \ref{eq:chap1-walk-zmp} to derive the CoM trajectory,
+then Equation \equref{eq:chap1-walk-zmp} to derive the CoM trajectory,
 see Figure \ref{fig:chap1-zmp}, and inverse-kinematics methods are
 finally used to generate a whole-body dynamically balanced walking
 motion of the system.
@@ -455,15 +455,17 @@ on the footstep level. In \cite{kuff01,ches05}, humanoid footstep
 planning schemes are described. Starting from an initial footstep
 placement, they use an A$^{*}$ graph search \cite{hart68} to explore a
 discrete set of footstep transitions. The search stops when the
-neighborhood of the goal footstep placement is reached. This approach
-is not practical in some environments with narrow passages; in
-\cite{xia09, perr11a}, the computational cost of footstep planning is
-reduced by adapting RRT planning algorithm and efficiently exploring
-the discrete footstep space. In their most recent work, \cite{perr11b,
-  perr12} give an elegant proof of the equivalence between the
-discrete footstep planning problem and a continuous motion planning
-problem, which enables the use of off-the-shelf planning algorithms
-such as RRT.
+neighborhood of the goal footstep placement is reached. A similar
+approach \cite{garimort2011humanoid} that uses D$^*$ Lite allows fast
+re-planning in the presence of dynamic obstacles. While the previous
+methods are very efficient, they are not practical in environments
+with narrow passages; in \cite{xia09, perr11a}, the computational cost
+of footstep planning is reduced by adapting RRT planning algorithm and
+efficiently exploring the discrete footstep space. In their most
+recent work, \cite{perr11b, perr12} give an elegant proof of the
+equivalence between the discrete footstep planning problem and a
+continuous motion planning problem, which enables the use of
+off-the-shelf planning algorithms such as RRT.
 
 \subsection{Constraints-Based Motion Generation}
 \label{subsec:chap1-constraints-motion-generation}
@@ -546,7 +548,7 @@ with \config{} the configuration vector. When a constraint of the form
   C(\mathbf{q,}\overset{.}{\mathbf{q}}) & = & 0,
 \end{eqnarray}
 with $\mathbf{\overset{.}{\mathbf{q}}=}\frac{d\mathbf{q}}{dt}$, cannot
-be integrated into a form similar to \ref{eq:chap1-holonomic_constraint},
+be integrated into a form similar to \equref{eq:chap1-holonomic_constraint},
 this constraint is called \emph{nonholonomic}.
 
 In practice, a nonholonomic constraint implies that a system velocity

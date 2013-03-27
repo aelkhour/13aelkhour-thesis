@@ -762,14 +762,14 @@ the following.
   \label{fig:simple-humanoid}
 \end{figure}
 
-The idea of this proof is to use the form of Eq. (\ref{eq:walk-zmp})
+The idea of this proof is to use the form of Equation \equref{eq:walk-zmp}
 to apply a scaling factor between the amplitude of the oscillations of
 the CoM and of the ZMP. The faster the CoM oscillates, the bigger is
 the amplitude of the ZMP oscillations. Following is a formalization of
 this idea.
 
-For $\omega >0$, assuming the CoM follows the trajectory
-$y(t) = \epsilon \sin(\omega t)$,  Eq. (\ref{eq:walk-zmp}) gives:
+For $\omega >0$, assuming the CoM follows the trajectory $y(t) =
+\epsilon \sin(\omega t)$, Equation \equref{eq:walk-zmp} gives:
 \begin{equation}
 p_y(t) = (1+\left(\frac{\omega}{\omega_0}\right)^2)\epsilon\sin(\omega
 t)
@@ -1249,9 +1249,6 @@ problem in this work. Experiments in
 build a representation of the environment using stereo vision, and use
 it to plan collision-free motions for humanoid robots.
 
-FIXME cite bennewitz, octomap?
-keep ddang?
-
 \paragraph{Trajectory following}
 
 The setup also assumes perfect execution of the plan. It can be
@@ -1267,7 +1264,13 @@ execution would be to establish a planning-control loop; under the
 assumption that each component is fast enough, this loop could take
 into account all modifications in the environment or the robot global
 position by continuously re-planning new trajectories, see
-\cite{baudouin2011real}.
+\cite{baudouin2011real}. Note that whatever approach is chosen,
+accurate localization methods must be used, and multiple sensor
+sources might need to be fused to obtain relevant information about
+the humanoid robot pose. An example of such methods can be found in
+\cite{hornung2010humanoid}, where accurate localization information is
+obtained from multiple sensors in complex environments including
+staircases.
 
 \section{Conclusion}
 

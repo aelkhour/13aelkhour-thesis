@@ -740,7 +740,7 @@ described in Algorithm \ref{alg:chap3-sqp}.
 \end{algorithm}
 
 This requires us to derive the Hessian of both objective function and
-constraints, see Equation \ref{eq:chap3-sqp}. One solution to avoid
+constraints, see Equation \equref{eq:chap3-sqp}. One solution to avoid
 computing them exactly is to use the BFGS method as seen in Section
 \ref{subsubsec:chap3-quasi-newton-line-search}. Note that iterates can
 be infeasible and that only the final solution is guaranteed to be
@@ -1524,6 +1524,12 @@ spatial forces:
   \end{matrix}\right)
 \end{equation}
 
+Note that except for the ordering of the translation and rotation
+components, spatial vectors represent the same concepts as velocity,
+acceleration and force wrenches, i.e. they both give a compact
+representation of a vector field. In what follows, we only use the
+spatial algebra notations.
+
 In conclusion, the spatial vector notation provides a compact
 rewriting of the dynamics equations, which leads to efficient dynamics
 computation algorithms.
@@ -1563,8 +1569,8 @@ Coriolis and gravity effects, $\mathbf{J}_{c_k}$ is the \emph{contact
 force $\mathbf{f}^s_{c_k}$. In this work, we assume that all bodies
 are rigid and that contacts are non-sliding. This leads to the
 necessary condition that each 3D contact force applied at a point must
-lie inside the positive \emph{Coulomb friction cone} \cite{trinkle1997dynamic}
-defined by the inequalities:
+lie inside the positive \emph{Coulomb friction cone}
+\cite{trinkle1997dynamic} defined by the inequalities:
 
 \begin{equation}
   \label{eq:chap3-friction-cone}
@@ -1619,8 +1625,8 @@ of forward propagation of spatial velocities and accelerations
 starting from the floating base, then a second loop of backward
 propagation of torques and forces starting from the leaves of the
 kinematic tree until the floating base. Its complexity is
-$\mathcal{O}(n)$ and it has a low count of operations, which makes
-them very suitable for optimal control applications.
+$\mathcal{O}(n)$ and it has a low count of operations, which makes it
+very suitable for optimal control applications.
 
 \subsection{Forward Dynamics}
 
@@ -1660,42 +1666,50 @@ condition in an OCP.
 
 \subsubsection{Dynamic Balance with Zero-Moment Point}
 
-As we previously introduced in Section \ref{subsec:chap1-zmp} the ZMP,
-we simply recall that it gives simple dynamic balance conditions,
+As we previously introduced the ZMP in Section \ref{subsec:chap1-zmp},
+we simply recall that it provides a simple dynamic balance condition,
 namely that the ZMP must remain inside the contact support polygon, as
 long as the humanoid robot is moving on a flat floor. We saw in
-Section \ref{subsec:chap1-cart-table} how the ZMP can be derived for
-the cart-table model, and we briefly describe here a method to compute
-the ZMP for whole-body motions of an anthropomorphic system.
+Section \ref{subsec:chap1-cart-table} how it can be derived for the
+cart-table model, and we briefly describe here a method to compute it
+for whole-body motions of an anthropomorphic system using inverse
+dynamics.
 
-Given the rigid-body system generalized position, velocity and
-acceleration vectors $\mathbf{q}$,$\dot{\mathbf{q}}$ and
-$\ddot{\mathbf{q}}$, let us first note that if feasible contact forces
-are applied to the system bodies, the robot is dynamically balanced if
-and only if it can realize the inputs $\mathbf{q}$,$\dot{\mathbf{q}}$
-and $\ddot{\mathbf{q}}$ using only its physical actuators, i.e. by
-making sure that:
+Let $\mathbf{q}$,$\dot{\mathbf{q}}$ and $\ddot{\mathbf{q}}$ denote
+respectively the rigid-body system generalized position, velocity and
+acceleration vectors. We recall that, if feasible contact forces are
+applied to its bodies, a necessary and sufficient condition for a
+humanoid robot dynamical balance is that it can realize the state
+$\mathbf{q}$,$\dot{\mathbf{q}}$ and $\ddot{\mathbf{q}}$ using only its
+physical actuators. As the humanoid robot does not have any thrusters,
+this condition is equivalent to requiring that the 6D generalized
+torque applied by the floating joint be 0:
 
 \begin{equation}
 \label{eq:chap3-dynamic-balance-inverse}
  \boldsymbol{\tau_{fl}}=\mathbf{0},
 \end{equation}
 
-where $\boldsymbol{\tau_{fl}}$ denotes the 6D floating-joint torque
-vector \cite{hirukawa2006universal}. This means that if we set all
-contact forces to zero and we compute the torques with RNEA,
-$\boldsymbol{\tau_{fl}}$ is equal, via a reordering of the components
-if necessary, to the resultant contact spatial force when expressed in
-the floating-base frame; $\tensor*[^{fl}]{\mathbf{f}}{_c^s}$ denote
-this spatial vector. Computing the ZMP is then a simple matter of
+where $\boldsymbol{\tau_{fl}}$ denotes the floating-joint torque
+vector, see \cite{hirukawa2006universal}.
+
+Conversely, if we set all contact forces to zero and we compute the
+joint generalized torques using the RNEA, $\boldsymbol{\tau_{fl}}$
+will be equivalent to a spatial force (or wrench): it is the force
+that the floating joint would need to exert in order to make the whole
+system realize the state given by $\mathbf{q}$,$\dot{\mathbf{q}}$ and
+$\ddot{\mathbf{q}}$. This spatial force, expressed in the floating
+base frame and denoted $\tensor*[^{fl}]{\mathbf{f}}{_c^s}$, is thus
+equal to the resultant spatial force that includes all the necessary
+contact forces. Computing the ZMP is then a simple matter of
 transforming $\tensor*[^{fl}]{\mathbf{f}}{_c^s}$ to the absolute world
 frame $W$, and finding the coordinates $(p_x,p_y)$ of the point on the
 floor such that the moments around the $x$ and $y$ axes, i.e. the
 first two components of $\tensor*[^W]{\mathbf{f}}{_c^s}$, are equal to
-zero. This point $p$ is, according to the definition, the Zero-Moment
-Point we are looking for. We can then guarantee a humanoid robot
-dynamic balance by ensuring the ZMP stays inside the support polygon
-$\mathcal{P}_{sup}$, which is defined at the convex hull of all
+zero. This point $\mathbf{p}$ is, according to its definition, the
+Zero-Moment Point which we are looking for. We can then guarantee a
+humanoid robot dynamic balance by ensuring $\mathbf{p}$ stays inside
+the support polygon $\mathcal{P}_{sup}$, i.e. the convex hull of all
 contact points.
 
 \subsubsection{Dynamic Balance with Non-Coplanar Contact Forces}
@@ -1774,33 +1788,40 @@ all $\mathbf{f}^s_{c_k}$.
   \end{matrix}\right)
 \end{equation}
 
-The constraints $\mathbf{p}_{c_k}(t)=\mathbf{p}_{c_k}(0)$ and
-$\dot{\mathbf{p}_{c_k}}(t)=\mathbf{0}$ also need to be enforced. Note
-that $\mathbf{J}_{c}$ must be full-rank, otherwise, the system is not
-invertible; this means that no more than one spatial contact force can
-be exerted on each rigid body. This is unfortunately not sufficient to
-ensure dynamic balance when the contact surface of the rigid bodies is
-larger than a single point; additional constraints, such as ZMP
-constraints \cite{koch2012optimization}, need to be added.
+%% The constraints $\mathbf{p}_{c_k}(t)=\mathbf{p}_{c_k}(0)$ and
+%% $\dot{\mathbf{p}_{c_k}}(t)=\mathbf{0}$ also need to be enforced. 
+
+Note that $\mathbf{J}_{c}$ must be full-rank, otherwise, the system is
+not invertible. Therefore, this approach allows finding a unique set
+of spatial forces as long as no more than one spatial contact force is
+exerted on each rigid body. If we consider the humanoid walking case,
+this means that one spatial contact force is applied on each
+foot. However, the sum of the two solution forces can lead to a ZMP
+lying outside the support polygon, as the foot geometry is never taken
+into account. Solving the previous linear system is unfortunately not
+always sufficient to ensure dynamic balance; additional constraints,
+such as ZMP constraints \cite{koch2012optimization}, need to be added.
 
 \paragraph{Inverse Dynamics}
 
-We saw in Equation \equref{eq:chap3-dynamic-balance-inverse} that if we
-apply feasible contact forces and the floating-joint torques are zero,
-then the humanoid robot is dynamically balanced. If we chose to
+We saw in Equation \equref{eq:chap3-dynamic-balance-inverse} that if
+we apply feasible contact forces and the floating-joint torques are
+zero, then the humanoid robot is dynamically balanced. If we chose to
 control our system with the generalized acceleration vector
-$\mathbf{\ddot{q}}$ and contact forces $\mathbf{f}^s_{c_k}$, we can use
-a simple integration scheme to retrieve the generalized position and
-velocity vectors $\mathbf{q}$ and $\mathbf{\dot{q}}$, compute the
+$\mathbf{\ddot{q}}$ and contact forces $\mathbf{f}^s_{c_k}$, we can
+use a simple integration scheme to retrieve the generalized position
+and velocity vectors $\mathbf{q}$ and $\mathbf{\dot{q}}$, compute the
 torques $\boldsymbol{\tau}_{fl}$, and add Equation
 \equref{eq:chap3-dynamic-balance-inverse} as an equality constraint in
-the OCP formulation. This gives an efficient way of integrating the
-dynamics and enforcing the dynamic balance of the humanoid robot
-through a single equality constraint, given any set of contact forces,
-even when some of them are exerted on the same bodies. In order to
-ensure that only feasible contact forces are applied, the inequalities
-from Equation \equref{eq:chap3-friction-cone} also need to be taken into
-account.
+the OCP formulation. This gives a way of integrating the dynamics and
+enforcing the dynamic balance of the humanoid robot through a 6D
+vector equality constraint, given any set of contact forces, even when
+some of them are exerted on the same bodies. In order to ensure that
+only feasible contact forces are applied, the inequalities from
+Equation \equref{eq:chap3-friction-cone} also need to be taken into
+account. A similar formulation, where the contact forces are
+considered as optimization variables, was suggested in
+\cite{saab-tro-12}.
 
 \section{(Self-)Collision Avoidance}
 \label{sec:chap3-collision-avoidance}
@@ -3092,9 +3113,7 @@ applied on the robot bodies:
 
 and discretize the forces to represent them as continuous piecewise
 linear function, as for jerks. Each 3D force vector is expressed in
-the local body coordinate system. A similar formulation, where the
-contact forces are considered as optimization variables, was suggested
-in \cite{saab-tro-12}.
+the local body coordinate system.
 
 As the ZMP is no longer useful in this case, we replace the ZMP
 inequality constraints by the dynamic balance equality constraint from
