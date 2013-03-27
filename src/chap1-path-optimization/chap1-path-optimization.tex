@@ -210,15 +210,15 @@ anthropomorphic systems, humanoid robots and digital actors.
 \label{subsec:chap1-underactuated-systems}
 
 A robot {\robot} is usually composed of a set of rigid bodies
-\body{i}, $i \in 0..N_B$, and a set of joints \joint{i}, $i \in
-1..N_J$, which constrain the body positions. A rigid body has a mass,
-an inertia, and a given geometry. We use the kinematic tree formalism
-proposed in \cite{feat08} to model a full robot: a node of the tree
-represents a body of the robot, while an arc (or edge) represents a
-joint \joint{i} of the robot which constrains the motion of the
-successor body \body{i} with respect to its parent body
-\body{\lambda_{i}} (see Figure
-\ref{fig:chap1-robot-kinematic-tree}). Note that in the tree
+$($\body{i}$)_i$, $i \in 0..N_B$, and a set of joints
+$($\joint{i}$)_i$, $i \in 1..N_J$, which constrain the body
+positions. A rigid body has a mass, an inertia and a given
+geometry. We use the kinematic tree formalism proposed in
+\cite{feat08} to model a full robot: a node of the tree represents a
+body of the robot, while an arc (or edge) represents a joint \joint{i}
+of the robot which constrains the motion of the successor body
+\body{i} with respect to its parent body \body{\lambda_{i}} (see
+Figure \ref{fig:chap1-robot-kinematic-tree}). Note that in the tree
 representation, each body has one and exactly one parent body, except
 for the root body which has no parents; this means that additional
 constraints have to be added later on in order to correctly model
@@ -288,46 +288,95 @@ at the same time, or even exploring {\cspace} while continuously
 accomplishing one or more tasks. This will be discussed more
 thoroughly in Chapter \ref{chap:wholebody-planning}.
 
-\section{Walk Pattern Generation}
+\section{Walking and Balance}
 \label{sec:chap1-pattern-generator}
 
-An important field of humanoid robotics research is the generation of
-dynamically balanced walk patterns. Since the introduction of the
-\emph{Zero-Moment Point (ZMP)} \cite{vukobratovic1969contribution},
-several methods have been proposed to generate walking motions
-efficiently.
+As stated in Section \ref{subsec:chap1-underactuated-systems},
+anthropomorphic systems are underactuated. This means that they have
+to press some of their bodies against their environment in order to
+produce a displacement. In terms of dynamics, this is equivalent to
+saying that the environment exerts forces on contact surfaces of the
+robot. Note, however, that not all kinds of forces can be realized, as
+the environment cannot for instance pull a body towards it in order to
+retain a contact. Great care must be then given to make sure that a
+planned motion is indeed realizable on a given system and
+environment. The concept of \emph{balance} can be thus introduced: a
+motion will be balanced, provided that there are sufficient external
+forces which allow both realizing this motion and keeping the system
+physical integrity. In the general case, this does not necessarily
+imply that the system will not fall; a humanoid robot executing a
+back-flip is technically falling in the absence of contact forces,
+but, as long as it lands back safely on the ground without damaging
+its bodies, sensors or actuators, this motion is deemed to be
+balanced.
+
+In this work, as we focus on the particular case of humanoid walking
+on a flat floor, we can rely on results from walking system stability
+analysis \cite{wieber2002} in order to verify and guarantee an
+anthropomorphic system balance during a walking motion.
 
 \subsection{Zero-Moment Point (ZMP)}
 \label{subsec:chap1-zmp}
 
-We assume here that the robot {\robot} is walking on a flat
-horizontal floor. We also assume that the robot is always making
-contact with the floor, i.e. that there are no jumps, and that all
-contacts are non-sliding. {\robot} is then subject to its
-weight and to contact forces.
+We assume here that the robot {\robot} is walking on a flat horizontal
+floor, to which we associate the normal vector $\mathbf{u}$. We also
+assume that the robot is always making contact with the floor using
+its feet, i.e. that there are no jumps, and that all contacts are
+non-sliding. We will call these assumptions the \emph{walking
+  conditions}. {\robot} is then subject to its weight and to contact
+forces, and the total wrench of applied forces can be written as:
 
-Under these assumptions, the \emph{Zero-Moment Point (ZMP)}
-\cite{vukobratovic1969contribution} is defined as the point on the
-floor where the horizontal components of the sum of moments applied to
-{\robot} are zero. It is also established that
-{\robot} will not tilt around its foot edges as long as the
-ZMP lies inside the support polygon, i.e. the convex hull of all
-contact points, which are coplanar due to the previous
-assumptions. This is known as the condition of dynamic balance, and
-the robot {\robot} is then said to be dynamically balanced. We
-will further discuss the complete ZMP formulation in Chapter
-\ref{chap:optimal-motion-planning}.
+\begin{equation}
+  \left(\begin{matrix}
+    \sum_i m_i\mathbf{g}+\sum_k \mathbf{f}_{c_k} \\
+    \sum_i m_i\mathbf{x}_i\times\mathbf{g}
+    +\sum_k\mathbf{p}_{c_k}\times\mathbf{f}_{c_k}
+  \end{matrix}\right),
+\end{equation}
 
-Note that in the particular case where speed and acceleration are
-zero, the ZMP will coincide with the \emph{center of mass (CoM)}
-vertical projection on the floor; the robot {\robot} will then be said
-to be statically balanced if this projection lies inside the support
-polygon.
+where $m_i$ and $\mathbf{x}_i$ are respectively the mass and center of
+mass vector of rigid body \body{i}, $\mathbf{g}$ is the gravity
+acceleration vector, and $\mathbf{p}_{c_k}$ and $\mathbf{f}_{c_k}$ are
+respectively the position and force vectors for contact $c_k$.
+
+Newton's second law of motion states that the total wrench of forces
+must be equal to the system dynamic wrench, denoted
+$\left(\begin{matrix}\mathbf{f}\\\mathbf{n}\end{matrix}\right)$. Let
+$m$ and $\mathbf{x}_G$ denote respectively the total mass of the robot
+and its \emph{Center of Mass (CoM)} position. Assuming that the
+walking conditions are realized, the analysis presented in
+\cite{wieber2002} can be applied to guarantee that a walking motion is
+\emph{dynamically balanced} if and only if the vertical projection of
+the point defined by:
+
+\begin{equation}
+\label{eq:chap1-dynamic-balance}
+  \frac{m\mathbf{g}\mathbf{x}_G +
+    \mathbf{u}\times\mathbf{f}}{m\mathbf{g} + \mathbf{f}.\mathbf{u}}
+\end{equation}
+
+is always in the interior of the convex hull of the contact points;
+the convex hull is also known as the \emph{support polygon}.
+
+The vertical projection is called the \emph{Zero-Moment Point (ZMP)}
+\cite{vukobratovic1969contribution}, where it is defined as the point
+on the floor where the horizontal components of the total moment are
+zero. It is also known as the \emph{Center of Pressure (CoP)}, as it
+can be found by computing the barycenter of contact points weighted by
+normal contact forces applied on them. We further discuss the use of
+the ZMP formulation in Chapter \ref{chap:optimal-motion-planning}.
+
+Note that in the particular case where the dynamic wrench is zero,
+i.e. when body speeds and accelerations are zero, the point defined in
+Equation \ref{eq:chap1-dynamic-balance} coincides with the CoM. This
+allows us to guarantee that a quasi-static walking motion is
+\emph{statically balanced} if and only if the vertical projection of
+the CoM is always in the interior of the support polygon.
 
 \subsection{Cart-Table Model}
 \label{subsec:chap1-cart-table}
 
-The above formulation of ZMP is rather hard to control.  One way to
+The above formulation of ZMP is rather hard to control. One way to
 deal with the complexity of a humanoid robot kinematic tree is to use
 the so-called ``cart-table'' simplified model, where the walking robot
 is modeled by a point mass at a fixed height, see Figure
@@ -366,11 +415,17 @@ constant.
       \label{fig:chap1-robot-cart-table}
 \end{figure}
 
-Based on this model, planning a trajectory for the ZMP is reduced to
-planning a trajectory for the CoM of the robot. Given a trajectory of
-the CoM and footprint positions, inverse kinematics solvers can
-animate the whole set of DoF of the robot to generate a dynamically
-balanced walk trajectory.
+Based on this simplified model, a walking pattern generator is
+proposed in \cite{kaji03}. Starting from a time-parameterized
+footprint sequence, a reference ZMP trajectory is built such that it
+connects the footprint centers and remains inside the support
+polygon. The support polygon consists of one footprint in
+single-support phases, and of the convex hull of two consecutive
+footprints in double-support phases. A preview-control method uses
+then Equation \ref{eq:chap1-walk-zmp} to derive the CoM trajectory,
+see Figure \ref{fig:chap1-zmp}, and inverse-kinematics methods are
+finally used to generate a whole-body dynamically balanced walking
+motion of the system.
 
 \begin{figure}
   \centering

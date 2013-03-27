@@ -196,13 +196,14 @@ is ill-conditioned and $r \approx 1$.
 
 Figure \ref{fig:chap3-unconstrained-steepest-descent} shows an example
 of minimizing the Rosenbrock function. We show the first 20 iterates
-when using a steepest descent line search and setting $\alpha_k$ to
-1. The search direction $\mathbf{p_k}$ is always orthogonal to the
-function contour line, as it is the direction that allows to decrease
-$R$ quickly. Unfortunately, as the iterates reach the basin, keeping a
-constant step size leads to a strong oscillation and convergence is
-not achieved. This motivates the need for a good step size computation
-method that will ensure a decrease of the function at each iteration.
+when using a steepest descent line search and setting $\alpha_k$ to a
+constant value of 1. The search direction $\mathbf{p_k}$ is always
+orthogonal to the function contour line, as it is the direction that
+allows to decrease $R$ quickly. Unfortunately, as the iterates reach
+the basin, keeping a constant step size leads to a strong oscillation
+and convergence is not achieved. This motivates the need for a good
+step size computation method that will ensure a decrease of the
+function at each iteration.
 
 \begin{figure}
   \centering
