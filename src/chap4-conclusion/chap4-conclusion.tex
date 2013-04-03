@@ -3,13 +3,13 @@
 
 \section{General Contributions}
 
-The work presented in this thesis dealt with planning optimal motions
+The work presented in this thesis deals with planning optimal motions
 for anthropomorphic systems in general, and humanoid robots in
-particular. Based on promising but still separate advances in
-motion planning and optimization in highly-dimensional spaces, the
-main focus of this work was set on the combination of methods from
-both fields in order to generate optimal collision-free trajectories
-for humanoid robots.
+particular. Based on promising but still separate advances in motion
+planning and optimization in high-dimensional spaces, the main focus
+of this work was set on the combination of methods from both fields in
+order to generate optimal collision-free trajectories for humanoid
+robots.
 
 More precisely, the contributions lead to the development of :
 \begin{itemize}
@@ -42,8 +42,9 @@ it is therefore obvious that the time which is spent in the planning
 component should be very short, i.e. motions should be generated very
 quickly. This work succeeded in the development of generic methods for
 planning optimal motion for humanoid robots, but their computational
-efficiency remains one of their main limitations, as computation
-time was not the focus of this work.
+efficiency remains one of their main limitations, as computation time
+was not the focus of this work. Some pointers were thus given in the
+previous chapter discussions in order to address this issue.
 
 Humanoid robots have formidable abilities when compared to more common
 fixed-base or wheeled robots: thanks to their legged structure, they
@@ -55,42 +56,47 @@ whole-body dynamic walking and optimal motion planning. Nevertheless,
 insights for extending our optimal motion planning framework to handle
 a set of non-coplanar contact points were given.
 
+\bigskip
+
 In some sense, the computer graphics community has always been ahead
 of the robotics one, as they do not need to cope with complex hardware
 platforms. Thanks to a smart usage of online model-predictive control
 techniques \cite{coros2010generalized,tassa2012synthesis}, recent
 results have shown that we can hope to make humanoid robots plan
-extreme locomotion very reactively. Besides a transcription of the
-above algorithms to humanoid robots, we need to make sure we have both
-the right hardware and control software.
+extreme locomotion reactively. However, beside a transcription of the
+above algorithms to humanoid robots, we need to make sure that we have
+both the right hardware and control software.
+
+Consider for instance a back-flip motion, as shown in Figure
+\ref{fig:chap4-romeo-back-flip}. The robot must first exert adequate
+forces on the floor to jump in the air, rotate during the flying
+phase, then land back on its feet. Most mainstream humanoid robots,
+such as the HRP-2, are capable of pushing sufficiently to jump in the
+air, but their actuators are such that they cannot quickly transform
+the kinetic energy acquired in the flying phase into other energies
+when they hit the ground; this energy is thus entirely transmitted to
+the mechanical structure and might cause it to break. Introducing
+backdrivable actuators in the robot structure can help addressing this
+issue by allowing the fast transformation of the kinetic energy back
+into electric energy and keeping the physical system
+integrity. Furthermore, the generated current measurements can give a
+good idea of the actuator torques, which paves the way for the
+implementation of force-based control laws. Such laws, compared with
+position-based control laws, can be extremely useful in retaining the
+robot balance during fast motions.
 
 \bigskip
 
 In light of these results, we would like to tackle, in our future
-works, the themes of model-predictive control and online stabilization
-for humanoid robots.
-
-\bigskip
+works, the themes of model-predictive control and stabilization for
+force-controlled humanoid robots.
 
 \begin{figure}
   \centering
       {\includegraphics[width = 0.8\linewidth]
         {src/chap4-conclusion/romeo-back-flip.png}}
-      \caption{A humanoid robot executes a back flip. This is a highly
+      \caption{A humanoid robot executes a back-flip. This is a highly
         dynamic motion where the flying phase is difficult to control,
         and the foot forces on impact may be high.}
       \label{fig:chap4-romeo-back-flip}
-\end{figure}
-
-\begin{figure}
-  \centering
-      {\includegraphics[width = 0.8\linewidth]
-        {src/chap4-conclusion/romeo-turnstile.png}}
-      \caption{A humanoid robot skips over a subway turnstile. The
-        robot needs to keep his hands in contact with turnstile sides,
-        while making sure its legs do not collide with the horizontal
-        bar. This motion probably requires a preliminary phase where
-        prospective contact surfaces are detected and discriminated
-        from other obstacles.}
-      \label{fig:chap4-romeo-turnstile}
 \end{figure}

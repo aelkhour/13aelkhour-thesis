@@ -1195,7 +1195,7 @@ sparse problems, such as \textsc{SNOPT} \cite{gill2002snopt} and \textsc{IPOPT}
 \paragraph{State Parameterization}
 One particular case occurs when the control and state derivatives can
 be directly derived from the states. There is thus no need to
-discretize the controls, which are here dependant variables, and only
+discretize the controls, which are here dependent variables, and only
 the states are discretized. The states can be then be represented by
 smooth functions such as polynomials or splines
 \cite{sirinesa1981}. This approach offers the advantage of leading to
@@ -2196,13 +2196,13 @@ We implement our minimization problem with RobOptim \cite{roboptim,
   open-source implementation can be found at
   \url{https://github.com/roboptim/roboptim-capsule/} and
   \url{http://roboptim.net/roboptim-capsule/doxygen/1.0.1/}} to find
-the optimal bounding capsules for both HRP-2 and Romeo humanoid
-robots. Table \ref{tab:chap3-minimum-capsule} demonstrates how solving
-optimization problem instances for $\mathcal{H}_\mathcal{P}$ instead
-of $\mathcal{P}$ accelerates their convergence. Figures
-\ref{fig:chap3-hrp2-capsule} and \ref{fig:chap3-romeo-capsule} show
-the best fitting bounding capsules superimposed over the original
-robot geometries.
+the optimal bounding capsules for both HRP-2 and Romeo \cite{romeo10}
+humanoid robots. Table \ref{tab:chap3-minimum-capsule} demonstrates
+how solving optimization problem instances for
+$\mathcal{H}_\mathcal{P}$ instead of $\mathcal{P}$ accelerates their
+convergence. Figures \ref{fig:chap3-hrp2-capsule} and
+\ref{fig:chap3-romeo-capsule} show the best fitting bounding capsules
+superimposed over the original robot geometries.
 
 \begin{table}
   \renewcommand{\arraystretch}{1.3}
@@ -2900,7 +2900,7 @@ constraint evolution for the second phase of each scenario. The ZMP is
 plotted in Figure \ref{fig:chap3-karate-zmp-2s-final-zmp} for the
 martial arts scenario. In the shelves scenario, Figure
 \ref{fig:chap3-grasping-zmp-2s-final-zmp}, left, shows that the ZMP
-inequality constraint which correseponds to the front edge of the feet
+inequality constraint which corresponds to the front edge of the feet
 is active at three nodes; as this constraint is not necessarily
 enforced on the sub-intervals, it is violated, and this leads to a
 fall of the robot. One solution would be to increase the trajectory
