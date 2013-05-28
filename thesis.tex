@@ -181,17 +181,15 @@ pdfproducer = {Antonio El Khoury}
 %\onehalfspacing
 %
 %
-%% \thispagestyle{empty}
-%% \begin{tikzpicture}[remember picture, overlay]
-%%  \node[inner sep=0pt] at (current page.center) {
-%%   \includegraphics[width=\paperwidth,height=\paperheight]{couverture}
-%% };
-%% \end{tikzpicture}
+\thispagestyle{empty}
+\begin{tikzpicture}[remember picture, overlay]
+ \node[inner sep=0pt] at (current page.center) {
+  \includegraphics[width=\paperwidth,height=\paperheight]{couverture}
+};
+\end{tikzpicture}
 %
 \frontmatter
-\author{Antonio El Khoury}
-\title{Planning Optimal Motions for Anthropomorphic Systems}
-\include{src/title-page}
+%\include{src/title-page}
 %\include{src/remerciements}
 \include{src/abstract_fr}
 \include{src/abstract_en}
