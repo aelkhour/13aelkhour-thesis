@@ -1,4 +1,4 @@
-\chapter{Introduction}
+\chapter{Introduction} 
 \label{chap:chap0}
 
 While the term \emph{robotics} was first coined by Isaac Asimov some
@@ -17,7 +17,7 @@ means to \emph{decide} how to act based on perception were given to
 robots (and roboticists too!). This decision process is known as
 \emph{planning}.
 
-\section{Anthropomorphic Systems in Robotics}
+\section*{Anthropomorphic Systems in Robotics}
 
 Anthropomorphic systems can be described as systems which are made to
 look like humans with respect to their mechanical structure and their
@@ -69,7 +69,7 @@ In this thesis, we focus on developing new algorithmic tools for
 \emph{planning optimal motions for anthropomorphic systems}, as well
 as applying them on humanoid robots.
 
-\section{Problem Statement}
+\section*{Problem Statement}
 
 The problem of motion planning for anthropomorphic systems can be
 defined as the following: given a starting configuration, say a
@@ -78,7 +78,7 @@ humanoid robot or a digital actor, to reach a goal configuration if it
 is possible. Obviously such a system cannot move instantaneously, so
 it will have to travel continuously in the environment surrounding it
 to reach its goal. The environment will usually not be empty, as it
-will contain at least the floor that supports the system. It might
+will contain at least the ground that supports the system. It might
 also contain moving or static entities with which we do not want the
 system to collide in order to avoid damaging either the entities, the
 system, or both. Additionally, we want to avoid self-collisions
@@ -94,17 +94,18 @@ system is never in collision with the environment or itself when
 executing this motion, and such that it is always balanced.
 
 While the found solution is guaranteed to be collision-free, we still
-know nothing about its quality. In the case of anthropomorphic system
-motion, the notion of quality can be linked to how close a motion is
-to real human motion, i.e. one which a human being would have made if
-he was put in the same conditions. Obtaining high-quality motions is
-desirable since humanoid robots are bound to move in man-made
-environments such as homes, offices, and factories and because it
-could help them blend in among humans more seamlessly. Subsequently,
-we would like to impose additional constraints on the motion planning
-problem in order to find motions that are both collision-free and
-optimal with respect to a certain cost measure. We refer to this
-problem by the name of optimal motion planning.
+know nothing about its ``quality''. In the case of anthropomorphic
+system motion, the notion of quality can be linked to how close a
+motion is to real human motion, i.e. one which a human being would
+have made if he was put in the same conditions. Obtaining high-quality
+motions is desirable since humanoid robots are bound to move in
+man-made environments such as homes, offices, and factories and
+because it could help them blend in among humans more
+seamlessly. Subsequently, we would like to impose additional
+constraints on the motion planning problem in order to find motions
+that are both collision-free and optimal with respect to a certain
+cost measure. We refer to this problem by the name of optimal motion
+planning.
 
 \begin{figure}[h!]
   \centering
@@ -116,14 +117,14 @@ problem by the name of optimal motion planning.
       \label{fig:chap0-optimal-motion-planning}
 \end{figure}
 
-\section{Contributions}
+\section*{Contributions}
 
 \emph{The first contribution} of this thesis is a heuristic and
 efficient optimization method that takes as input a path computed for
 the robot bounding box, and produces a path where a discrete set of
 configurations is reoriented using an A* search algorithm. The
-resulting trajectory is realistic and time-optimal. This method is
-validated on various scenarios.
+resulting trajectory leads to a significantly shorter walking
+time. This method is validated on various scenarios.
 
 \emph{The second contribution} is a whole-body motion planner for
 humanoid robots which computes collision-free walking trajectories,
@@ -158,7 +159,7 @@ bodies which are modeled by polyhedra. The capsules allow us then to
 enforce collision-avoidance constraints between the robot, the
 obstacles and itself.
 
-\section{Outline of This Thesis}
+\section*{Outline of This Thesis}
 
 The thesis is organized by contribution order, and the related work is
 explained when needed. Chapter \ref{chap:path-optim} describes the
@@ -169,7 +170,7 @@ controllability proof. Finally, the optimal motion planning framework
 and the automatic bounding capsule generator are detailed in Chapter
 \ref{chap:optimal-motion-planning}.
 
-\section{Publications in This Thesis}
+\section*{Publications in This Thesis}
 
 \subsection*{Journal}
 
@@ -199,14 +200,14 @@ and the automatic bounding capsule generator are detailed in Chapter
     2013.}
 \end{itemize}
 
-\section{Videos of Simulations and Experiments}
+\section*{Videos of Simulations and Experiments}
 
 Videos of simulations and experiments realized in this thesis can be
 found at this address:
 
 \url{http://projects.laas.fr/gepetto/index.php/Members/AntonioElKhouryVideos}
 
-\section{Software Contributions in This Thesis}
+\section*{Software Contributions in This Thesis}
 
 Several open-source software packages were created or extended
 throughout this thesis. Some of them include:
