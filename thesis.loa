@@ -1,9 +1,9 @@
-\contentsline {algorithm}{\numberline {1}{\ignorespaces \texttt {RRT}($\mathbf {q}_{s}$)\relax }}{9}{algorithm.1}
-\contentsline {algorithm}{\numberline {2}{\ignorespaces \texttt {RSO}($P$, $d_{sample}$)\relax }}{25}{algorithm.2}
-\contentsline {algorithm}{\numberline {3}{\ignorespaces \texttt {SolveConstraints}($\mathbf {q}_{}$, $\mathbf {f}$, $\epsilon $): find $\mathbf {q}_{}$ such that $\mathbf {f}(\mathbf {q}) = 0$\relax }}{33}{algorithm.3}
-\contentsline {algorithm}{\numberline {4}{\ignorespaces \texttt {ConstrainedExtend}($\mathcal {T},$$\mathbf {q}_{near}$$,$$\mathbf {q}_{rand}$$,f,\epsilon $)\relax }}{36}{algorithm.4}
-\contentsline {algorithm}{\numberline {5}{\ignorespaces \texttt {FindDynamicTrajectory}(Path $P$)\relax }}{47}{algorithm.5}
-\contentsline {algorithm}{\numberline {6}{\ignorespaces \texttt {StepLengthWolfe}($f$, $\mathbf {x}_k$, $\mathbf {p}_k$, $\alpha _k$, $\rho $, $it\_max$)\relax }}{59}{algorithm.6}
-\contentsline {algorithm}{\numberline {7}{\ignorespaces \texttt {BFGS}($\mathbf {x}_0$, $\epsilon $)\relax }}{63}{algorithm.7}
-\contentsline {algorithm}{\numberline {8}{\ignorespaces \texttt {ActiveSetSolve}($\mathbf {x}_0$)\relax }}{67}{algorithm.8}
-\contentsline {algorithm}{\numberline {9}{\ignorespaces \texttt {SQPSolve}($\mathbf {x}_0$,$\boldsymbol {\lambda }_0$, $\epsilon $)\relax }}{69}{algorithm.9}
+\contentsline {algorithm}{\numberline {1}{\ignorespaces \texttt {RRT}($\mathbf {q}_{s}$)\relax }}{3}{algorithm.1}
+\contentsline {algorithm}{\numberline {2}{\ignorespaces \texttt {RSO}($P$, $d_{sample}$)\relax }}{19}{algorithm.2}
+\contentsline {algorithm}{\numberline {3}{\ignorespaces \texttt {SolveConstraints}($\mathbf {q}_{}$, $\mathbf {f}$, $\epsilon $): find $\mathbf {q}_{}$ such that $\mathbf {f}(\mathbf {q}) = 0$\relax }}{27}{algorithm.3}
+\contentsline {algorithm}{\numberline {4}{\ignorespaces \texttt {ConstrainedExtend}($\mathcal {T},$$\mathbf {q}_{near}$$,$$\mathbf {q}_{rand}$$,f,\epsilon $)\relax }}{30}{algorithm.4}
+\contentsline {algorithm}{\numberline {5}{\ignorespaces \texttt {FindDynamicTrajectory}(Path $P$)\relax }}{41}{algorithm.5}
+\contentsline {algorithm}{\numberline {6}{\ignorespaces \texttt {StepLengthWolfe}($f$, $\mathbf {x}_k$, $\mathbf {p}_k$, $\alpha _k$, $\rho $, $it\_max$)\relax }}{53}{algorithm.6}
+\contentsline {algorithm}{\numberline {7}{\ignorespaces \texttt {BFGS}($\mathbf {x}_0$, $\epsilon $)\relax }}{57}{algorithm.7}
+\contentsline {algorithm}{\numberline {8}{\ignorespaces \texttt {ActiveSetSolve}($\mathbf {x}_0$)\relax }}{61}{algorithm.8}
+\contentsline {algorithm}{\numberline {9}{\ignorespaces \texttt {SQPSolve}($\mathbf {x}_0$,$\boldsymbol {\lambda }_0$, $\epsilon $)\relax }}{63}{algorithm.9}
