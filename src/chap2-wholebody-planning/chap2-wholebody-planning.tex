@@ -37,7 +37,7 @@ Sampling-based planners, such as the ones presented in Section
 \ref{subsec:chap1-sampling-algorithms}, have encountered wide success
 in generating collision-free paths in high-dimension configuration
 spaces. When using sampling techniques on a humanoid robot, a major
-difficulty is to take into account kinematic and balance constraints,
+difficulty is to take into account contact and balance constraints,
 which is equivalent to generating random configurations on zero volume
 submanifolds of {\cspace}. Indeed, the probability of sampling a
 configuration \config{rand} in {\cspace} such that it lies on such
@@ -51,7 +51,7 @@ solvers.
 The problem of inverse kinematics for a humanoid robot, or any
 articulated structure, is to compute a configuration \config{} to
 achieve a task \task{}. This task is usually expressed in the
-Cartesian space, and can represent and end-effector position and/or
+Cartesian space, and can represent an end-effector position and/or
 orientation, the CoM position, etc. Some tasks may have more than one
 solution configuration, see Section
 \ref{subsec:chap1-kinematic-redundancy}. In the case of most robotics
@@ -74,8 +74,8 @@ the obstacles as constraints to satisfy, see for example
 \cite{kanehiro2008local}. These methods are prone to fall into local
 minima, thus global motion planning is needed to overcome this
 limitation. Note that when local methods find solutions, these are
-usually smoother and may look more natural. The choice of using global
-motion planners is justified by the need for complete algorithms.
+usually smoother; the choice of using global motion planners is
+justified by the need for complete algorithms.
 
 We show here a functional example of an IK solver: its purpose is to
 find the root \config{} of a non-linear $C^1$ function $f(q)$ with a
@@ -98,12 +98,15 @@ pseudo-inverse of the Jacobian of $\mathbf{f}(\mathbf{q})$. The use of
 an adaptive gain $\alpha$, which increases iteratively from an initial
 value $\alpha$ to a maximum value $\alpha_{max}\in[0,1]$, allows the
 overshoot avoidance and convergence acceleration. The update rule
-relies on a real factor $w \in [0,1]$; the greater $w$ is, the faster
+relies on a real factor $w \in [0,1]$; the lower $w$ is, the faster
 $\alpha$ will reach $\alpha_{max}$. Obviously, beside the solver
 parameters, the solver convergence depends of the initial value of
 \config{}, and a bad initialization can lead to either slow
 convergence or failure. A cutoff number of iterations $it_{max}$ is
-thus introduced to bypass these cases.
+thus introduced to bypass these cases. Note that in this simplistic
+implementation, joint limit position bounds are not enforced. In
+practice, clamping the update at each iteration allows making sure
+they are not violated.
 
 In practice, we observe that values of $\epsilon=10^{-6}$,
 $\alpha=0.1$, $\alpha_{max}=0.95$ and $w=0.8$ lead to good behavior,
@@ -121,7 +124,7 @@ constant for all scenarios in this work.
 \STATE $\mathbf{q} \leftarrow$ $\mathbf{q} - \alpha \left(\frac{\partial \mathbf{f}}{\partial \mathbf{q}}(\mathbf{q})\right)^{+} \mathbf{f}(\mathbf{q})$
 \STATE $i$ $\leftarrow$ $i+1$
 \STATE {\color{red}// Make $\alpha$ tend toward $\alpha_{max}$}
-\STATE $\alpha \rightarrow \alpha_{max} - w(\alpha_{max} - \alpha)$
+\STATE $\alpha \leftarrow \alpha_{max} - w(\alpha_{max} - \alpha)$
 \ENDWHILE
 \IF {$\|\mathbf{f}(\mathbf{q})\| \leq \epsilon$}
 \STATE return \config{}
@@ -857,18 +860,18 @@ arbitrarily small neighborhood. This concludes the proof.
 \subsubsection{Remarks}
 \paragraph{Generalization to a complete model:} 
 We did not extend the previous proof to any legged robot model since
-empirically, the table cart model is a very good fit for our humanoid
-robot. Although of little practical interest, the generalization of
-the proof does not seem very difficult to achieve. As an insight, the
-difference between the table cart model and the full size humanoid
-robot is due to the derivative of the angular momentum and to the
-vertical acceleration of the center of mass. These perturbations can
-be made as small as desired along the sliding path by following the
-sliding path as slowly as necessary. The derivatives of the angular
-momentum produced by the stepping motion can also be made as small as
-desired by making the step height as small as necessary and by using
-recent results on properties of joint trajectories induced by
-end-effector motions \cite{Zanchettin6084763}.
+empirically, the table cart model describes a large part of the
+dynamics of a walking humanoid robot. Although of little practical
+interest, the generalization of the proof does not seem very difficult
+to achieve. As an insight, the difference between the table cart model
+and the full size humanoid robot is due to the derivative of the
+angular momentum and to the vertical acceleration of the center of
+mass. These perturbations can be made as small as desired along the
+sliding path by following the sliding path as slowly as necessary. The
+derivatives of the angular momentum produced by the stepping motion
+can also be made as small as desired by making the step height as
+small as necessary and by using recent results on properties of joint
+trajectories induced by end-effector motions \cite{Zanchettin6084763}.
 
 \paragraph{Use of ZMP preview controller:}
 The control strategy presented in the previous proof may generate very
@@ -900,11 +903,11 @@ collision-free path can be approximated by a sequence of admissible
 and collision-free trajectories. However, the theorem depends on a
 control law that generates trajectories with unbounded velocities for
 the CoM, when the input path is close to obstacles. The humanoid robot
-hardware may be a limitation to such trajectories. To prevent the
-generated CoM oscillations from being too fast, one has to require
-that the statically balanced path is included inside an
-$\epsilon$-radius tube of the free space, where $\epsilon$ depends on
-the physical capacities of the robot.
+hardware (actuators, mechanical structure, etc.) may be a limitation
+to such trajectories. To prevent the generated CoM oscillations from
+being too fast, one has to require that the statically balanced path
+is included inside an $\epsilon$-radius tube of the free space, where
+$\epsilon$ depends on the physical capabilities of the robot.
 
 \subsection{Application: Dynamic Approximation of a Statically Balanced Sliding Path}
 \label{sec:ssc-application}
@@ -1245,7 +1248,7 @@ calibrated objects and motion capture systems. This indeed allows us
 to focus on complex motion planning problems. The perception problem,
 interesting as it is, is thus completely decoupled from the planning
 problem in this work. Experiments in
-\cite{Nakhei4755945,DanLauLam2012} have shown that is possible to
+\cite{Nakhei4755945,DanLauLam2012} have shown that it is possible to
 build a representation of the environment using stereo vision, and use
 it to plan collision-free motions for humanoid robots.
 
