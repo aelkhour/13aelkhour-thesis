@@ -8,8 +8,8 @@ environment, it presents a heuristic and efficient optimization method
 that takes as input a path computed for the humanoid bounding box, and
 produces a path where a discrete set of configurations is reoriented
 using an A$^{*}$ search algorithm. A pattern generator is then used to
-generate a trajectory that is realistic and time-optimal. This method
-is validated in various scenarios on the humanoid robot HRP-2.
+generate a trajectory that minimizes walking time. This method is
+validated in various scenarios on the humanoid robot HRP-2.
 
 \section{Motion Planning in the Configuration Space}
 \label{sec:chap1-motion-planning}
@@ -630,11 +630,10 @@ in terms of length, and a preliminary random shortcut optimization
 (RO) can be run in order to shorten it (See
 \autoref{fig:chap1-bb-plan-optim}). While the optimized path $P$ is
 collision-free, the bounding box orientation is such that it could
-lead to an unrealistic trajectory that is not time-optimal. For
-instance, the humanoid robot could spend a long time walking sideways
-or backwards over a long distance in an open space. An additional
-optimization stage is introduced to address this issue in the next
-section.
+lead to an trajectory which is not time-optimal. For instance, the
+humanoid robot could spend a long time walking sideways or backwards
+over a long distance in an open space. An additional optimization
+stage is introduced to address this issue in the next section.
 
 \subsection{Bounding Box Path Optimization}
 Note that each configuration \config{} can be written as $\mathbf{q} =
@@ -645,10 +644,11 @@ changing $\theta$ while retaining the value of $\mathbf{X}$.
 
 For this purpose, an A$^{*}$ search algorithm is executed. First, $P$
 is regularly sampled. Using a discrete set of possible orientations
-for each sample configuration and an adequate heuristic estimation
-function, the bounding box orientation is then modified along $P$. An
-optimized path $P_{opt}$ is created and leads to a realistic
-time-optimal trajectory.
+for each sample configuration, a cost function and a heuristic
+estimation function, the bounding box orientation is then modified
+along $P$. An optimized path $P_{opt}$ is created and leads to a
+trajectory which is time-optimal with the respect to the expanded
+graph.
 
 \subsubsection{Preliminary Notations}
 After running RO on the piecewise linear path $P_{RRT}$, the
@@ -658,10 +658,12 @@ configurations are denoted by $\mathbf{q}_s$ and $\mathbf{q}_g$.
 Let $d_{sample} \in \mathbb{R}^+\setminus\{0\}$ be a sampling
 distance. Sampling $P$ with a distance $d_{sample}$ means dividing
 each local path $LP_j$ of $P$ into smaller local paths of length
-$d_{sample}$; each new local path end is a sample configuration. The
-$n^{th}$ sample configuration of $P$ in its initial state can be
-obtained by indexing new local path ends starting from $\mathbf{q}_s$,
-and is denoted $\mathbf{q}_n^{init}$.
+$d_{sample}$; each new local path end is then a sample
+configuration. Note that the last interval on each local path $LP_j$
+can have a length smaller than $d_{sample}$. The $n^{th}$ sample
+configuration of $P$ in its initial state can be obtained by indexing
+new local path ends starting from $\mathbf{q}_s$, and is denoted
+$\mathbf{q}_n^{init}$.
 
 \begin{figure}
   \centering
@@ -918,9 +920,10 @@ it has been inserted in the previously described walk planning
 scheme. Distance parameters $v_{max}^f$, $v_{max}^{lat}$, $v_{min}^f$
 are set to 0.5, 0.1, and 0.25 $m.s^{-1}$ respectively. Note that these
 parameters play a key role in giving priority to forward walking with
-respect to lateral and backwards walking. Indeed, beside the fact that
-we want to produce natural walks, kinematic constraints are usually
-such that it is very hard to achieve fast lateral walking.
+respect to lateral and backwards walking. Indeed kinematic constraints
+are usually such that it is very hard to achieve fast lateral
+walking. Also sensors, such as the cameras facing the forward
+direction, can require preferring forward walking to backward walking.
 
 Since the A$^{*}$ search only takes place over the graph of
 discretized configurations of the input path, it is important to
@@ -968,9 +971,8 @@ Figure \ref{fig:chap1-bb-plan-optim} shows the bounding box RRT path
 and the RO path for the chairs scenario. It is obvious that RO creates
 a shorter path. However, the bounding box starts rotating from the
 beginning of the path even though both chairs are still far. This
-causes the robot trajectory to be unrealistic and, since walking
-sideways takes a longer time than walking straight, to not be
-time-optimal.
+causes the robot trajectory to not be time-optimal since walking
+sideways takes a longer time than walking straight.
 
 \begin{figure}
   \centering
@@ -1031,13 +1033,13 @@ a realistic time-optimal walk trajectory. Results show that new
 trajectories are more satisfactory while the added computation time is
 insignificant compared to the whole planning time.
 
-Achieving humanoid walk planning using the bounding box approach is
-both simple and efficient; it allows using off-the-shelf
-sampling-based planners to efficiently explore the configurations
-space, thus removing the need to take into account additional
-kinematic and balance constraints when planning for the whole
-articulated robot. But it has one major drawback: in order to have a
-sound framework which always produces collision-free walking
+Achieving humanoid walk planning on flat surfaces using the bounding
+box approach is both simple and efficient; it allows using
+off-the-shelf sampling-based planners to efficiently explore the
+configurations space, thus removing the need to take into account
+additional kinematic and balance constraints when planning for the
+whole articulated robot. But it has one major drawback: in order to
+have a sound framework which always produces collision-free walking
 trajectories, the bounding box must contain all the robot geometries
 and take into account the robot swaying motion during walking. Thus,
 it is a rather conservative method which cannot be used for
