@@ -1094,14 +1094,14 @@ finite-dimensional NLP, through a grid discretization. Constraints are
 also discretized over the trajectory duration, which means that they
 are verified on the grid points, but not between them. In
 \cite{lee2012accurate}, based on previous work for safe trajectory
-optimization \cite{Lengagne2010}, capsules are used as bounding
-geometries for each body; the minimum distance over each sub-interval
-of the discretization grid is computed for all distance pairs, and
-this minimum distance is required to stay positive. Interestingly,
-this leads to a final optimized motion which is guaranteed to be
-collision-free for any $t\in[0,T]$. So far this method has been
-applied to implement self-collision avoidance, i.e. motions are
-generated in the absence of obstacles.
+optimization \cite{lengagne2013generation}, capsules are used as
+bounding geometries for each body; the minimum distance over each
+sub-interval of the discretization grid is computed for all distance
+pairs, and this minimum distance is required to stay
+positive. Interestingly, this leads to a final optimized motion which
+is guaranteed to be collision-free for any $t\in[0,T]$. So far this
+method has been applied to implement self-collision avoidance,
+i.e. motions are generated in the absence of obstacles.
 
 We briefly present the signed distance transform
 \cite{felzenszwalb2004distance}, which is an alternative method for
@@ -1167,7 +1167,7 @@ then be obtained. Also, the accessible space of a humanoid robot can
 be further increased if it uses its environment to help it achieve its
 goal; this involves generating multiple non-coplanar contact motion,
 and optimal control methods have proved to be very powerful tools to
-do so \cite{lengagne2011generation}.
+do so \cite{lengagne2013generation}.
 
 \bigskip
 
