@@ -22,7 +22,7 @@ the set of all configurations \config{} of a robot {\robot}; \config{}
 is a vector comprised of the $n$ independent \emph{degrees of freedom
   (DoF)} that are sufficient to uniquely identify the full state of
 the robot at each instant. {\cspace} defines then a manifold of
-dimension $n$. Some of the robot body positions can generate
+dimension~$n$. Some of the robot body positions can generate
 (self-)collisions; the equivalent configurations will be said to be in
 collision, and the set of all configurations in collision is denoted
 by {\cobs} $\subset$ {\cspace}. Its complement is denoted by {\cfree}
@@ -47,7 +47,7 @@ connect \config{s} to \config{g}. A non-exhaustive list of these
 methods includes cellular decomposition, Voronoi diagrams, visibility
 graphs, and Canny's algorithm \cite{good04}.
 
-Such algorithms offer the nice property of completeness, i.e. they can
+Such algorithms offer the nice property of completeness, i.e.\ they can
 always provide an answer to the motion planning problem as defined
 previously. But while they work well for solving path planning
 problems in low-dimensional configuration spaces, using them in
@@ -137,16 +137,15 @@ both the initial and goal configurations, see Figure
       \label{fig:chap1-rrt}
 \end{figure}
 
-While not being complete (i.e. they cannot tell whether a solution
-exists or not), sampling-based algorithms have the less strong
-property of probabilistic completeness: if a solution path exists, the
+While not being complete (i.e.\ they cannot tell whether a solution
+exists or not), sampling-based algorithms have the weaker property of
+probabilistic completeness: if a solution path exists, then the
 algorithm will be able to compute it with a probability of $1$ when
-the number of iterations $K$ reaches infinity. This may seem like a
-very weak property, but in practice these algorithms can compute paths
-in complex real-life environments in a reasonable time on regular
-computers and have been used to solve problems for various systems,
-ranging from 6-DoF floating objects, to 50-DoF anthropomorphic
-systems, to 1000-DoF proteins.
+the number of iterations $K$ reaches infinity. In practice, these
+algorithms can compute paths in complex real-life environments in a
+reasonable time on regular computers and have been used to solve
+problems for various systems, ranging from 6-DoF floating objects, to
+50-DoF anthropomorphic systems, to 1000-DoF proteins.
 
 \subsection{Path Optimization}
 \label{subsec:chap1-path-optimization}
@@ -155,7 +154,7 @@ As shown in Figure \ref{fig:chap1-rrt}, RRT returns the shortest path
 $P$ inside the graph that connects \config{s} to \config{g}. Due to
 the probabilistic nature of RRT, it is clear that $P$ is not optimal
 in terms of length. Path optimization methods take a valid,
-i.e. collision-free, path as input and try to shorten it while making
+i.e.\ collision-free, path as input and try to shorten it while making
 sure that the output path is still valid.
 
 \subsubsection{Greedy Optimization}
@@ -198,7 +197,7 @@ shown in Figure \ref{fig:chap1-optimizers}, right.
 
 We focus in this work on humanoid robots and digital actors, which are
 anthropomorphic systems. Such systems have a high number of DoF, and
-are capable of accomplishing human-like tasks: locomotion(such as
+are capable of accomplishing human-like tasks: locomotion (such as
 walking, running and parkour), manipulation, or both. These tasks can
 be accomplished thanks to the fact that anthropomorphic systems are
 both underactuated and highly redundant.
@@ -222,7 +221,8 @@ Figure \ref{fig:chap1-robot-kinematic-tree}). Note that in the tree
 representation, each body has one and exactly one parent body, except
 for the root body which has no parents; this means that additional
 constraints have to be added later on in order to correctly model
-robots with closed kinematic chains such as parallel robots.
+robots with closed kinematic chains such as parallel robots, or
+humanoid robots when they are in contact with their environment.
 
 \begin{figure}
   \centering
@@ -234,7 +234,7 @@ robots with closed kinematic chains such as parallel robots.
         actuators. A fictitious 6-DoF joint, or floating joint (purple
         circle), is added to move the robot in {\segroup}. Right: A
         kinematic tree view of the same robot, where bodies and joints
-        are represented by nodes and joints respectively.}
+        are represented by nodes and edges respectively.}
       \label{fig:chap1-robot-kinematic-tree}
 \end{figure}
 
@@ -271,7 +271,7 @@ robot {\robot} is an element of the configuration space {\cspace} $=$
                    {robot-redundancy.pdf_tex}}
       \caption{Anthropomorphic systems are highly redundant
         systems. For a desired Cartesian position (in blue) of the end
-        effector \body{e}, there exist more than one configuration
+        effector \body{e}, there exists more than one configuration
         \config{} that accomplish this task. Left and right: two
         possible solution configurations.}
       \label{fig:chap1-robot-redundancy}
@@ -296,13 +296,13 @@ anthropomorphic systems are underactuated. This means that they have
 to press some of their bodies against their environment in order to
 produce a displacement. In terms of dynamics, this is equivalent to
 saying that the environment exerts forces on contact surfaces of the
-robot. Note, however, that not all kinds of forces can be realized, as
+robot. Note, however, that not all kinds of forces can be achieved, as
 the environment cannot for instance pull a body towards it in order to
 retain a contact. Great care must be then given to make sure that a
-planned motion is indeed realizable on a given system and
+planned motion is indeed achieved on a given system and
 environment. The concept of \emph{balance} can be thus introduced: a
 motion will be balanced, provided that there are sufficient external
-forces which allow both realizing this motion and keeping the system
+forces which allow both achieving this motion and keeping the system
 physical integrity. In the general case, this does not necessarily
 imply that the system will not fall; a humanoid robot executing a
 back-flip is technically falling in the absence of contact forces,
@@ -320,10 +320,10 @@ anthropomorphic system balance during a walking motion.
 
 We assume here that the robot {\robot} is walking on a flat horizontal
 floor, to which we associate the normal vector $\mathbf{u}$. We also
-assume that the robot is always making contact with the floor using
-its feet, i.e. that there are no jumps, and that all contacts are
+assume that the robot is always in contact with the floor using its
+feet, i.e.\ that there are no jumps, and that all contacts are
 non-sliding. We will call these assumptions the \emph{walking
-  conditions}. {\robot} is then subject to its weight and to contact
+  conditions}. {\robot}~is then subject to its weight and to contact
 forces, and the total wrench of applied forces can be written as:
 
 \begin{equation}
@@ -334,17 +334,18 @@ forces, and the total wrench of applied forces can be written as:
   \end{matrix}\right),
 \end{equation}
 
-where $m_i$ and $\mathbf{x}_i$ are respectively the mass and center of
-mass vector of rigid body \body{i}, $\mathbf{g}$ is the gravity
-acceleration vector, and $\mathbf{p}_{c_k}$ and $\mathbf{f}_{c_k}$ are
-respectively the position and force vectors for contact $c_k$.
+\noindent where $m_i$ and $\mathbf{x}_i$ are respectively the mass and
+center of mass vector of rigid body \body{i}, $\mathbf{g}$ is the
+gravity acceleration vector, and $\mathbf{p}_{c_k}$ and
+$\mathbf{f}_{c_k}$ are respectively the position and force vectors for
+contact $c_k$.
 
 Newton's second law of motion states that the total wrench of forces
 must be equal to the system dynamic wrench, denoted
 $\left(\begin{matrix}\mathbf{f}\\\mathbf{n}\end{matrix}\right)$. Let
 $m$ and $\mathbf{x}_G$ denote respectively the total mass of the robot
 and its \emph{Center of Mass (CoM)} position. Assuming that the
-walking conditions are realized, the analysis presented in
+walking conditions are verified, the analysis presented in
 \cite{wieber2002} can be applied to guarantee that a walking motion is
 \emph{dynamically balanced} if and only if the vertical projection of
 the point defined by:
@@ -355,7 +356,7 @@ the point defined by:
     \mathbf{u}\times\mathbf{f}}{m\mathbf{g} + \mathbf{f}.\mathbf{u}}
 \end{equation}
 
-is always in the interior of the convex hull of the contact points;
+\noindent is always in the interior of the convex hull of the contact points;
 the convex hull is also known as the \emph{support polygon}.
 
 The vertical projection is called the \emph{Zero-Moment Point (ZMP)}
@@ -367,11 +368,12 @@ normal contact forces applied on them. We further discuss the use of
 the ZMP formulation in Chapter \ref{chap:optimal-motion-planning}.
 
 Note that in the particular case where the dynamic wrench is zero,
-i.e. when body speeds and accelerations are zero, the point defined in
-Equation \equref{eq:chap1-dynamic-balance} coincides with the CoM. This
-allows us to guarantee that a quasi-static walking motion is
-\emph{statically balanced} if and only if the vertical projection of
-the CoM is always in the interior of the support polygon.
+i.e.\ when body velocities and accelerations are zero, the point
+defined in Equation \equref{eq:chap1-dynamic-balance} coincides with
+the CoM. This allows us to guarantee that a quasi-static walking
+motion is \emph{statically balanced} if and only if the vertical
+projection of the CoM is always in the interior of the support
+polygon.
 
 \subsection{Cart-Table Model}
 \label{subsec:chap1-cart-table}
@@ -396,7 +398,7 @@ x - \frac{z_c}{g} \ddot{x}\\ y - \frac{z_c}{g} \ddot{y}
 \end{array}
 \right)
 \end{equation}
-where $z_c$ is the constant height of the CoM and $g$ is the gravity
+\noindent where $z_c$ is the constant height of the CoM and $g$ is the gravity
 constant.
 
 \begin{figure}
@@ -483,7 +485,7 @@ work in \cite{kano09} defines a robot augmented with a sequence of
 footprints and formulates the problem of locomotion planning as an
 optimization problem. Such a scheme works well in the presence of
 simple obstacles, but is prone to falling in local minima, failing to
-find solutions more complex environments.
+find solutions for more complex environments.
 
 \subsection{Constrained Motion Planning}
 \label{subsec:chap1-constrained-motion-planning}
@@ -509,16 +511,16 @@ multiple-contact-point stance planner looks for authorized contact
 surfaces in order to help the robot reach its goal. The contact points
 do not have to be coplanar, and the planner produces a sequence of
 statically balanced postures for a humanoid robot which can press his
-feet and hands against objects in the environment. A heuristic method
+feet and hands against objects in the environment. A~heuristic method
 is used to direct the search towards the goal, so this planner does
 not offer a completeness property. Once the contact stance sequence is
 obtained, motion generation tools can be used to generate
-statically-balanced or dynamically balanced locomotion trajectories.
+statically balanced or dynamically balanced locomotion trajectories.
 
 \subsection{Decoupled Planning}
 \label{subsec:chap1-bounding-box}
 
-Finally, another strategy consists of dividing a high-dimensional
+Finally, another strategy consists in dividing a high-dimensional
 problem into smaller problems and solving them successively
 \cite{zhan09}. The idea of dividing the problem into a two-stage
 scheme is described in \cite{yosh08}: A 36-DoF humanoid robot is
@@ -539,7 +541,7 @@ describe an optimal motion planning framework.
 
 An important notion on humanoid walk planning is the one of holonomic
 motion.
-A \emph{holonomic} \emph{constraint}, is given by:
+A \emph{holonomic} \emph{constraint} is given by:
 \begin{eqnarray} C(\mathbf{q}) & = & 0,
   \label{eq:chap1-holonomic_constraint}
 \end{eqnarray}
@@ -566,7 +568,7 @@ orientation variations between the start and goal configurations,
 humanoid motion obeys a holonomic constraint, and sidestepping is
 allowed. However, for greater distances and orientation variations, a
 nonholonomic constraint rules human gait, and sidestepping is
-forbidden, i.e. the human direction is always tangent to its path.
+forbidden, i.e.\ the human direction is always tangent to its path.
 But one should note that this model is only applicable in the case of
 the absence of any obstacles, and it is clear that in the presence of
 narrow passages, a human would be forced to adopt holonomic motion in
@@ -585,21 +587,21 @@ sidestepping only in narrow passages.
 
 The work of \cite{moul10} provides a sound way for generating nice
 walking trajectories, using numerical optimization to minimize the
-robot walking time along the path while following speed and obstacle
-distance constraints. However, after having tried this approach, we
-came to the conclusion that it was too computationally expensive given
-the simple nature of the robot model, with optimizations taking
-several minutes even for simple environments.
+robot walking time along the path while enforcing velocity and
+obstacle distance constraints. However, after having tried this
+approach, we came to the conclusion that it was too computationally
+expensive given the simple nature of the robot model, with
+optimizations taking several minutes even for simple environments.
 
 While using the same two-stage approach of \cite{yosh08}, a simpler
-heuristic method that generates realistic near time-optimal humanoid
+heuristic method that generates near time-optimal humanoid
 trajectories is proposed. First the PRM algorithm and the Dubins local
 paths are replaced with an RRT-Connect algorithm and linear local
 paths. The path is then optimized by locally reorienting the robot
-bounding box on a discrete set of configurations of the path. Our
-heuristic gives priority to nonholonomic motion; holonomic motion is
-used only to pass in narrow passages or avoid nearby obstacles, thus
-generating realistic walking trajectories.
+bounding box on a discrete set of configurations. Our heuristic gives
+priority to nonholonomic motion; holonomic motion is used only to pass
+in narrow passages or avoid nearby obstacles, thus generating short
+walking trajectories.
 
 The following section presents this method and explains how it is
 integrated in the motion planning scheme. Examples of different
@@ -622,15 +624,15 @@ scenarios, including a real one with the HRP-2 platform, are shown in
 
 Assuming full knowledge of the environment, the RRT algorithm produces
 a collision-free piecewise linear path $P_{RRT}$ for the robot
-bounding box (in offline mode), i.e. the path consists of the
+bounding box (in offline mode), i.e.\~the path consists of the
 concatenation of linear local paths $LP_{RRT}$.
 
 Due to the probabilistic nature of RRT, $P_{RRT}$ may not be optimal
 in terms of length, and a preliminary random shortcut optimization
 (RO) can be run in order to shorten it (See
-\autoref{fig:chap1-bb-plan-optim}). While the optimized path $P$ is
+\autoref{fig:chap1-bb-plan-optim}). Though the optimized path $P$ is
 collision-free, the bounding box orientation is such that it could
-lead to an trajectory which is not time-optimal. For instance, the
+lead to a trajectory which is not time-optimal. For instance, the
 humanoid robot could spend a long time walking sideways or backwards
 over a long distance in an open space. An additional optimization
 stage is introduced to address this issue in the next section.
@@ -643,7 +645,7 @@ orientation.  The optimizer reorients the bounding box along $P$ by
 changing $\theta$ while retaining the value of $\mathbf{X}$.
 
 For this purpose, an A$^{*}$ search algorithm is executed. First, $P$
-is regularly sampled. Using a discrete set of possible orientations
+is regularly sampled. Using a discrete set of admissible orientations
 for each sample configuration, a cost function and a heuristic
 estimation function, the bounding box orientation is then modified
 along $P$. An optimized path $P_{opt}$ is created and leads to a
@@ -677,7 +679,7 @@ $\mathbf{q}_n^{init}$.
       \label{fig:chap1-A-star}
 \end{figure}
 
-The possible orientation states need to be defined. We aim to make a
+The admissible orientation states need to be defined. We aim to make a
 humanoid robot reach its goal as soon as possible. Since the robot is
 faster while walking straight than side-stepping, we attempt to change
 the orientation of each initial sample configuration
@@ -708,9 +710,10 @@ described in the following section.
 An A$^{*}$ search algorithm can find an optimal path in a graph as
 long as the latter and an evaluation function are correctly
 defined. Starting from $\mathbf{q}_s$, A$^{*}$ expands in each
-iteration the possible transitions from one sample to the next one in
-the graph and evaluates with the evaluation function the cost of going
-through each different state, see \autoref{fig:chap1-A-star}.
+iteration the admissible transitions from one sample to the next one
+in the graph and evaluates, using the evaluation function, a lower
+bound of the cost-to-go from each state to the goal state, see
+\autoref{fig:chap1-A-star}.
 
 A graph $G$ is defined to be a set of nodes and arcs. A valid node
 $\mathbf{q}_n^{state_n}$ is defined to be a configuration with no
@@ -759,7 +762,7 @@ C = \left\{
   \quad \text{if } v^f < 0
 \end{array} \right.
 \end{equation}
-where $v^{f}$ and $v^{lat}$ are respectively the frontal and lateral
+\noindent where $v^{f}$ and $v^{lat}$ are respectively the frontal and lateral
 speed, and $v_{min}^f$, $v_{max}^{f}$ and $v_{max}^{lat}$ their
 minimum and maximum values (See
 \autoref{fig:chap1-elliptic-constraint}). $D(\mathbf{q}_n^{state_n},
@@ -778,7 +781,7 @@ $\mathbf{q}_n^{state}$ from $\mathbf{q}_s$ to $\mathbf{q}_g$ and can be written 
   \hat{f}(\mathbf{q}_n^{state}) = \hat{g}(\mathbf{q}_n^{state}) +
   \hat{h}(\mathbf{q}_n^{state})
 \end{equation}
-where $\hat{g}(\mathbf{q}_n^{state})$ is the estimated cost of the
+\noindent where $\hat{g}(\mathbf{q}_n^{state})$ is the estimated cost of the
 optimal path from $\mathbf{q}_s$ to $\mathbf{q}_n^{state}$ and
 $\hat{h}(\mathbf{q}_n^{state})$ is a heuristic function giving the
 estimated cost of the optimal path from $\mathbf{q}_n^{state}$ to
@@ -786,7 +789,7 @@ $\mathbf{q}_g$.
 
 $\hat{h}(\mathbf{q})$ must verify $\hat{h}(\mathbf{q}) \leq
 h(\mathbf{q})$ for any $\mathbf{q}$ to ensure that the algorithm is
-admissible, i.e. that the path from $\mathbf{q}_s$ to $\mathbf{q}_g$
+admissible, i.e.\ that the path from $\mathbf{q}_s$ to $\mathbf{q}_g$
 is optimal. Since the robot is fastest while walking straight forward
 in the absence of obstacles, $\hat{h}(\mathbf{q}_n^{state})$ is
 defined as:
@@ -797,7 +800,7 @@ defined as:
   &+ D(\mathbf{q}_{n+1}^{front},~\mathbf{q}_g)
   \end{split}
 \end{equation}
-where $N_{sample}$ is the total number of initial sample
+\noindent where $N_{sample}$ is the total number of initial sample
 configurations in $P$ including $\mathbf{q}_s$ and
 $\mathbf{q}_g$. $\hat{h}(\mathbf{q}_n^{state})$ thus sums the cost of
 walking along $P$ while staying tangential to the path with the start

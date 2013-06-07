@@ -38,7 +38,7 @@ order to generate statically balanced paths on a submanifold
 of {\cspace}.
 
 Let us recall that an important feature of sampling-based algorithms
-is their probabilistic completeness, i.e. their capacity to avoid
+is their probabilistic completeness, i.e.\ their capacity to avoid
 falling into local minima and to find a solution path if it
 exists. They present however three drawbacks. First, due to their
 random sampling nature, the configuration \config{} might move in a
@@ -58,7 +58,7 @@ can be executed on the robot.
 We give in Appendix \ref{chap:app-numerical-optimization} an overview
 of the most successful numerical optimization techniques that can be
 found in the literature. We focus on Jacobian-based methods,
-i.e. methods that use information given by the \emph{variations} of
+i.e.\ methods that use information given by the \emph{variations} of
 the function we want to minimize to find its minimizer.
 
 \section{Optimal Control}
@@ -69,8 +69,8 @@ application of finding, for a dynamic model such as an anthropomorphic
 system, a trajectory that allows the model to move over the course of
 time from an initial state to a final state, while minimizing a
 certain criterion. This particular field is known as \emph{optimal
-  control}, and has been a major field of interest in the Robotics
-community ever since its creation.
+  control}, and has been a major field of interest in the Control
+Theory and Robotics communities ever since their beginning.
 
 \bigskip
 
@@ -97,10 +97,10 @@ An \emph{optimal control problem (OCP)} can be written as follows:
 \label{OCP}
 \begin{equation}
   \min_{\mathbf{x} (\cdot), \mathbf{u} (\cdot), T} \ \ 
-  J(\mathbf{x}(t),\mathbf{u}(T),T) = \int_{0}^{T}L (\mathbf{x}(t), \mathbf{u}(t))dt + \Phi(\mathbf{x}(T))
+  J(\mathbf{x}(\cdot),\mathbf{u}(\cdot),T) = \int_{0}^{T}L (\mathbf{x}(t), \mathbf{u}(t))dt + \Phi(\mathbf{x}(T))
   \label{OCP:Obj}
 \end{equation}
-\ \ \ subject to:
+\noindent \ \ \ subject to:
 
 \begin{equation}
   \begin{array}{rclr}
@@ -153,14 +153,14 @@ exhaustive survey can be found in
 \emph{Dynamic Programming} is based on Richard Bellman's
 \emph{Optimality Principle} \cite{bellman1965dynamic}, which states
 that for any OCP going from an initial to a final state, we have a
-solution optimal control iff we have a solution optimal control for
-the sub-OCP starting from a state reached from the initial state and
-going to the final state.
+solution optimal control if we have a solution optimal control for the
+sub-OCP starting from a state reached from the initial state and going
+to the final state.
 
-Let $v(\mathbf{x},0) = J(\mathbf{x}(t),\mathbf{u}(t),T)$. Using this
-principle, the \emph{Hamilton-Jacobi-Bellman (HJB) Partial
-  Differential Equation (PDE)} can be derived for continuous-time
-systems:
+Let $v(\mathbf{x},t) = \int_{t}^{T}L (\mathbf{x}(t), \mathbf{u}(t))dt
++ \Phi(\mathbf{x}(T))$. Using this principle, the
+\emph{Hamilton-Jacobi-Bellman (HJB) Partial Differential Equation
+  (PDE)} can be derived for continuous-time systems:
 
 \begin{equation}
 \label{eq:chap3-hjb}
@@ -169,39 +169,37 @@ systems:
 \mathbf{u},t)\right) = 0,
 \end{equation}
 
-subject to the terminal condition:
+\noindent subject to the terminal condition:
 
 \begin{equation}
 \label{eq:chap3-hjb-cond}
 v(\mathbf{x},T)=\Phi(\mathbf{x}(T)).
 \end{equation}
 
-$v$ is also called the \emph{value function}. Equation
-\equref{eq:chap3-hjb} is the PDE which gives the necessary and
-sufficient conditions for finding an optimal control policy. It can be
-solved backwards in time, just as in discrete-time dynamic
-programming, starting from $t=T$ and ending at $
-t=0$. State-of-the-art solvers which rely on finite-element methods
-are then used to solve it. However, as the PDE contains partial
-derivatives with respect to both time and state, solvers suffer from
-the curse of dimensionality and the HJB equation is not used for
-large-scale systems in practice.
+\noindent $v$ is also called the \emph{value function}. Equation
+\equref{eq:chap3-hjb} is the PDE which gives the necessary conditions
+for finding an optimal control policy. It can be solved backwards in
+time, just as in discrete-time dynamic programming, starting from
+$t=T$ and ending at $ t=0$. State-of-the-art solvers which rely on
+finite-element methods are then used to solve it. However, as the PDE
+contains partial derivatives with respect to both time and state,
+solvers suffer from the curse of dimensionality and the HJB equation
+is not used for large-scale systems in practice.
 
 \subsection{Indirect Methods}
 
 Another fundamental idea in optimal control is the \emph{Maximum (or
   Minimum) Principle}, introduced by Pontryagin
-\cite{boltyanskii1960theory}. It also gives sufficient and necessary
-conditions for optimal control, and leads to the same solutions as the
-optimality principle. It can be derived indirectly from the HJB
-equation, by first hiding the value function gradient in a
-\emph{costate} vector:
+\cite{boltyanskii1960theory}. It also gives necessary conditions for
+optimal control, and leads to the same solutions as the optimality
+principle. It can be derived indirectly from the HJB equation, by
+first hiding the value function gradient in a \emph{costate} vector:
 
 \begin{equation}
   \mathbf{p}(t) = \nabla_{\mathbf{x}} v(\mathbf{x},t),
 \end{equation} 
 
-and defining the \emph{Hamiltonian} as the objective function in the
+\noindent and defining the \emph{Hamiltonian} as the objective function in the
 HJB PDE:
 
 \begin{equation}
@@ -209,8 +207,8 @@ HJB PDE:
   \mathbf{u})^{\top}\mathbf{p}(t) + L (\mathbf{x}, \mathbf{u},t)
 \end{equation}
 
-These new definitions lead to Pontryagin's minimum principle
-sufficient and necessary conditions:
+\noindent These new definitions lead to Pontryagin's minimum principle
+necessary conditions:
 
 \begin{equation}
 \begin{array}{rcl}
@@ -240,7 +238,7 @@ infinite-dimensional OCP into a finite dimensional NLP, which can be
 solved using standard numerical optimization techniques. This allows
 handling all constraints more easily, and, surprisingly, can lead to
 better performance than exact methods, as specialized solvers can take
-advantage of the high sparsity of the NLP, i.e. the fact that the
+advantage of the high sparsity of the NLP, i.e.\ the fact that the
 associated gradients contain a large number of zeros. The major
 drawback of such methods comes from the fact that we only obtain an
 approximate solution of the OCP, but a proper choice of discretization
@@ -304,7 +302,7 @@ using a piecewise constant control parameterization $\mathbf{q}$.
 Single-shooting methods present several advantages: they only need an
 initial guess of the control parameterization $\mathbf{q}$, and they
 can rely on state-of-the-art ODE solvers to obtain the corresponding
-state $\mathbf{x}(t,\mathbf{q})$. Due to this fact, the underlying SQP
+state $\mathbf{x}(t,\mathbf{q})$. Due to this fact, the underlying NLP
 problem has few degrees of freedom, even for large-scale ODE
 systems. However, because the state vector cannot be initialized, we
 cannot use the state knowledge to initialize it. This is problematic
@@ -338,7 +336,7 @@ forward differentiation for instance would give:
   \end{array}
 \end{equation}
 
-and
+\noindent and
 
 \begin{equation}
   \begin{array}{c}
@@ -471,7 +469,7 @@ one single vector as:
 \in \mathbb R^{2nN},
 \end{equation} 
 
-and let us gather continuity (including boundary), equality and
+\noindent and let us gather continuity (including boundary), equality and
 inequality constraints in three vectors $\mathbf{C}$,$\mathbf{G}$ and
 $\mathbf{H}$ respectively. We can then rewrite the NLP problem as:
 
@@ -503,7 +501,7 @@ subproblem is written as:
   \end{array}\right.
 \end{equation}
 
-where $\mathbf{p}=
+\noindent where $\mathbf{p}=
 (\Delta\mathbf{s}_0,\Delta\mathbf{q}_0,\Delta\mathbf{s}_1,\Delta\mathbf{q}_1,\ldots,\Delta\mathbf{s}_N)$,
 and $\mathcal{L}$ is the Lagrangian of $F$.
 
@@ -522,7 +520,7 @@ that each block-component can be written as:
 \end{array}
 \end{equation}
 
-where $\mathbf{X}_i^\mathbf{s}$ and $\mathbf{X}_i^\mathbf{q}$ are the
+\noindent where $\mathbf{X}_i^\mathbf{s}$ and $\mathbf{X}_i^\mathbf{q}$ are the
 Jacobians of $\mathbf{x}(t_{i+1},\mathbf{s}_i,\mathbf{q}_i)$ with
 respect to $\mathbf{s}$ and $\mathbf{q}$ respectively.
 
@@ -653,7 +651,7 @@ have then the following relations:
 \end{array}
 \end{equation}
 
-where $r=\overset{\longrightarrow}{AB}$ is the translation vector
+\noindent where $r=\overset{\longrightarrow}{AB}$ is the translation vector
 between the two coordinate systems, and $\mathbf{E} =
 \tensor*[^B]{\mathbf{R}}{_A}$ is the rotation matrix from $A$ to $B$.
 
@@ -705,7 +703,7 @@ spatial forces:
 
 Note that except for the ordering of the translation and rotation
 components, spatial vectors represent the same concepts as velocity,
-acceleration and force wrenches, i.e. they both give a compact
+acceleration and force wrenches, i.e.\ they both give a compact
 representation of a vector field. In what follows, we only use the
 spatial algebra notations.
 
@@ -741,7 +739,7 @@ $\boldsymbol{\tau}$:
 \mathbf{S}^\top\boldsymbol{\tau},
 \end{equation}
 
-where $\mathbf{A}$ is the \emph{joint-space inertia matrix},
+\noindent where $\mathbf{A}$ is the \emph{joint-space inertia matrix},
 $\mathbf{b}$ is the joint-space bias force which account for both
 Coriolis and gravity effects, $\mathbf{J}_{c_k}$ is the \emph{contact
   Jacobian} for the contact $c_k$ that is submitted to spatial contact
@@ -760,12 +758,12 @@ lie inside the positive \emph{Coulomb friction cone}
   \end{array}
 \end{equation}
 
-where $\mathbf{u}_{c_k}$ denotes the normal vector to the contact
+\noindent where $\mathbf{u}_{c_k}$ denotes the normal vector to the contact
 surface, $\mathbf{f}^\bot$ and $\mathbf{f}^\angle$ denote the normal
 and tangential contact forces to the contact surface respectively, and
 $\mu_s$ denotes the \emph{limiting coefficient of static friction},
 which depends of the contact interface nature (materials, temperature,
-etc).
+etc.).
 
 In addition to the dynamics equation, both of the actuators and the
 kinematic structure can impose several limitations, such as joint
@@ -775,21 +773,21 @@ position limits
   \downbar{\mathbf{q}} \le \mathbf{q} \le \overbar{\mathbf{q}},
 \end{equation}
 
-joint velocity limits
+\noindent joint velocity limits
 
 \begin{equation}
   \downbar{\mathbf{\dot{q}}} \le \mathbf{\dot{q}} \le
   \overbar{\mathbf{\dot{q}}},
 \end{equation}
 
-and actuator torque limits
+\noindent and actuator torque limits
 
 \begin{equation}
   \downbar{\boldsymbol{\tau}} \le \boldsymbol{\tau} \le
   \overbar{\boldsymbol{\tau}}
 \end{equation}
 
-These additional constraints, shown in Figure
+\noindent These additional constraints, shown in Figure
 \ref{fig:chap3-robot-dynamics} will also have to be taken into account
 in the OCP formulation in order to generate feasible motions.
 
@@ -869,7 +867,7 @@ torque applied by the floating joint be 0:
  \boldsymbol{\tau_{fl}}=\mathbf{0},
 \end{equation}
 
-where $\boldsymbol{\tau_{fl}}$ denotes the floating-joint torque
+\noindent where $\boldsymbol{\tau_{fl}}$ denotes the floating-joint torque
 vector, see \cite{hirukawa2006universal}.
 
 Conversely, if we set all contact forces to zero and we compute the
@@ -883,12 +881,12 @@ equal to the resultant spatial force that includes all the necessary
 contact forces. Computing the ZMP is then a simple matter of
 transforming $\tensor*[^{fl}]{\mathbf{f}}{_c^s}$ to the absolute world
 frame $W$, and finding the coordinates $(p_x,p_y)$ of the point on the
-floor such that the moments around the $x$ and $y$ axes, i.e. the
+floor such that the moments around the $x$ and $y$ axes, i.e.\ the
 first two components of $\tensor*[^W]{\mathbf{f}}{_c^s}$, are equal to
 zero. This point $\mathbf{p}$ is, according to its definition, the
 Zero-Moment Point which we are looking for. We can then guarantee a
 humanoid robot dynamic balance by ensuring $\mathbf{p}$ stays inside
-the support polygon $\mathcal{P}_{sup}$, i.e. the convex hull of all
+the support polygon $\mathcal{P}_{sup}$, i.e.\ the convex hull of all
 contact points.
 
 \subsubsection{Dynamic Balance with Non-Coplanar Contact Forces}
@@ -917,7 +915,7 @@ during the motion, we have:
 \mathbf{p}_{c_k}(t)=\mathbf{p}_{c_k}(0),\quad k = 1,\ldots,n_c,
 \end{equation}
 
-where $\mathbf{p}_{c_k}$ denotes the 6D position of contact $c_k$.
+\noindent where $\mathbf{p}_{c_k}$ denotes the 6D position of contact $c_k$.
 
 By derivating it twice we obtain the contact condition:
 
@@ -926,7 +924,7 @@ By derivating it twice we obtain the contact condition:
 \dot{\mathbf{J}}_{c_k}\dot{\mathbf{q}}=\mathbf{0}, \quad k = 1,\ldots,n_c,
 \end{equation}
 
-Let $\mathbf{f}^s_c$ and $\mathbf{J}_c$ denote the concatenated
+\noindent Let $\mathbf{f}^s_c$ and $\mathbf{J}_c$ denote the concatenated
 contact force vector and contact Jacobian respectively:
 
 \begin{equation}
@@ -949,7 +947,7 @@ contact force vector and contact Jacobian respectively:
 \end{matrix}\right)
 \end{equation}
 
-The following linear system can then be built using the dynamics
+\noindent The following linear system can then be built using the dynamics
 equation and contact condition, and solved for $\ddot{\mathbf{q}}$ and
 all $\mathbf{f}^s_{c_k}$.
 
@@ -1008,10 +1006,10 @@ considered as optimization variables, was suggested in
 Beside generating dynamically feasible motions for an anthropomorphic
 system, we need to make sure no collision occurs during the
 motion. Let us assume a collision-free initial guess is fed to the OCP
-solver. The optimization process iteratively reshapes motion and
-collision between the robot and itself or the environment might
-ensue. This motivates the need to take into account (self-)collision
-avoidance in the OCP.
+solver. The optimization solver iteratively reshapes the motion, and
+either collisions between the robot and itself or collisions with the
+environment might ensue. This motivates the need to take into account
+(self-)collision avoidance in the OCP.
 
 \subsection{Distance Pairs}
 
@@ -1101,7 +1099,7 @@ pairs, and this minimum distance is required to stay
 positive. Interestingly, this leads to a final optimized motion which
 is guaranteed to be collision-free for any $t\in[0,T]$. So far this
 method has been applied to implement self-collision avoidance,
-i.e. motions are generated in the absence of obstacles.
+i.e.\ motions are generated in the absence of obstacles.
 
 We briefly present the signed distance transform
 \cite{felzenszwalb2004distance}, which is an alternative method for
@@ -1347,7 +1345,7 @@ the following optimization problem:
   \end{array}
 \end{equation} 
 
-where $d(\mathbf{p},\mathbf{e_1e_2})$ is the distance of $\mathbf{p}$
+\noindent where $d(\mathbf{p},\mathbf{e_1e_2})$ is the distance of $\mathbf{p}$
 to line segment $\mathbf{e_1e_2}$.  Equations \ref{capsule-objective}
 and \ref{capsule-constraint} mean we want to find the minimum-volume
 capsule while ensuring all vertices $\mathbf{v}$ of the underlying
@@ -1697,7 +1695,7 @@ The objective function can then be written as:
   \label{objective-function}
 \end{equation}
 
-and we define the state and control variables to be:
+\noindent and we define the state and control variables to be:
 \begin{equation}
   \begin{array}{rcl}
   \mathbf{x}(t) & = & [\mathbf{q}(t), \mathbf{\dot{q}}(t), \mathbf{\ddot{q}}(t)]^T \\
@@ -1738,7 +1736,7 @@ These constraints can be written as for any $t\in[0,T]$:
   \label{dynamic-constraints}
 \end{equation}
 
-where $\mathbf{p}_{lf}$, $\mathbf{p}_{rf}$ are respectively the 6D
+\noindent where $\mathbf{p}_{lf}$, $\mathbf{p}_{rf}$ are respectively the 6D
 positions of the left and right foot, $\mathbf{p}_{zmp}$ and
 $\mathcal{P}_{sup}$ are the 2D ZMP coordinates and the support polygon
 respectively. Note that in order to ensure $\mathbf{p}_{lf}$ and
@@ -1760,7 +1758,7 @@ shooting nodes in \textsc{MUSCOD-II}. This led to poor performance as
 the solver systematically went beyond the threshold number of
 iterations. We hence propose to define one inequality constraint per
 robot body, with its value being the minimum distance for all distance
-pairs involving this body, i.e. both self-collision and obstacle
+pairs involving this body, i.e.\ both self-collision and obstacle
 collision pairs.
 
 \section{Results}
@@ -1981,10 +1979,9 @@ configuration, then moves back to a rest posture. The motion must be
 executed while ensuring the arms do not collide with each other, and
 the robot does not fall. This is quite a difficult task as the 3
 trajectories durations are fixed to 1, 2, and 2 seconds
-respectively. Particularly, the second motion where one arm goes from
-being behind the other arm to being ahead of it proved to be
-impossible to generate without a prior planning phase as proposed in
-out approach.
+respectively. Particularly, the second motion where one arm goes
+around the other arm proved to be impossible to generate without a
+prior planning phase as proposed in our approach.
 
 \begin{figure}
   \centering
@@ -2292,7 +2289,7 @@ applied on the robot bodies:
   \label{variables-contact-point}
 \end{equation}
 
-and discretize the forces to represent them as continuous piecewise
+\noindent and discretize the forces to represent them as continuous piecewise
 linear function, as for jerks. Each 3D force vector is expressed in
 the local body coordinate system.
 
@@ -2300,7 +2297,7 @@ As the ZMP is no longer useful in this case, we replace the ZMP
 inequality constraints by the dynamic balance equality constraint from
 Equation \equref{eq:chap3-dynamic-balance-inverse}. For now we assume
 that the limiting coefficient of static friction $\mu_s$ is infinite,
-i.e. that the friction cone is the positive half-space. We therefore
+i.e.\ that the friction cone is the positive half-space. We therefore
 only add the first constraint from \equref{eq:chap3-friction-cone}, which
 ensure that the contact force normals are positive.
 
@@ -2431,7 +2428,7 @@ that the collision avoidance constraints are properly enforced.
 In this work, we only tried enforcing dynamic balance constraints with
 a contact force formulation in the case of horizontal coplanar contact
 points. The same formulation can luckily be used for cases where the
-contact points are not coplanar, e.g. where HRP-2 stands on an uneven
+contact points are not coplanar, e.g.\ where HRP-2 stands on an uneven
 floor or uses its upper limbs to go in contact with the
 environment. We leave this for future work.
 
@@ -2550,7 +2547,7 @@ points. This approach requires us to first plan the contact stance
 sequence which cannot be changed later on.
 
 An alternative solution would be to reformulate the OCP so that
-changing contact point sets are taken into account, e.g. through a
+changing contact point sets are taken into account, e.g.\ through a
 linear complementarity constraint between a contact point distance to
 obstacles and the normal contact force, as proposed in
 \cite{posa2012direct, tassa2012synthesis,

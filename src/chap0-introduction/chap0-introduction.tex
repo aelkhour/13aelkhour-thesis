@@ -10,7 +10,7 @@ capabilities, mainly focused on moving some of their limbs in order to
 \emph{act} on their environment or simply to entertain. Starting from
 the middle of the twentieth century, technological advances in
 electronics allowed the creation of sensors which allowed robots to
-\emph{perceive} their surroundings (including their own body), i.e. to
+\emph{perceive} their surroundings (including their own body), i.e.\ to
 build a useful representation of them. Finally, thanks to the
 breakthroughs in the Computer Science and Mathematics fields, the
 means to \emph{decide} how to act based on perception were given to
@@ -39,7 +39,7 @@ but very few exhibit such a high versatility. Also, we are witnessing
 a shift from industrial robotics to personal robotics. Humanoid robots
 can have access to the same environments as humans, and they are made
 to look like them and to be easily accepted: they can therefore be
-used as companions, assistants, guides, teachers, etc in various
+used as companions, assistants, guides, teachers, etc.\ in various
 situations.
 
 From a research point of view, anthropomorphic systems are very
@@ -79,8 +79,8 @@ is possible. Obviously such a system cannot move instantaneously, so
 it will have to travel continuously in the environment surrounding it
 to reach its goal. The environment will usually not be empty, as it
 will contain at least the ground that supports the system. It might
-also contain moving or static entities with which we do not want the
-system to collide in order to avoid damaging either the entities, the
+also contain moving or static entities which we do not want the
+system to collide with in order to avoid damaging either the entities, the
 system, or both. Additionally, we want to avoid self-collisions
 between the different limbs of the system. Finally, as anthropomorphic
 systems rely on making and breaking contact with their environment in
@@ -96,7 +96,7 @@ executing this motion, and such that it is always balanced.
 While the found solution is guaranteed to be collision-free, we still
 know nothing about its ``quality''. In the case of anthropomorphic
 system motion, the notion of quality can be linked to how close a
-motion is to real human motion, i.e. one which a human being would
+motion is to real human motion, i.e.\ one which a human being would
 have made if he was put in the same conditions. Obtaining high-quality
 motions is desirable since humanoid robots are bound to move in
 man-made environments such as homes, offices, and factories and
@@ -128,16 +128,16 @@ time. This method is validated on various scenarios.
 
 \emph{The second contribution} is a whole-body motion planner for
 humanoid robots which computes collision-free walking trajectories,
-based on exact models of both robot and environment. It is used to
-solve manipulation tasks that may require walking. The first stage of
-our algorithm uses a sampling-based constrained motion planner and
-computes a collision-free statically balanced path for a robot which
-can be fixed or sliding on the ground. The formal proof that dynamic
-walking makes humanoid robots small-space controllable is then
-established; this directly implies that this first path can always be
-approximated by a dynamically balanced, collision-free walking
-trajectory. This well-grounded method is implemented and the results
-are validated on several environments.
+based on exact models of both the robot and its environment. It is
+used to solve manipulation tasks that may require walking. The first
+stage of our algorithm uses a sampling-based constrained motion
+planner and computes a collision-free statically balanced path for a
+robot which can be fixed or sliding on the ground. The formal proof
+that dynamic walking makes humanoid robots small-space controllable is
+then established; this directly implies that this first path can
+always be approximated by a dynamically balanced, collision-free
+walking trajectory. This well-grounded method is implemented and the
+results are validated on several environments.
 
 A new framework for optimal motion planning is proposed as a
 \emph{third contribution}. Given a humanoid robot geometric and

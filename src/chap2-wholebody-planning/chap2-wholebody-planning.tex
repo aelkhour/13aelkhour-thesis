@@ -55,10 +55,10 @@ Cartesian space, and can represent an end-effector position and/or
 orientation, the CoM position, etc. Some tasks may have more than one
 solution configuration, see Section
 \ref{subsec:chap1-kinematic-redundancy}. In the case of most robotics
-tasks, the set of solution configurations has a specific topological
-structure and forms a differentiable submanifold $\manifold$ of
-{\cspace}, i.e. a set that locally ``looks like'' the euclidean
-space \tspace{m}, and such that the tangent vector space
+tasks for redundant systems, the set of solution configurations has a
+specific topological structure and forms a differentiable submanifold
+$\manifold$ of {\cspace}, i.e.\ a set that locally ``looks like'' the
+euclidean space \tspace{m}, and such that the tangent vector space
 $T_{\mathbf{q}}\manifold$ is defined for any \config{}. $m$ is called
 the dimension of the manifold $\manifold$.
 
@@ -104,13 +104,12 @@ parameters, the solver convergence depends of the initial value of
 \config{}, and a bad initialization can lead to either slow
 convergence or failure. A cutoff number of iterations $it_{max}$ is
 thus introduced to bypass these cases. Note that in this simplistic
-implementation, joint limit position bounds are not enforced. In
-practice, clamping the update at each iteration allows making sure
-they are not violated.
+implementation, joint limit position bounds are not enforced. Clamping
+the update at each iteration allows making sure they are not violated.
 
 In practice, we observe that values of $\epsilon=10^{-6}$,
 $\alpha=0.1$, $\alpha_{max}=0.95$ and $w=0.8$ lead to good behavior,
-i.e. fast convergence and low failure rate. These values are kept
+i.e.\ fast convergence and low failure rate. These values are kept
 constant for all scenarios in this work.
 
 \begin{algorithm}
@@ -187,7 +186,7 @@ goals for manipulation planning was proposed in \cite{diankov2008bpc}.
 
 A goal configuration is generated using the following algorithm:
 \begin{enumerate}
-\item Shoot a random configuration \config{rand} in {\cspace} with
+\item Sample a random configuration \config{rand} in {\cspace} with
   uniform distribution.
 \item Call \texttt{SolveConstraints} (Algorithm~\ref{algo:newton}) on
   \config{rand}, with $f(q)$ defined by the intersection of the planning
@@ -287,7 +286,7 @@ close to the constrained manifold.
 
 \cite{berenson2011task} presents a formal proof that projection-based
 constrained random motion planning on a fixed dimension manifold is
-probabilistically complete. This proof applies equally to this
+probabilistically complete. This proof equally applies to this
 algorithm.
 
 \begin{figure}
@@ -412,7 +411,7 @@ compiled in Table~\ref{table:reaching}. The performance of
 \texttt{SolveConstraints} (Algorithm \ref{algo:newton}) is also
 measured when used to project configurations on $\manifold$; the
 average number of iterations is 6.5 per call, and the success rate,
-i.e. the ratio of the number of successfully projected configurations
+i.e.\ the ratio of the number of successfully projected configurations
 over the total number of calls, is above 95 percent. This success
 rate, high as it is, could be further improved by sampling a better
 initial configuration of {\cspace}, for example by introducing a
@@ -496,13 +495,15 @@ platforms so far.
 Let us recalls the definition of small-space controllability and its
 use in motion planning.
 
-A robotic system is controllable if for any two configurations \config{1}
-and \config{2}, there exists a trajectory going from \config{1} to \config{2}.  It is
-\textit{small-space controllable} if for all configurations \config{}, for
-all $\epsilon >0$, there exists $\eta >0$ such that all the
-configurations contained in the ball of center \config{} and radius $\eta$
-are reachable by trajectories included in the ball of center \config{} and
-radius $\epsilon$. Figure~\ref{fig:ssc1} shows an illustration of this
+A robotic system is controllable if for any two configurations
+\config{1} and \config{2}, there exists a trajectory going from
+\config{1} to \config{2} in a finite time interval. It is
+\textit{small-space controllable} if for all configurations \config{},
+for all $\epsilon >0$, there exists $\eta >0$ such that all the
+configurations contained in the ball of center \config{} and radius
+$\eta$ are reachable, in a finite time interval, by trajectories
+included in the ball of center \config{} and radius
+$\epsilon$. Figure~\ref{fig:ssc1} shows an illustration of this
 property.
 
 \begin{figure}
@@ -585,7 +586,7 @@ accessible from \config{} in time less than $T$ forms a neighborhood of
 \config{}. When accelerations and velocities are bounded, small-time
 controllability implies small-space controllability. This is why a lot
 of motion planning previous work only refers to the sufficient
-small-time controllability property. However, the reciprocate is not
+small-time controllability property. However, the converse is not
 necessarily true: a system can be small-space controllable and not
 small-time, if the trajectories generated by its controller are
 arbitrarily long.  The important property, regarding motion planning
@@ -601,11 +602,11 @@ make the distinction between these two controllability properties.
 
 The main contribution of this chapter is a whole-body motion planner
 for humanoid robots that computes collision-free walking trajectories,
-based on exact models of both robot and environment. It is used to
-solve manipulation tasks that may require walking. The first stage of
-our algorithm uses a sampling-based constrained motion planner and
-computes a collision-free statically balanced path for a robot which
-can be fixed or sliding on the ground.
+based on exact models of both the robot and its environment. It is
+used to solve manipulation tasks that may require walking. The first
+stage of our algorithm uses a sampling-based constrained motion
+planner and computes a collision-free statically balanced path for a
+robot which can be fixed or sliding on the ground.
 
 Another contribution of this chapter is the formal proof that dynamic
 walking makes humanoid robots small-space controllable, with the
@@ -680,7 +681,7 @@ configuration space of the robot is:
 \begin{equation}
   \mathcal{CS} = SE(2) \times SE(2) \times \mathbb{R}^3
 \end{equation}
-It is of dimension 9.
+\noindent It is of dimension 9.
 
 The balanced walking conditions for a quasi-static walking robot are
 that the point mass, or CoM, should always be over the support polygon
@@ -704,13 +705,14 @@ distance. Let $L>0$ be the positive horizontal distance between the
 CoM and the left foot (if the CoM is over the left foot, we can
 consider similarly the right foot). For all $\epsilon < L$, any valid
 trajectory starting from \config{}, included in the ball of center
-\config{} and radius $\epsilon$, is such that the CoM is never over
-the left foot.  Given the quasi-static walking conditions, the right
-foot of the robot is fixed along the trajectory. Thus, the set of
-accessible configurations from \config{} by staying inside
-$B($\config{}$,\epsilon)$ does not form a neighborhood of \config{},
-since it does not include any configuration where the right foot has
-moved. This shows that the robot is not small-space controllable.
+\config{} and radius $\epsilon$ $B($\config{}$,\epsilon)$, is such
+that the CoM is never over the left foot.  Given the quasi-static
+walking conditions, the right foot of the robot is fixed along the
+trajectory. Thus, the set of accessible configurations from \config{}
+by staying inside $B($\config{}$,\epsilon)$ does not form a
+neighborhood of \config{}, since it does not include any configuration
+where the right foot has moved. This shows that the robot is not
+small-space controllable.
 
 \bigskip
 
@@ -738,7 +740,7 @@ x - \frac{z_c}{g} \ddot{x}\\ y - \frac{z_c}{g} \ddot{y}
 \end{array}
 \right)
 \end{equation}
-where $z_c$ is  the constant height of the CoM and  $g$ is the gravity
+\noindent where $z_c$ is  the constant height of the CoM and  $g$ is the gravity
 constant.    In    the    following    we    will    note    $\omega_0
 =\sqrt{\frac{g}{z_c}}$.
 
@@ -790,7 +792,7 @@ foot, the robot can move its left foot.
 
 Starting from a static configuration at time $(t=0)$, we cannot apply
 directly a control $y(t) = \epsilon \sin(\omega t)$ because it
-generates a discontinuity in the speed of the CoM at time $(t=0)$. To
+generates a discontinuity in the velocity of the CoM at time $(t=0)$. To
 overcome this discontinuity, we go through a transient state between
 $(t=0)$ and $(t=T)$ for some $T >0$. Let $f:[0,T] \rightarrow [0,1]$
 be an increasing function of class $C^\infty$ such that $f(0) = 0$,
@@ -815,7 +817,7 @@ f(t)\epsilon\sin(\omega t)
 \end{equation}
 
 One can check that $y$ is of class $C^2$ over $\mathbb{R}_+$, and that
-$\dot{f}(0) = 0$. When $t\geq T$, the robot is in the permanent state
+$\dot{f}(0) = 0$. When $t\geq T$, the robot is in the steady state
 described above and can successively move either of its feet inside
 small neighborhoods.  The last point to check is that for $t \in
 [0,T]$ $p_y(t)$ stays inside the support polygon of the robot. The
@@ -835,7 +837,7 @@ p_y(t) = &  f(t) \epsilon (1 + \left(\frac{\omega}{\omega_0}\right)^2)
 \input{fig-zmp-inplace.tex}
 
 \caption{CoM motion (solid line) along $y$ axis.  The CoM stays in the
-  interval $[-\epsilon,\epsilon]$ while during permanent state ($t
+  interval $[-\epsilon,\epsilon]$ while during steady state ($t
   \geq T$), the ZMP (dashed line) oscillates between the centers of
   the feet, which allows in-place walk.}
 \label{fig:zmp-inplace}
@@ -846,7 +848,7 @@ For all $t \in [0,T]$, $f(t) \epsilon (1 + \frac{\omega}{\omega_0}^2)
 derivatives of $f$ guarantee that $p_y(t)$ lies between $-L- l/2$ and
 $L+ l/2$, which means that the ZMP stays inside the support polygon.
 Figure  \ref{fig:zmp-inplace} shows an example of CoM motion on the $y$
-axis and the corresponding ZMP motion. Once in permanent in-place
+axis and the corresponding ZMP motion. Once in steady in-place
 walking state, the robot can come back to a static state by applying a
 symmetric transient state used to decrease gradually the amplitude of
 the oscillations of the CoM without generating a discontinuity in the
@@ -859,8 +861,8 @@ arbitrarily small neighborhood. This concludes the proof.
 
 \subsubsection{Remarks}
 \paragraph{Generalization to a complete model:} 
-We did not extend the previous proof to any legged robot model since
-empirically, the table cart model describes a large part of the
+We have not extended the above proof to any legged robot model
+since empirically, the table cart model describes a large part of the
 dynamics of a walking humanoid robot. Although of little practical
 interest, the generalization of the proof does not seem very difficult
 to achieve. As an insight, the difference between the table cart model
@@ -874,7 +876,7 @@ small as necessary and by using recent results on properties of joint
 trajectories induced by end-effector motions \cite{Zanchettin6084763}.
 
 \paragraph{Use of ZMP preview controller:}
-The control strategy presented in the previous proof may generate very
+The control strategy presented in the above proof may generate very
 long trajectories, because of the transient states at the beginning
 and end of the locomotion. In the actual implementation, we have
 chosen to generate CoM motions with a ZMP preview controller, as
@@ -897,7 +899,7 @@ filtering stage proposed in \cite{kaji03} to compute the exact ZMP,
 take into account the full dynamics of the robot and generate feasible
 trajectories.
 
-\paragraph{Speed of CoM:}
+\paragraph{Velocity of CoM:}
 The theoretical result presented in this section implies that any
 collision-free path can be approximated by a sequence of admissible
 and collision-free trajectories. However, the theorem depends on a
@@ -923,7 +925,7 @@ trajectory. Classic numerical Jacobian-based prioritized inverse
 kinematics methods prove to be very useful to generate a dynamic
 walking trajectory while trying to accomplish secondary tasks, such as
 following a reference configuration trajectory. We use the framework
-called Generalized inverse kinematics (Gik) and developed in
+called Generalized inverse kinematics (Gik) developed in
 \cite{yoshida2006tds}.
 
 The hierarchy of tasks (referred to as \textit{GikTasks} in Algorithm

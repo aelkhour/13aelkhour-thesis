@@ -47,7 +47,7 @@ Figures \ref{fig:rrt-it}, \ref{fig:rrt-t} and \ref{fig:rrt-n}.
 
 We give here an overview of the most successful numerical optimization
 techniques that can be found in the literature. We focus on
-Jacobian-based methods, i.e. methods that use information given by the
+Jacobian-based methods, i.e.\ methods that use information given by the
 \emph{variations} of the function we want to minimize to find its
 minimizer. As this section is largely based on
 \cite{nocedal1999numerical}, we invite the interested reader to refer
@@ -71,7 +71,7 @@ if:
 f(\argmin{x}) \le f(\mathbf{x})~\forall \mathbf{x} \in \mathbb R^n,
 \end{equation}
 
-implying that there is no other point $\mathbf{x}\in\mathbb R^n$ such
+\noindent implying that there is no other point $\mathbf{x}\in\mathbb R^n$ such
 that the value of $f$ at $\mathbf{x}$ is lower than the value of $f$
 at $\argmin{x}$. On the other hand, a \emph{local minimizer} is such
 that $\exists$ a neighborhood $\mathcal{N}$ of $\argmin{x}$ and:
@@ -117,7 +117,7 @@ semi-definite (psd).
 
 The key for the conditions is that $f$ be at least $C^2$ so that
 $\nabla f$ and $\nabla^2 f$ be defined and continuous. Note that if
-$f$ is convex and $C^1$, $\nabla f(x)$ is positive definite (pd)
+$f$ is convex and $C^1$, $\nabla^2 f(x)$ is positive definite (pd)
 $\forall~\mathbf{x}$, and it can be shown that any stationary point of
 $f$ is also a global minimizer of $f$.
 
@@ -170,7 +170,7 @@ first-order Taylor approximation of $f$, it can be proved that:
 \begin{equation}
 \mathbf{p_k} = -\nabla f_k
 \end{equation}
-is the steepest descent direction, i.e. it is the direction along
+\noindent is the steepest descent direction, i.e.\ it is the direction along
 which $f$ decreases the most locally around $\mathbf{x}_k$.
 
 This strategy has a \emph{linear convergence rate}:
@@ -180,9 +180,11 @@ This strategy has a \emph{linear convergence rate}:
 r=\frac{\kappa-1}{\kappa+1},
 \end{equation}
 
-where $\kappa$ is the condition number of the Hessian $\nabla^2 f$.
-It can therefore lead to extremely slow convergence when $\nabla^2 f$
-is ill-conditioned and $r \approx 1$.
+\noindent where $\kappa$ is the condition number of the Hessian
+$\nabla^2 f$, i.e.\ the ratio of the maximum singular value over the
+minimum singular value of $\nabla^2 f$.  It can therefore lead to
+extremely slow convergence when $\nabla^2 f$ is ill-conditioned and $r
+\approx 1$.
 
 Figure \ref{fig:chap3-unconstrained-steepest-descent} shows an example
 of minimizing the Rosenbrock function. We show the first 20 iterates
@@ -227,19 +229,19 @@ f(\mathbf{x_k}+c_1\alpha_k\nabla f_k^{\top}\mathbf{p_k}),
 \mathbf{p}_k)^{\top}\mathbf{p_k} \ge c_2 \nabla f_k^{\top}\mathbf{p_k},
 \end{equation}
 
-where $0 < c_1 < c_2 < 1$. Equation \equref{eq:chap3-wolfe-1} is called
-the \emph{sufficient decrease} or \emph {Armijo condition}; it rejects
-too small decreases in $f$. Equation \equref{eq:chap3-wolfe-2} is called
-the \emph{curvature condition}, and it rejects too negative slopes
-which might slow down convergence. In practice, $c_1$ is very small
-and set to $10^{-4}$, while $c_2$ is set to a value ranging from $0.1$
-to $0.9$.
+\noindent where $0 < c_1 < c_2 < 1$. Equation
+\equref{eq:chap3-wolfe-1} is called the \emph{sufficient decrease} or
+\emph {Armijo condition}; it rejects too small decreases in
+$f$. Equation \equref{eq:chap3-wolfe-2} is called the \emph{curvature
+  condition}, and it rejects too negative slopes which might slow down
+convergence. In practice, $c_1$ is very small and set to $10^{-4}$,
+while $c_2$ is set to a value ranging from $0.1$ to $0.9$.
 
 The Wolfe conditions can be used to write a simple step length
-computation algorithm, as described in Algorithm
-\ref{alg:chap3-line-search-wolfe}. The idea is to start with a large
-value of $\alpha_k$ and decrease it until the Wolfe conditions are
-satisfied.
+computation algorithm, as described in
+Algorithm~\ref{alg:chap3-line-search-wolfe}. The idea is to start with
+a large value of $\alpha_k$ and decrease it until the Wolfe conditions
+are satisfied.
 
 \begin{algorithm}
 \caption{\texttt{StepLengthWolfe}($f$, $\mathbf{x}_k$, $\mathbf{p}_k$,
@@ -362,7 +364,7 @@ The Newton line search is very efficient and exhibits a
 \le M \text{ for all } k \text{ sufficiently large}, \quad M>0,
 \end{equation}
 
-which is faster than a linear convergence rate. However, beside
+\noindent which is faster than a linear convergence rate. However, beside
 knowing how to compute the Jacobian of $f$, we also need to derive the
 Hessian of $f$ and this is not always a trivial task.
 
@@ -375,7 +377,7 @@ it. The search direction is then given by:
 \begin{equation}
 p_k=-\mathbf{B}_k^{-1}\nabla f_k,
 \end{equation}
-where $\mathbf{B}_k\approx\nabla^2 f$ is a symmetric nonsingular
+\noindent where $\mathbf{B}_k\approx\nabla^2 f$ is a symmetric nonsingular
 matrix.
 
 \begin{algorithm}
@@ -457,8 +459,8 @@ iff $\mathbf{x}\in\Omega$. At a feasible point, an inequality
 constraint $c_i~(i\in \mathcal{I})$ is:
 
 \begin{itemize}[noitemsep,nolistsep]
-\item active iff $c_i(\mathbf{x})=0$, i.e. $\mathbf{x}$ is on the boundary of $c_i$,
-\item inactive iff $c_i(\mathbf{x})>0,$ i.e. $\mathbf{x}$ is an
+\item active iff $c_i(\mathbf{x})=0$, i.e.\ $\mathbf{x}$ is on the boundary of $c_i$,
+\item inactive iff $c_i(\mathbf{x})>0,$ i.e.\ $\mathbf{x}$ is an
   interior point of $c_i$.
 \end{itemize}
 \vspace{\baselineskip}
@@ -468,7 +470,7 @@ We can then define the active set at $\mathbf{x}$:
 \mathcal{A}(\mathbf{x})=\mathcal{E}\cup\{i\in\mathcal{I}:c_i(\mathbf{x}=0)\},
 \end{equation}
 
-as the set of all active constraints at a point $\mathbf{x}$. Let us
+\noindent as the set of all active constraints at a point $\mathbf{x}$. Let us
 also define the active constraint gradients at $\mathbf{x}$:
 
 \begin{equation}
@@ -487,7 +489,7 @@ f(\mathbf{x})-\sum_{i\in\mathcal{E}\cup\mathcal{I}}
 \lambda_ic_i(\mathbf{x}),
 \end{equation}
 
-where $\lambda_i,~i\in \mathcal{E}\cup\mathcal{I}$ are called the
+\noindent where $\lambda_i,~i\in \mathcal{E}\cup\mathcal{I}$ are called the
 \emph{Lagrange multipliers}.
 
 It can be shown that candidate minimizers are the stationary points of
@@ -599,7 +601,7 @@ directly to the minimizer $\argmin{x}$ of $q$.
                  {qp-equality.pdf_tex} } }
       \caption{Solution of a constrained QP problem. One linear
         equality constraint is used, and solutions for different
-        values of the constraint are shown. Note that the further the
+        values of the constraint are shown. Note that the farther the
         constraint is from the unconstrained minimum, the larger is
         the associated Lagrange multiplier.}
       \label{fig:chap3-qp-equality}
@@ -686,7 +688,7 @@ found iteratively.
 
 \section{Nonlinear Programming}
 
-We are now ready to tackle \emph{Nonlinear programming (NLP)}, i.e. to
+We are now ready to tackle \emph{Nonlinear programming (NLP)}, i.e.\ to
 solve the general problem from Equation \equref{eq:chap3-nlp}. Two of the
 most successful methods used nowadays to solve large-scale problems
 are \emph{Sequential Quadratic Programming (SQP)} and
@@ -771,11 +773,11 @@ process (up to a specified tolerance) to retrieve a feasible solution.
       }
       \caption{Minimization of the Rosenbrock function under the
         nonlinear circle equality constraint $x^2+y^2-4=0$ and the
-        disk inequality constraint $(x-1)^2+(y-2)^2-2.25 \le 0$,
+        disk inequality constraint $(x-1)^2+(y-2)^2-2.25 \ge 0$,
         starting from three different initial points. Only
         $\mathbf{x_{0a}}$ leads to the global minimizer
         $\mathbf{x}_a^\star$, while $\mathbf{x_{0b}}$ and
-        $\mathbf{x_{0c}}$ lead only to different local minimizers.}
+        $\mathbf{x_{0c}}$ do not.}
       \label{fig:chap3-sqp}
 \end{figure}
 
@@ -814,7 +816,7 @@ e) & \mathbf{S}\mathbf{z} & = & \mu\mathbf{e}, \\%
 \end{array}
 \end{equation}
 
-with $\mathbf{c}_{\mathcal{E}}$, $\mathbf{c}_{\mathcal{I}}$ denoting
+\noindent with $\mathbf{c}_{\mathcal{E}}$, $\mathbf{c}_{\mathcal{I}}$ denoting
 the constraints vector, $\mathbf{A}_\mathcal{E}(\mathbf{x})$,
 $\mathbf{A}_\mathcal{I}(\mathbf{x})$ denoting their respective
 Jacobians, $\mathbf{y}$, $\mathbf{z}$ denoting the Lagrange
@@ -834,7 +836,7 @@ c_i(\mathbf{x})-s_i = 0
 z_i=\frac{\mu}{c_i(\mathbf{x})},
 \end{equation}
 
-and substituted in
+\noindent and substituted in
 $\nabla_{\mathbf{x}}\mathcal{L}(\mathbf{x},\mathbf{y},\mathbf{z})$
 in Equation \equref{eq:chap3-kkt-perturbed}$a)$:
 
@@ -856,7 +858,7 @@ problem is then equivalent to minimizing the equality-constrained
 \rightarrow 0$.
 
 One way to solve the NLP is to start with an initial value of the
-parameter $\mu_0$. The associated log-barrier function problem is then
+parameter~$\mu_0$. The associated log-barrier function problem is then
 solved, and the process is repeated while decreasing $\mu_k$ towards
 0. The log-barrier function problem solutions for the \emph{central
   path} $\{\mathbf{x}^\star(\mu_k)\}_k$, with the particularity that
