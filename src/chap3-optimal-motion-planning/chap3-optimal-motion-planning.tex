@@ -128,7 +128,8 @@ $\mathbf{u}(t)$ are infinite-dimensional.
         \subimport*{src/chap3-optimal-motion-planning/figure/}
                    {optimal-control-problem.pdf_tex}
       }
-      \caption{Illustration of the optimal control problem, showing
+      \caption[Illustration of the optimal control
+        problem.]{Illustration of the optimal control problem, showing
         the control and state vectors, path and boundary
         constraints. As the space of continuous functions is
         infinite-dimensional, the general OCP is also
@@ -289,7 +290,8 @@ using a piecewise constant control parameterization $\mathbf{q}$.
         \subimport*{src/chap3-optimal-motion-planning/figure/}
                    {optimal-control-problem-single-shoot.pdf_tex}
       }
-      \caption{Solving the OCP with direct single-shooting methods:
+      \caption[Solving the OCP with direct single-shooting
+        methods.]{Solving the OCP with direct single-shooting methods:
         the controls are discretized on a coarse grid, and the state
         trajectory is found by numerical integration of the model ODE
         starting from an initial value. In this example, the
@@ -417,13 +419,14 @@ integration of the ODE over each sub-interval $[t_i,t_{i+1}]$:
         \subimport*{src/chap3-optimal-motion-planning/figure/}
                    {optimal-control-problem-multiple-shoot.pdf_tex}
       }
-      \caption{Solving the OCP with direct multiple-shooting methods:
-        controls are discretized on a coarse grid, and several initial
-        values for the state are given. The state trajectory is
-        computed on each sub-interval by numerical integration of the
-        model ODE starting from the node values. Note that the whole
-        trajectory is not continuous, and additional continuity
-        constraints need to be added.}
+      \caption[Solving the OCP with direct multiple-shooting
+        methods.]{Solving the OCP with direct multiple-shooting
+        methods: controls are discretized on a coarse grid, and
+        several initial values for the state are given. The state
+        trajectory is computed on each sub-interval by numerical
+        integration of the model ODE starting from the node
+        values. Note that the whole trajectory is not continuous, and
+        additional continuity constraints need to be added.}
       \label{fig:chap3-optimal-control-problem-multiple-shoot}
 \end{figure}
 
@@ -719,7 +722,8 @@ computation algorithms.
         \subimport*{src/chap3-optimal-motion-planning/figure/}
                    {robot-dynamics.pdf_tex}
       }
-      \caption{Non-vanishing and non-sliding contact forces are
+      \caption[Contact forces are applied on the anthropomorphic
+        system.]{Non-vanishing and non-sliding contact forces are
         applied on the anthropomorphic system by its environment, and
         they are integrated in its dynamics equation. Joints limits
         are shown in red.}
@@ -1019,9 +1023,10 @@ environment might ensue. This motivates the need to take into account
         \subimport*{src/chap3-optimal-motion-planning/figure/}
                    {robot-collision-pairs.pdf_tex}
       }
-      \caption{All self-collision possible pairs are shown in red for
-        body $B_i$. The collision pair between $B_i$ and an obstacle
-        $O$ is also shown in blue.}
+      \caption[Possible self-collision pairs for a robot body.]{All
+        self-collision possible pairs are shown in red for body
+        $B_i$. The collision pair between $B_i$ and an obstacle $O$ is
+        also shown in blue.}
       \label{fig:chap3-robot-collision-pairs}
 \end{figure}
 
@@ -1403,31 +1408,32 @@ superimposed over the original robot geometries.
     \centering
     \includegraphics[width = \columnwidth]
                     {src/chap3-optimal-motion-planning/figure/hrp2-full-mesh.png}
-    \caption{Original geometries.}
+    \caption[Original geometries.]{Original geometries.}
     \label{simple-patha}
   \end{subfigure}
   \begin{subfigure}{0.24\columnwidth}
     \centering
     \includegraphics[width = \columnwidth]
                     {src/chap3-optimal-motion-planning/figure/hrp2-convex-hull.png}
-    \caption{Convex hull.}
+    \caption[Convex hull.]{Convex hull.}
     \label{simple-path-sola}
   \end{subfigure}
   \begin{subfigure}{0.24\columnwidth}
     \centering
     \includegraphics[width = \columnwidth]
                     {src/chap3-optimal-motion-planning/figure/hrp2-bounding-capsule.png}
-    \caption{Initial capsule parameter guess.}
+    \caption[Initial capsule parameter guess.]{Initial capsule parameter guess.}
     \label{capsulea}
   \end{subfigure}
   \begin{subfigure}{0.24\columnwidth}
     \centering
     \includegraphics[width = \columnwidth]
                     {src/chap3-optimal-motion-planning/figure/hrp2-capsule.png}
-    \caption{Optimization result.}
+    \caption[Optimization result.]{Optimization result.}
     \label{simple-path-sol-shortcuta}
   \end{subfigure}
-  \caption{Minimum-volume bounding capsule generation for the HRP-2.}
+  \caption[Minimum-volume bounding capsules generation for the
+    HRP-2.]{Minimum-volume bounding capsule generation for the HRP-2.}
   \label{fig:chap3-hrp2-capsule}
 \end{figure}
 
@@ -1554,7 +1560,9 @@ helps obtain smooth motions.
 \centering
 \includegraphics[width=0.8\linewidth]
                 {src/chap3-optimal-motion-planning/figure/shelves-path.png}
-\caption{Path found by the path planner in a shelves environment.}
+\caption[Path found by the path planner in a shelves
+  environment.]{Path found by the path planner in a shelves
+  environment.}
 \label{path}
 \end{figure}
 
@@ -1665,14 +1673,15 @@ the control representation and successive time integrations.
           }
         }
   \end{subfigure}
-  \caption{In this example, the planned path contains 5
-    milestones. The jerk (in orange) is a continuous piecewise linear
-    function, and is computed such that the position trajectory starts
-    and ends with zero velocity and acceleration at each
-    milestone. The state nodes (blue dots) are similarly chosen, and
-    the controls are integrated over each sub-interval to obtain the
-    full trajectory (in blue). Note that discontinuities are observed
-    because of the control parameterization.}
+  \caption[Initial trajectory parametrization.]{In this example, the
+    planned path contains 5 milestones. The jerk (in orange) is a
+    continuous piecewise linear function, and is computed such that
+    the position trajectory starts and ends with zero velocity and
+    acceleration at each milestone. The state nodes (blue dots) are
+    similarly chosen, and the controls are integrated over each
+    sub-interval to obtain the full trajectory (in blue). Note that
+    discontinuities are observed because of the control
+    parameterization.}
   \label{fig:chap3-time-param}
 \end{figure}
 
@@ -1787,7 +1796,7 @@ collision pairs.
     \caption{Shortcut path.}
     \label{simple-path-sol-shortcut}
   \end{subfigure}
-  \caption{Paths for the test case.}
+  \caption[Paths for the test case.]{Paths for the test case.}
 \end{figure}
 
 We demonstrate the effectiveness of our optimal motion planning
@@ -1894,7 +1903,8 @@ guess have disappeared.
           }
         }
   \end{subfigure}
-  \caption{Test case: optimized position, velocity, acceleration and
+  \caption[Test case: optimized trajectories for the chest yaw
+    joint.]{Test case: optimized position, velocity, acceleration and
     jerk trajectories for the chest yaw joint. Note that compared to
     Figure \ref{fig:chap3-time-param}, there are no more intermediate
     stops and the trajectories are smooth.}
@@ -1915,7 +1925,8 @@ to consider these constraints as perfectly enforced.
                      {zmp-2s-final-p.pdf_tex}
         }
       }
-  \caption{Test case: evolution of kinematic constraint values over
+  \caption[Test case: evolution of kinematic constraint values over
+    time.]{Test case: evolution of kinematic constraint values over
     time. As we constrain the 6D positions of the two robot feet, we
     end up with 12 equality constraints. They are only fully enforced
     on the shooting nodes, but it can be seen that the maximum
@@ -1942,9 +1953,10 @@ already define conservative volumes around the exact geometries.
                      {zmp-2s-final-d.pdf_tex}
         }
       }
-  \caption{Test case: Evolution of the distance inequality constraint
-    values over time. As the constraints are only enforced at the
-    shooting nodes, a slight penetration of a maximum of 1mm is
+  \caption[Test case: Evolution of the distance inequality constraint
+    values.]{Test case: Evolution of the distance inequality
+    constraint values over time. As the constraints are only enforced
+    at the shooting nodes, a slight penetration of a maximum of 1mm is
     observed between the left forearm capsule and the obstacle.}
   \label{fig:chap3-zmp-2s-final-d}
 \end{figure}
@@ -1961,7 +1973,8 @@ remains fully inside the support polygon.
                      {zmp-2s-final-zmp.pdf_tex}
         }
       }
-  \caption{Test case: Trajectory of the ZMP and the CoM vertical
+  \caption[Test case: Trajectory of the ZMP and the CoM
+    projection.]{Test case: Trajectory of the ZMP and the CoM vertical
     projection on the floor. The green rectangles correspond to the
     robot left and right foot, and the filled area is the support
     polygon. As the ZMP never goes out the support polygon, this
@@ -1991,10 +2004,11 @@ prior planning phase as proposed in our approach.
                      {karate-zmp-2s-final-d.pdf_tex}
         }
       }
-  \caption{Martial arts scenario, phase 2: evolution of the distance
-    inequality constraint values over time. A slight penetration of a
-    maximum of 3mm is observed between the left and right forearm
-    capsules.}
+  \caption[Martial arts scenario: evolution of the distance
+    constraints.]{Martial arts scenario, phase 2: evolution
+    of the distance inequality constraint values over time. A slight
+    penetration of a maximum of 3mm is observed between the left and
+    right forearm capsules.}
   \label{fig:chap3-karate-zmp-2s-final-d}
 \end{figure}
 
@@ -2006,8 +2020,9 @@ prior planning phase as proposed in our approach.
                      {karate-zmp-2s-final-zmp.pdf_tex}
         }
       }
-  \caption{Martial arts scenario, phase 2: trajectory of the ZMP and
-    the CoM vertical projection on the floor. The green rectangles
+  \caption[Martial arts scenario: trajectory of the ZMP and the CoM
+    projection.]{Martial arts scenario, phase 2: trajectory of the ZMP
+    and the CoM vertical projection on the floor. The green rectangles
     correspond to the robot left and right foot, and the filled area
     is the support polygon. As the ZMP never goes out the support
     polygon, this trajectory is dynamically balanced.}
@@ -2044,12 +2059,13 @@ phase is needed to find a collision-free transfer path.
           }
         }
   \end{subfigure}
-  \caption{Shelves scenario, phase 2: trajectories of the ZMP and the
-    CoM vertical projection on the floor. Left: the dynamic balance
-    constraints are enforced at the nodes, but the ZMP goes out the
-    support polygon in two sub-intervals. Right: the ZMP stays inside
-    the support polygon when more restrictive balance constraints and,
-    leading to a reduced support polygon, are used.}
+  \caption[Shelves scenario: trajectories of the ZMP and the CoM
+    projection.]{Shelves scenario, phase 2: trajectories of the ZMP
+    and the CoM vertical projection on the floor. Left: the dynamic
+    balance constraints are enforced at the nodes, but the ZMP goes
+    out the support polygon in two sub-intervals. Right: the ZMP stays
+    inside the support polygon when more restrictive balance
+    constraints and, leading to a reduced support polygon, are used.}
   \label{fig:chap3-grasping-zmp-2s-final-zmp}
 \end{figure}
 
@@ -2061,7 +2077,8 @@ phase is needed to find a collision-free transfer path.
                      {grasping-zmp-2s-final-d.pdf_tex}
         }
       }
-  \caption{Shelves scenario, phase 2: evolution of the distance
+  \caption[Shelves scenario: evolution of the distance
+    constraints.]{Shelves scenario, phase 2: evolution of the distance
     inequality constraint values over time. A slight penetration of a
     maximum of 3mm is observed between the right gripper capsule and
     the shelves.}
@@ -2151,8 +2168,9 @@ points, even inside the time sub-intervals, see Figure
                     {src/chap3-optimal-motion-planning/figure/self-collision-10.png}
     \label{self-collision-10}
   \end{subfigure}
-  \caption{HRP-2 does a quick martial arts motion while avoiding
-    self-collision.}
+  \caption[HRP-2 does a quick martial arts motion while avoiding
+    self-collision.]{HRP-2 does a quick martial arts motion while
+    avoiding self-collision.}
   \label{self-collision}
 \end{figure}
 
@@ -2218,8 +2236,9 @@ points, even inside the time sub-intervals, see Figure
                     {src/chap3-optimal-motion-planning/figure/shelves-10.png}
     \label{shelves-10}
   \end{subfigure}
-  \caption{HRP-2 bends down quickly to grab a ball in the lower
-    shelf and transfers it to the upper shelf.}
+  \caption[HRP-2 transfers quickly a ball in a shelf.]{HRP-2 bends down
+    quickly to grab a ball in the lower shelf and transfers it to the
+    upper shelf.}
   \label{shelves}
 \end{figure}
 
@@ -2346,7 +2365,8 @@ reduced support polygon vertices.
         \caption{Contact forces applied on reduced support polygon.}
         \label{fig:chap3-contact-point6s-final-contact-reduced}
   \end{subfigure}
-  \caption{Martial arts scenario, phase 2: trajectories of the ZMP and
+  \caption[Martial arts scenario: trajectories of the ZMP and the
+    CoP.]{Martial arts scenario, phase 2: trajectories of the ZMP and
     the CoP computed from the contact forces. Left: the dynamic
     balance constraints are enforced at the nodes, but the ZMP goes
     out the support polygon in two sub-intervals. Right: the ZMP stays
@@ -2388,7 +2408,8 @@ than 5\% of the HRP2 weight, which is around 550N.
           }
         }
   \end{subfigure}
-  \caption{Martial arts scenario, phase 2: Left and right normal
+  \caption[Martial arts scenario: Left and right normal contact
+    forces.]{Martial arts scenario, phase 2: Left and right normal
     contact forces. All normal forces remain positive during the
     motion, and are computed to ensure dynamic balance.}
   \label{fig:chap3-contact-point6s-final-f}
@@ -2405,9 +2426,10 @@ that the collision avoidance constraints are properly enforced.
                      {contact-point6s-final-point5contact-tau.pdf_tex}
         }
       }
-  \caption{Martial arts scenario, phase 2: floating joint generalized
-    torque evolution over time. It is required to be equal to 0 in
-    order to obtain dynamic balance.}
+  \caption[Martial arts scenario: floating joint generalized torque
+    evolution.]{Martial arts scenario, phase 2: floating joint
+    generalized torque evolution over time. It is required to be equal
+    to 0 in order to obtain dynamic balance.}
   \label{fig:chap3-contact-point6s-final-tau}
 \end{figure}
 
@@ -2419,7 +2441,8 @@ that the collision avoidance constraints are properly enforced.
                      {contact-point6s-final-d.pdf_tex}
         }
       }
-  \caption{Martial arts scenario, phase 2: collision avoidance
+  \caption[Martial arts scenario: collision avoidance constraints
+    evolution.]{Martial arts scenario, phase 2: collision avoidance
     constraints evolution over time. The constraint violation does not
     exceed 2mm on the sub-intervals.}
   \label{fig:chap3-contact-point6s-final-d}

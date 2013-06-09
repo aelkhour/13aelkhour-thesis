@@ -72,13 +72,13 @@ configuration is found (see Figure
   \centering
       {\includegraphics[width = \linewidth]
         {src/chap1-path-optimization/deterministic-algorithm.pdf}}
-      \caption{Left: A valid path is computed by the deterministic
-        algorithm. Arrows show the attractive and repulsive potential
-        fields. Thin lines show the potential lines. Right: Example of
-        problem where the stable local minimizer does not coincide
-        with the goal configuration, which is the global
-        minimizer. $P$ is thus not a solution to the path planning
-        problem.}
+      \caption[Motion planning with deterministic algorithms.]{Left: A
+        valid path is computed by the deterministic algorithm. Arrows
+        show the attractive and repulsive potential fields. Thin lines
+        show the potential lines. Right: Example of problem where the
+        stable local minimizer does not coincide with the goal
+        configuration, which is the global minimizer. $P$ is thus not
+        a solution to the path planning problem.}
       \label{fig:chap1-deterministic-algorithm}
 \end{figure}
 
@@ -129,11 +129,13 @@ both the initial and goal configurations, see Figure
   \centering
       {\includegraphics[width = 0.8\linewidth]
         {src/chap1-path-optimization/rrt.pdf}}
-      \caption{A valid path (in green) computed with a bidirectional
-        RRT planner. $q_{start}$ and $q_{goal}$ are the roots of the
-        trees $\mathcal{T}_{1}$and $\mathcal{T}_{2}$ respectively. The
-        algorithm keeps diffusing both trees until they can be
-        connected together with an edge (in dashed green).}
+      \caption[A valid path computed with a bidirectional RRT
+        planner.]{A valid path (in green) computed with a
+        bidirectional RRT planner. $q_{start}$ and $q_{goal}$ are the
+        roots of the trees $\mathcal{T}_{1}$and $\mathcal{T}_{2}$
+        respectively. The algorithm keeps diffusing both trees until
+        they can be connected together with an edge (in dashed
+        green).}
       \label{fig:chap1-rrt}
 \end{figure}
 
@@ -185,10 +187,10 @@ shown in Figure \ref{fig:chap1-optimizers}, right.
   \centering
       {\includegraphics[width = \linewidth]
         {src/chap1-path-optimization/optimizers.pdf}}
-      \caption{Left: The path $P$ (in dashed green) is optimized with
-        a greedy optimizer. Right: The optimized path $P_{opt}$ (in
-        continuous green) after several iterations of random
-        optimization (RO).}
+      \caption[Shortcut optimization techniques.]{Left: The path $P$
+        (in dashed green) is optimized with a greedy optimizer. Right:
+        The optimized path $P_{opt}$ (in continuous green) after
+        several iterations of random optimization (RO).}
       \label{fig:chap1-optimizers}
 \end{figure}
 
@@ -229,12 +231,13 @@ humanoid robots when they are in contact with their environment.
       {\def\svgwidth{0.8\linewidth}
         \subimport*{src/chap1-path-optimization/}
                    {robot-kinematic-tree.pdf_tex}}
-      \caption{Left: schematic view of a humanoid robot: bodies
-        are connected with joints (yellow circles) which represent the
-        actuators. A fictitious 6-DoF joint, or floating joint (purple
-        circle), is added to move the robot in {\segroup}. Right: A
-        kinematic tree view of the same robot, where bodies and joints
-        are represented by nodes and edges respectively.}
+      \caption[Humanoid robot kinematic tree.]{Left: schematic view of
+        a humanoid robot: bodies are connected with joints (yellow
+        circles) which represent the actuators. A fictitious 6-DoF
+        joint, or floating joint (purple circle), is added to move the
+        robot in {\segroup}. Right: A kinematic tree view of the same
+        robot, where bodies and joints are represented by nodes and
+        edges respectively.}
       \label{fig:chap1-robot-kinematic-tree}
 \end{figure}
 
@@ -269,7 +272,8 @@ robot {\robot} is an element of the configuration space {\cspace} $=$
       {\def\svgwidth{0.8\linewidth}
         \subimport*{src/chap1-path-optimization/}
                    {robot-redundancy.pdf_tex}}
-      \caption{Anthropomorphic systems are highly redundant
+      \caption[Kinematic redundancy for anthropomorphic
+        systems]{Anthropomorphic systems are highly redundant
         systems. For a desired Cartesian position (in blue) of the end
         effector \body{e}, there exists more than one configuration
         \config{} that accomplish this task. Left and right: two
@@ -406,14 +410,14 @@ constant.
       {\def\svgwidth{0.5\linewidth}
         \subimport*{src/chap1-path-optimization/}
                    {robot-cart-table.pdf_tex}}
-      \caption{Simplified model of a cart on table. The cart can move
-        horizontally along one dimension on the table with a non-zero
-        acceleration and represents the robot CoM. The table foot
-        represents the contact surface of the robot. Note that in its
-        current state, the robot is dynamically balanced, as the ZMP
-        lies on the table foot. The CoM vertical projection, on the
-        other hand, is outside the table foot and static balance is
-        not ensured.}
+      \caption[Cart-table model]{Simplified model of a cart on
+        table. The cart can move horizontally along one dimension on
+        the table with a non-zero acceleration and represents the
+        robot CoM. The table foot represents the contact surface of
+        the robot. Note that in its current state, the robot is
+        dynamically balanced, as the ZMP lies on the table foot. The
+        CoM vertical projection, on the other hand, is outside the
+        table foot and static balance is not ensured.}
       \label{fig:chap1-robot-cart-table}
 \end{figure}
 
@@ -432,12 +436,12 @@ motion of the system.
 \begin{figure}
   \centering
   \input{src/chap1-path-optimization/zmp}
-  \caption{An illustration of the walking pattern generator: a desired
-    ZMP trajectory (in grey) connects footprints. During the
-    single-support phase, the ZMP stays under the support foot, and
-    switches feet during the double support phase. The cart-table
-    model is then used to produce the corresponding CoM trajectory (in
-    blue).}
+  \caption[ZMP preview-control pattern generator.]{An illustration of
+    the walking pattern generator: a desired ZMP trajectory (in grey)
+    connects footprints. During the single-support phase, the ZMP
+    stays under the support foot, and switches feet during the double
+    support phase. The cart-table model is then used to produce the
+    corresponding CoM trajectory (in blue).}
   \label{fig:chap1-zmp}
 \end{figure}
 
@@ -615,10 +619,11 @@ scenarios, including a real one with the HRP-2 platform, are shown in
   \centering
       {\includegraphics[width = 0.8\linewidth]
         {src/chap1-path-optimization/bb-plan-optim.pdf}}
-      \caption{Top view: (a) RRT-Connect path for the bounding box
-        passing between two chairs. (b) Optimized bounding box path by
-        random optimization (RO). (c) Optimized bounding box after
-        adding regular sampling optimization (RSO) .}
+      \caption[Solution paths for the bounding box.]{Top view: (a)
+        RRT-Connect path for the bounding box passing between two
+        chairs. (b) Optimized bounding box path by random optimization
+        (RO). (c) Optimized bounding box after adding regular sampling
+        optimization (RSO) .}
       \label{fig:chap1-bb-plan-optim}
 \end{figure}
 
@@ -671,11 +676,12 @@ $\mathbf{q}_n^{init}$.
   \centering
       {\includegraphics[width = 0.75\linewidth]
         {src/chap1-path-optimization/A-star.pdf}}
-      \caption{Each initial sample configuration can be rotated and be
-        in one of four states. Starting from $\mathbf{q}_s$, the
-        A$^{*}$ search algorithm searches the graph $G$ that contains
-        only valid nodes and arcs to produce an optimized path
-        $P_{opt}$.}
+      \caption[The A$^{*}$ search algorithm produces an optimized path
+        $P_{opt}$.]{Each initial sample configuration can be rotated
+        and be in one of four states. Starting from $\mathbf{q}_s$,
+        the A$^{*}$ search algorithm searches the graph $G$ that
+        contains only valid nodes and arcs to produce an optimized
+        path $P_{opt}$.}
       \label{fig:chap1-A-star}
 \end{figure}
 
@@ -731,7 +737,8 @@ purpose.
   \centering
       {\includegraphics[width = 0.75\linewidth]
         {src/chap1-path-optimization/elliptic-constraint.pdf}}
-      \caption{The rectangular bounding box speed vector $v$ is
+      \caption[The rectangular bounding box speed vector $v$ is
+        bounded.]{The rectangular bounding box speed vector $v$ is
         bounded inside the hashed area defined by the speed constraint
         $C$. The area is bounded by the union of two half-ellipsoids.}
       \label{fig:chap1-elliptic-constraint}
@@ -851,9 +858,10 @@ an example is shown in \autoref{fig:chap1-hash-direct-path}.
   \centering
       {\includegraphics[width = 0.6\linewidth]
         {src/chap1-path-optimization/hash-direct-path.pdf}}
-      \caption{Local paths are regularly sampled (light grey) and each
-        sample configuration is reoriented (dark) while considering
-        obstacles $O_1$ and $O_2$.}
+      \caption[Sample configurations are reoriented on local
+        paths.]{Local paths are regularly sampled (light grey) and
+        each sample configuration is reoriented (dark) while
+        considering obstacles $O_1$ and $O_2$.}
       \label{fig:chap1-hash-direct-path}
 \end{figure}
 
@@ -886,8 +894,8 @@ robot whole-body trajectory.
   \multicolumn{1}{|c|}{Apartment} & $1.21$ & $2.43$ & $2.41$ & $223$ & $229$ \\
   \hline
 \end{tabular}
-\caption{Computational time, in seconds, of each planning stage for
-  the presented scenarios.}
+\caption[Computation time of each planning stage.]{Computational time,
+  in seconds, of each planning stage for the presented scenarios.}
 \label{tab:chap1-computation-time}
 \end{table}
 
@@ -904,8 +912,9 @@ robot whole-body trajectory.
   \multicolumn{1}{|c|}{Apartment} & $200$ & $120$ \\
   \hline
 \end{tabular}
-\caption{Humanoid robot walk time, in seconds, for the presented
-  scenarios using RO alone and a RO-RSO combination.}
+\caption[Humanoid robot walk time.]{Humanoid robot walk time, in
+  seconds, for the presented scenarios using RO alone and a RO-RSO
+  combination.}
 \label{tab:chap1-walk-time}
 \end{table}
 
@@ -913,8 +922,10 @@ robot whole-body trajectory.
   \centering
       {\includegraphics[width = 0.8\linewidth]
         {src/chap1-path-optimization/chairs-hash-optim-perspective-hrp2.png}}
-      \caption{Perspective view of the simulated HRP-2 trajectory on
-        the final optimized path passing between two chairs.}
+      \caption[HRP-2 trajectory on the optimized path passing between
+        two chairs.]{Perspective view of the simulated HRP-2
+        trajectory on the final optimized path passing between two
+        chairs.}
       \label{fig:chap1-chairs-hash-optim-perspective-hrp2}
 \end{figure}
 
@@ -955,7 +966,8 @@ humanoid robot HRP-2 \cite{kane04}, see Figure
   \centering{
     \includegraphics[width = 0.7\linewidth]
                     {src/chap1-path-optimization/hrp2-chairs.png}}
-  \caption{Humanoid Robot HRP-2 uses holonomic motion, or
+  \caption[HRP-2 uses holonomic motion to pass between two
+    chairs.]{Humanoid Robot HRP-2 uses holonomic motion, or
     side-stepping, to pass between two chairs.}
   \label{fig:chap1-hrp2-chairs}
 \end{figure}
@@ -981,8 +993,9 @@ sideways takes a longer time than walking straight.
   \centering
       {\includegraphics[width = 0.8\linewidth]
         {src/chap1-path-optimization/galton-hash-optim-perspective-hrp2.png}}
-      \caption{Perspective view of HRP-2 optimized trajectory in the
-        boxes scenario.}
+      \caption[HRP-2 optimized trajectory in the boxes
+        scenario.]{Perspective view of HRP-2 optimized trajectory in
+        the boxes scenario.}
       \label{fig:chap1-galton-hash-optim-perspective-hrp2}
 \end{figure}
 
@@ -1021,8 +1034,9 @@ used.
   \centering
       {\includegraphics[width = 0.8\linewidth]
         {src/chap1-path-optimization/apartment-hash-optim-perspective-hrp2.png}}
-      \caption{Perspective view of HRP-2 optimized trajectory in the
-        apartment scenario.}
+      \caption[HRP-2 optimized trajectory in the apartment
+        scenario.]{Perspective view of HRP-2 optimized trajectory in
+        the apartment scenario.}
       \label{fig:chap1-apartment-hash-optim-perspective-hrp2}
 \end{figure}
 

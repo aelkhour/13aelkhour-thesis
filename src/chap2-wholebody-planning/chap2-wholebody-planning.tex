@@ -210,9 +210,10 @@ constraints for the HRP-2 robot.
                 {src/chap2-wholebody-planning/pics/goal-config/goal3.png}
 }
 
-\caption{Random goal configurations solving a reaching task. All the
-  configurations are balanced and collision-free, and the right hand
-  of the robot reaches the orange ball.}
+\caption[Random goal configurations solving a reaching task.]{Random
+  goal configurations solving a reaching task. All the configurations
+  are balanced and collision-free, and the right hand of the robot
+  reaches the orange ball.}
 \label{fig:goal}
 \end{figure}
 
@@ -255,9 +256,10 @@ towards a random configuration \config{rand}.
     \draw [dashed,thin] (qn2) -- (qrand) ;
   \end{tikzpicture}
 
-  \caption{One step of extension of the RRT algorithm. The algorithm
-    tries to add the longest possible edge from \config{near} towards
-    \config{rand}, while avoiding collisions.}
+  \caption[One step of extension of the RRT algorithm.]{One step of
+    extension of the RRT algorithm. The algorithm tries to add the
+    longest possible edge from \config{near} towards \config{rand},
+    while avoiding collisions.}
   \label{fig:rrt-extend}
 \end{figure}
 
@@ -350,13 +352,14 @@ algorithm.
 %% \end{tikzpicture}
 \end{minipage}
 
-\caption{One step of constrained extension illustrating Algorithm
-  \ref{alg:constrained}: \config{rand} is first projected on
-  $T_{\mathbf{q}}\manifold$ the tangent space of
-  $\manifold$. \config{rand}$'$ is then projected onto $\manifold$ at
-  \config{rand}$''$. A classic RRT extension tries to go as far as
-  possible from \config{near} towards \config{rand}$''$ while
-  remaining on $\manifold$. \config{new} is then returned.}
+\caption[One step of constrained extension.]{One step of constrained
+  extension illustrating Algorithm \ref{alg:constrained}:
+  \config{rand} is first projected on $T_{\mathbf{q}}\manifold$ the
+  tangent space of $\manifold$. \config{rand}$'$ is then projected
+  onto $\manifold$ at \config{rand}$''$. A classic RRT extension tries
+  to go as far as possible from \config{near} towards
+  \config{rand}$''$ while remaining on $\manifold$. \config{new} is
+  then returned.}
 \label{fig:gikrrt}
 \end{figure}
 
@@ -438,11 +441,11 @@ heuristic bias towards statically balanced configurations.
 \includegraphics[width=0.24\linewidth]
                 {src/chap2-wholebody-planning/pics/wb-shelves/8.jpg}
 
-\caption{HRP-2 grabs a ball on a shelf, puts it on another shelf, and
-  comes back to a rest position. Static balance constraints are
-  enforced along the path, and the intermediary goals consisting in
-  grasping and displacing the ball are defined implicitly as inverse
-  kinematics constraints.}
+\caption[HRP-2 displaces a ball in a shelf.]{HRP-2 grabs a ball on a
+  shelf, puts it on another shelf, and comes back to a rest
+  position. Static balance constraints are enforced along the path,
+  and the intermediary goals consisting in grasping and displacing the
+  ball are defined implicitly as inverse kinematics constraints.}
 \label{fig:wb-shelves}
 \end{figure}
 
@@ -459,7 +462,8 @@ heuristic bias towards statically balanced configurations.
 \multicolumn{1}{|l|}{planning time (s)} & 67.36 & 376.84 & 134.28 & 44.76\\
 \hline
 \end{tabular}
-\caption {Experimental results on 20 runs: Each run consists of 3
+\caption[Experimental results on 20 motion planning
+  runs.]{Experimental results on 20 runs: Each run consists of 3
   motion planning problems and 2 goal generations for the three
   phases. Time is expressed in seconds.}
 \label{table:reaching}
@@ -510,10 +514,10 @@ property.
   \centering
   \input{stc1.tex}
 
-  \caption{The small-space controllability local property:  any configuration $q'$ 
-    at a distance less than
-    $\eta$ is reachable from \config{} by an admissible trajectory included in
-    a ball of size $\epsilon$.}
+  \caption[The small-space controllability property.]{The
+    small-space controllability local property: any configuration $q'$
+    at a distance less than $\eta$ is reachable from \config{} by an
+    admissible trajectory included in a ball of size $\epsilon$.}
   \label{fig:ssc1}
 \end{figure}
 
@@ -540,11 +544,11 @@ controllability property.
 
   \input{stc2.tex}
 
-  \caption{Small-space controllability in motion planning. 
-    A collision-free path from
-    \config{1} to \config{2} is approximated by collision-free and admissible
-    trajectories by using the local property.
-  }
+  \caption[Small-space controllability in motion
+    planning.]{Small-space controllability in motion planning.  A
+    collision-free path from \config{1} to \config{2} is approximated
+    by collision-free and admissible trajectories by using the local
+    property.  }
   \label{fig:ssc2}
 \end{figure}
 
@@ -648,8 +652,9 @@ constraints are considered at planning time.
                   {src/chap2-wholebody-planning/pics/chairs/sliding-perspective-3.png}
   \includegraphics[width=0.24\linewidth]
                   {src/chap2-wholebody-planning/pics/chairs/sliding-perspective-4.png}
-  \caption{Collision-free  statically balanced path  for a  humanoid  robot  sliding on  the
-    ground.}
+  \caption[Collision-free path for a sliding humanoid
+    robot.]{Collision-free statically balanced path for a humanoid
+    robot sliding on the ground.}
   \label{fig:sliding}
 \end{figure}
 
@@ -761,9 +766,10 @@ the following.
   \centering
   \input{humanoid.tex}
 
-  \caption{Simplified model of a legged robot. The CoM is at
-    $(0,0,z_c)$, the two feet are flat on the ground, aligned with the
-    $y$-axis, at a horizontal distance $L$ from the CoM.}
+  \caption[Simplified model of a legged robot.]{Simplified model of a
+    legged robot. The CoM is at $(0,0,z_c)$, the two feet are flat on
+    the ground, aligned with the $y$-axis, at a horizontal distance
+    $L$ from the CoM.}
   \label{fig:simple-humanoid}
 \end{figure}
 
@@ -836,10 +842,11 @@ p_y(t) = &  f(t) \epsilon (1 + \left(\frac{\omega}{\omega_0}\right)^2)
 \centering
 \input{fig-zmp-inplace.tex}
 
-\caption{CoM motion (solid line) along $y$ axis.  The CoM stays in the
-  interval $[-\epsilon,\epsilon]$ while during steady state ($t
-  \geq T$), the ZMP (dashed line) oscillates between the centers of
-  the feet, which allows in-place walk.}
+\caption[CoM motion (solid line) along $y$ axis.]{CoM motion (solid
+  line) along $y$ axis. The CoM stays in the interval
+  $[-\epsilon,\epsilon]$ while during steady state ($t \geq T$), the
+  ZMP (dashed line) oscillates between the centers of the feet, which
+  allows in-place walk.}
 \label{fig:zmp-inplace}
 \end{figure}
 
@@ -1013,15 +1020,16 @@ of the method.
           \subimport*{src/chap2-wholebody-planning/pics/inkscape/}
                      {ssc-algorithm.pdf_tex}}
       }
-      \caption{The first three steps of algorithm \ref{alg:walk} are
-        shown (top left and right, bottom left). Starting from a
-        sliding collision-free path (dashed), a walking trajectory is
-        computed using nominal walk parameters. If collisions are
-        detected, the path is recursively cut and animated until a
-        collision-free dynamic walking trajectory is found (bottom
-        right). Notice that shorter and faster steps in the middle of
-        the trajectory lead to smaller deviations of the CoM
-        trajectory (in red) from the original path.}
+      \caption[The first steps of the walk planning algorithm.]{The
+        first three steps of algorithm \ref{alg:walk} are shown (top
+        left and right, bottom left). Starting from a sliding
+        collision-free path (dashed), a walking trajectory is computed
+        using nominal walk parameters. If collisions are detected, the
+        path is recursively cut and animated until a collision-free
+        dynamic walking trajectory is found (bottom right). Notice
+        that shorter and faster steps in the middle of the trajectory
+        lead to smaller deviations of the CoM trajectory (in red) from
+        the original path.}
       \label{fig:chap2-ssc-algorithm}
 \end{figure}
 
@@ -1056,9 +1064,9 @@ the sliding path planning stage.
 \centering
 \includegraphics[width=0.6\linewidth]
                 {src/chap2-wholebody-planning/pics/chairs/couv.png}
-\caption{The robot HRP-2 passing between two chairs. In this kind of
-  environment whole-body collision avoidance is needed during
-  locomotion.}
+\caption[The robot HRP-2 passing between two chairs.]{The robot HRP-2
+  passing between two chairs. In this kind of environment whole-body
+  collision avoidance is needed during locomotion.}
 \label{fig:couv}
 \end{figure}
 
@@ -1077,7 +1085,8 @@ The animation of the sliding path presented in Figure
 \includegraphics[width=0.7\linewidth]
                 {src/chap2-wholebody-planning/pics/chairs/waist-trajectory.png}
 
-\caption{Horizontal trajectory of the robot CoM during
+\caption[Horizontal trajectory of the robot CoM during
+  locomotion.]{Horizontal trajectory of the robot CoM during
   locomotion. When the robot is close to obstacles, the amplitude of
   the oscillations decreases.}
 \label{fig:chairs-waist}
@@ -1113,8 +1122,8 @@ validated on a real HRP-2 platform.
 \includegraphics[width=0.24\linewidth]
                 {src/chap2-wholebody-planning/pics/objects-cloud/perspective-8.png}
 
-\caption{Solution path for a cluttered environment, the robot walks
-  among floating obstacles.}
+\caption[Solution path for a cluttered environment.]{Solution path for
+  a cluttered environment, the robot walks among floating obstacles.}
 \label{fig:cluttered}
 \end{figure}
 
@@ -1132,7 +1141,8 @@ during locomotion.
   \includegraphics[width=0.7\linewidth]
                   {src/chap2-wholebody-planning/pics/objects-cloud/waist-trajectory.png}
 
-  \caption{Horizontal trajectory of the robot CoM during
+  \caption[Horizontal trajectory of the robot CoM during
+    locomotion.]{Horizontal trajectory of the robot CoM during
     locomotion.}
   \label{fig:cluttered-waist} 
 \end{figure}
@@ -1183,9 +1193,10 @@ taken from the motion execution on the real robot HRP-2.
 \includegraphics[width=0.24\linewidth]
                 {src/chap2-wholebody-planning/pics/shelves/trajectory-8.png}
 
-\caption{Solution path for a hand reaching problem in an
+\caption[Solution path for a hand reaching problem in an
+  apartment.]{Solution path for a hand reaching problem in an
   apartment. The goal is implicitly defined as an inverse kinematics
-  task.} 
+  task.}
 \label{fig:shelf}
 \end{figure}
 
@@ -1195,8 +1206,9 @@ taken from the motion execution on the real robot HRP-2.
 \includegraphics[width=0.4\linewidth]
                 {src/chap2-wholebody-planning/pics/shelves/waist-trajectory.png}
 
-\caption{Horizontal trajectory of the robot CoM during
-    locomotion.}
+\caption[Horizontal trajectory of the robot CoM during
+  locomotion.]{Horizontal trajectory of the robot CoM during
+  locomotion.}
 \label{fig:shelf-waist}
 \end{figure}
 
@@ -1214,7 +1226,8 @@ taken from the motion execution on the real robot HRP-2.
 \includegraphics[width=0.19\linewidth]
                 {src/chap2-wholebody-planning/pics/shelves-cdf/5.jpg}
 
-\caption{Execution of the walking trajectory by HRP-2 on stage. The
+\caption[Execution of the walking trajectory by HRP-2 on
+  stage.]{Execution of the walking trajectory by HRP-2 on stage. The
   robot first goes to the shelves to release the ball, then comes back
   to a rest position.}
 

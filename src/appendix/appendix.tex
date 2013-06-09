@@ -14,10 +14,10 @@ Figures \ref{fig:rrt-it}, \ref{fig:rrt-t} and \ref{fig:rrt-n}.
 \centering
 \includegraphics[width=0.7\linewidth]
                 {src/appendix/plots/rrt-it.eps}
-\caption{Number of RRT iterations $it$ for the floating objects and the
-  shelf scenarios, using two variants of RRT. Mean $\overline{it}$,
-  standard deviation $\sigma_{it}$, minimum and maximum values are
-  represented.}
+\caption[Number of RRT iterations for scenarios.]{Number of RRT
+  iterations $it$ for the floating objects and the shelf scenarios,
+  using two variants of RRT. Mean $\overline{it}$, standard deviation
+  $\sigma_{it}$, minimum and maximum values are represented.}
 \label{fig:rrt-it}
 \end{figure}
 
@@ -25,9 +25,10 @@ Figures \ref{fig:rrt-it}, \ref{fig:rrt-t} and \ref{fig:rrt-n}.
 \centering
 \includegraphics[width=0.7\linewidth]
                 {src/appendix/plots/rrt-t.eps}
-\caption{RRT computation time $t$ for the floating objects and the shelf
-  scenarios, using two variants of RRT. Mean $\overline{t}$, standard
-  deviation $\sigma_{t}$, minimum and maximum values are represented.}
+\caption[RRT computation time for scenarios.]{RRT computation time $t$
+  for the floating objects and the shelf scenarios, using two variants
+  of RRT. Mean $\overline{t}$, standard deviation $\sigma_{t}$,
+  minimum and maximum values are represented.}
 \label{fig:rrt-t}
 \end{figure}
 
@@ -35,10 +36,10 @@ Figures \ref{fig:rrt-it}, \ref{fig:rrt-t} and \ref{fig:rrt-n}.
 \centering
 \includegraphics[width=0.7\linewidth]
                 {src/appendix/plots/rrt-n.eps}
-\caption{Number of tree nodes $n$ for the floating objects and the
-  shelf scenarios, using two variants of RRT. Mean $\overline{n}$,
-  standard deviation $\sigma_{n}$, minimum and maximum values are
-  represented.}
+\caption[Number of tree nodes for scenarios.]{Number of tree nodes $n$
+  for the floating objects and the shelf scenarios, using two variants
+  of RRT. Mean $\overline{n}$, standard deviation $\sigma_{n}$,
+  minimum and maximum values are represented.}
 \label{fig:rrt-n}
 \end{figure}
 
@@ -205,13 +206,14 @@ function at each iteration.
                      {unconstrained-steepest-descent.pdf_tex}
         }
       }
-      \caption{Contour lines show the Rosenbrock function
-        $R$. Starting from $\arginit{x}=(-0.6,-0.6)$, a steepest
-        descent line search is used with a constant step size
-        $\alpha_k=1$. The minimizer basin is reached very quickly,
-        but large values of the step size then prevent minimizing the
-        function. Note that the steepest descent direction is
-        orthogonal to the contour lines of $R$.}
+      \caption[Steepest descent line search.]{Contour lines show the
+        Rosenbrock function $R$. Starting from
+        $\arginit{x}=(-0.6,-0.6)$, a steepest descent line search is
+        used with a constant step size $\alpha_k=1$. The minimizer
+        basin is reached very quickly, but large values of the step
+        size then prevent minimizing the function. Note that the
+        steepest descent direction is orthogonal to the contour lines
+        of $R$.}
       \label{fig:chap3-unconstrained-steepest-descent}
 \end{figure}
 
@@ -295,9 +297,10 @@ minimizer, as shown in Figure
           convergence.}
         \label{fig:chap3-unconstrained-steepest-descent-wolfe-b}
   \end{subfigure}
-  \caption{Steepest-descent line search strategy. The Wolfe conditions
-    are enforced at each iteration to ensure sufficient decrease of
-    the objective function.}
+  \caption[Steepest-descent line search strategy with Wolfe
+    conditions.]{Steepest-descent line search strategy. The Wolfe
+    conditions are enforced at each iteration to ensure sufficient
+    decrease of the objective function.}
   \label{fig:chap3-unconstrained-steepest-descent-wolfe}
 \end{figure}
 
@@ -331,9 +334,9 @@ function.
                        {unconstrained-newton-wolfe.pdf_tex}
           }
         }
-        \caption{Solution to the Rosenbrock function minimization
-          problem: a few iterations are needed to find the minimizer
-          $\argmin{x}$.}
+        \caption{Solution to the Rosenbrock
+          function minimization problem: a few iterations are needed
+          to find the minimizer $\argmin{x}$.}
         \label{fig:chap3-unconstrained-newton-wolfe-a}
   \end{subfigure}
   \begin{subfigure}{0.8\columnwidth}
@@ -350,9 +353,9 @@ function.
           approximation.}
         \label{fig:chap3-unconstrained-newton-wolfe-quad}
   \end{subfigure}
-  \caption{Newton line search. The Wolfe conditions are enforced at
-    each iteration to ensure sufficient decrease of the objective
-    function.}
+  \caption[Newton line search.]{Newton line search. The Wolfe
+    conditions are enforced at each iteration to ensure sufficient
+    decrease of the objective function.}
   \label{fig:chap3-unconstrained-newton-wolfe}
 \end{figure}
 
@@ -425,11 +428,12 @@ Hessian. The BFGS line search has then a \emph{superlinear
                      {unconstrained-quasi-newton-wolfe.pdf_tex}
         }
       }
-      \caption{Rosenbrock function minimization with a quasi-Newton
-        line search using a BFGS-Hessian approximation. It is
-        interesting to note that the line search behaves like a
-        steepest-descent line search for the first iterations,
-        converging towards a Newton line search.}
+      \caption[Quasi-Newton line search.]{Rosenbrock function
+        minimization with a quasi-Newton line search using a
+        BFGS-Hessian approximation. It is interesting to note that the
+        line search behaves like a steepest-descent line search for
+        the first iterations, converging towards a Newton line
+        search.}
       \label{fig:chap3-unconstrained-quasi-newton-wolfe}
 \end{figure}
 
@@ -599,11 +603,12 @@ directly to the minimizer $\argmin{x}$ of $q$.
   \centering {\def\svgwidth{0.8\linewidth} {\footnotesize
       \subimport*{src/chap3-optimal-motion-planning/figure/}
                  {qp-equality.pdf_tex} } }
-      \caption{Solution of a constrained QP problem. One linear
-        equality constraint is used, and solutions for different
-        values of the constraint are shown. Note that the farther the
-        constraint is from the unconstrained minimum, the larger is
-        the associated Lagrange multiplier.}
+      \caption[Solution of a constrained QP problem.]{Solution of a
+        constrained QP problem. One linear equality constraint is
+        used, and solutions for different values of the constraint are
+        shown. Note that the farther the constraint is from the
+        unconstrained minimum, the larger is the associated Lagrange
+        multiplier.}
       \label{fig:chap3-qp-equality}
 \end{figure}
 
@@ -677,12 +682,13 @@ found iteratively.
                      {qp-inequality.pdf_tex}
         }
       }
-      \caption{Solution to the general QP problem using an active-set
-        method. The blue line represents the linear equality
-        constraint, while the green and red half-planes represent the
-        linear inequalities (the infeasible set is filled). Starting
-        from $\arginit{x}$, the optimal solution $\argmin{x}$ and
-        active set are found iteratively.}
+      \caption[Solution to the general QP problem using an active-set
+        method.]{Solution to the general QP problem using an
+        active-set method. The blue line represents the linear
+        equality constraint, while the green and red half-planes
+        represent the linear inequalities (the infeasible set is
+        filled). Starting from $\arginit{x}$, the optimal solution
+        $\argmin{x}$ and active set are found iteratively.}
       \label{fig:chap3-qp-inequality}
 \end{figure}
 
@@ -774,12 +780,12 @@ process (up to a specified tolerance) to retrieve a feasible solution.
                      {sqp.pdf_tex}
         }
       }
-      \caption{Minimization of the Rosenbrock function under the
-        nonlinear circle equality constraint $x^2+y^2-4=0$ and the
-        disk inequality constraint $(x-1)^2+(y-2)^2-2.25 \ge 0$,
-        starting from three different initial points. Only
-        $\mathbf{x_{0a}}$ leads to the global minimizer
-        $\mathbf{x}_a^\star$, while $\mathbf{x_{0b}}$ and
+      \caption[NLP Solution using SQP methods.]{Minimization of the
+        Rosenbrock function under the nonlinear circle equality
+        constraint $x^2+y^2-4=0$ and the disk inequality constraint
+        $(x-1)^2+(y-2)^2-2.25 \ge 0$, starting from three different
+        initial points. Only $\mathbf{x_{0a}}$ leads to the global
+        minimizer $\mathbf{x}_a^\star$, while $\mathbf{x_{0b}}$ and
         $\mathbf{x_{0c}}$ do not.}
       \label{fig:chap3-sqp}
 \end{figure}
