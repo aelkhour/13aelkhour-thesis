@@ -359,7 +359,7 @@ the point defined by:
 \noindent is always in the interior of the convex hull of the contact points;
 the convex hull is also known as the \emph{support polygon}.
 
-The vertical projection is called the \emph{Zero-Moment Point (ZMP)}
+This point is called the \emph{Zero-Moment Point (ZMP)}
 \cite{vukobratovic1969contribution}, where it is defined as the point
 on the floor where the horizontal components of the total moment are
 zero. It is also known as the \emph{Center of Pressure (CoP)}, as it
@@ -623,8 +623,8 @@ scenarios, including a real one with the HRP-2 platform, are shown in
 \end{figure}
 
 Assuming full knowledge of the environment, the RRT algorithm produces
-a collision-free piecewise linear path $P_{RRT}$ for the robot
-bounding box (in offline mode), i.e.\~the path consists of the
+\linebreak a collision-free piecewise linear path $P_{RRT}$ for the
+robot bounding box (in offline mode), i.e.\ the path consists of the
 concatenation of linear local paths $LP_{RRT}$.
 
 Due to the probabilistic nature of RRT, $P_{RRT}$ may not be optimal
@@ -738,7 +738,7 @@ purpose.
 \end{figure}
 
 \paragraph{The Successor operator $\Gamma(\mathbf{q}_n^{state_n})$:}
-Its value for any node $\mathbf{q}_n^{state_n}$ is a set
+Its value for any node $\mathbf{q}_n^{state_n}$ is \linebreak a set
 $\{(\mathbf{q}_{n+1}^{state_{n+1}},~c_{n,n+1})\}$, where
 $\mathbf{q}_{n+1}^{state_{n+1}}$ denotes a successor node, and
 $c_{n,n+1}$ is the cost of going from $\mathbf{q}_n^{state_n}$ to
@@ -746,8 +746,8 @@ $\mathbf{q}_{n+1}^{state_{n+1}}$. The cost $c_{n,n+1}$ is defined to
 be the distance
 $D(\mathbf{q}_n^{state_n},~\mathbf{q}_{n+1}^{state_{n+1}})$ between
 two nodes of $G$; it computes the walk time from
-$\mathbf{q}_n^{state_n}$ to $\mathbf{q}_{n+1}^{state_{n+1}}$. The speed
-constraint $C$ is defined as:
+$\mathbf{q}_n^{state_n}$ to $\mathbf{q}_{n+1}^{state_{n+1}}$. The
+speed constraint $C$ is defined as:
 \begin{equation}
 C = \left\{
 \begin{array}{l l l}

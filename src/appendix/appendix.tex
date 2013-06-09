@@ -704,17 +704,20 @@ linearized approximation of the constraints in order to obtain a
 
 \begin{equation}
 \label{eq:chap3-sqp}
+\begin{array}{c}
 \min_{\mathbf{p}}\frac{1}{2}\mathbf{p}_k^{\top}\nabla_{\mathbf{x}\mathbf{x}}^2\mathcal{L}(\mathbf{x}_k,\boldsymbol{\lambda}_k)\mathbf{p}_k+\nabla f(\mathbf{x}_k)^{\top}\mathbf{p}_k+f(\mathbf{x}_k)
+\\
 \text{ s.t.}
 \left\{\begin{array}{cc}
 \nabla c_i(\mathbf{x}_k)^{\top}\mathbf{p}_k+c_i(\mathbf{x}_k) = 0, & i \in \mathcal{E} \\
 \nabla c_i(\mathbf{x}_k)^{\top}\mathbf{p}_k+c_i(\mathbf{x}_k) \ge 0, & i \in \mathcal{I}
 \end{array}\right.
+\end{array}
 \end{equation}
 
 We then solve the QP subproblem, with active-set methods for instance,
 and repeat iteratively until the convergence test is satisfied, as
-described in Algorithm \ref{alg:chap3-sqp}.
+described in Algorithm~\ref{alg:chap3-sqp}.
 
 \begin{algorithm}
 \caption{\texttt{SQPSolve}($\arginit{x}$,$\boldsymbol{\lambda}_0$, $\epsilon$)}

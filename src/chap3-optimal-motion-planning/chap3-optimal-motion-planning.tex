@@ -150,17 +150,17 @@ exhaustive survey can be found in
 
 \subsection{Dynamic Programming}
 
-\emph{Dynamic Programming} is based on Richard Bellman's
-\emph{Optimality Principle} \cite{bellman1965dynamic}, which states
-that for any OCP going from an initial to a final state, we have a
-solution optimal control if we have a solution optimal control for the
-sub-OCP starting from a state reached from the initial state and going
-to the final state.
+\emph{Dynamic Programming} is based on Bellman's \emph{Optimality
+  Principle} \cite{bellman1965dynamic}, which states that for any OCP
+going from an initial to a final state, we have a solution optimal
+control if we have a solution optimal control for the sub-OCP starting
+from a state reached from the initial state and going to the final
+state.
 
 Let $v(\mathbf{x},t) = \int_{t}^{T}L (\mathbf{x}(t), \mathbf{u}(t))dt
 + \Phi(\mathbf{x}(T))$. Using this principle, the
 \emph{Hamilton-Jacobi-Bellman (HJB) Partial Differential Equation
-  (PDE)} can be derived for continuous-time systems:
+  (PDE)} can be derived \linebreak for continuous-time systems:
 
 \begin{equation}
 \label{eq:chap3-hjb}
@@ -703,9 +703,9 @@ spatial forces:
 
 Note that except for the ordering of the translation and rotation
 components, spatial vectors represent the same concepts as velocity,
-acceleration and force wrenches, i.e.\ they both give a compact
-representation of a vector field. In what follows, we only use the
-spatial algebra notations.
+acceleration and force \linebreak wrenches, i.e.\ they both give a
+compact representation of a vector field. In what follows, we only use
+the spatial algebra notations.
 
 In conclusion, the spatial vector notation provides a compact
 rewriting of the dynamics equations, which leads to efficient dynamics
@@ -828,7 +828,7 @@ $\ddot{\mathbf{q}}$:
   \sum_k\mathbf{J}_{c_k}^\top\mathbf{f}^s_{c_k}
 \end{equation}
 
-The whole algorithm complexity is $\mathcal{O}(n^3)$; the
+\noindent The whole algorithm complexity is $\mathcal{O}(n^3)$; the
 \emph{Articulated Body Algorithm (ABA)}, just like RNEA, is based on a
 propagation method and offers a complexity of $\mathcal{O}(n)$. As the
 torques usually constitute the physical controls of a system, forward
@@ -1367,7 +1367,7 @@ minimum-volume capsule for $\mathcal{H}_{\mathcal{P}}$, we are sure to
 have better optimization performance as the number of constraints is
 greatly reduced, especially for non-convex geometries.
 
-We implement our minimization problem with RobOptim \cite{roboptim,
+We solve our minimization problem with RobOptim \cite{roboptim,
   moulard2012optimisation} and the \textsc{IPOPT} solver
 \cite{Biegler2009}, and we use our implementation\footnote{An
   open-source implementation can be found at
@@ -1560,7 +1560,7 @@ helps obtain smooth motions.
 
 We use the constrained planner in \cite{dalibard09}, which we
 described in Section \ref{subsec:chap2-constraint-motion-planning},
-and which is implemented with the motion planning library
+and is implemented with the motion planning library
 KineoWorks\texttrademark \cite{laumond2006kcs}. This planner allows
 generating a collision-free path, while guaranteeing that the solution
 path lies on a manifold of the configuration space. We want to
@@ -1748,10 +1748,10 @@ direction gives the rotation axis, and its norm gives the rotation
 angle around this axis.
 
 \paragraph{Collision avoidance constraints}
-We use the capsule-capsule and capsule-environment pairs defined in
-Section \ref{distance-constraints}. Given a configuration \config{} of
-the robot, we check that distances for pairs of bodies and pairs of
-body and obstacle are positive to ensure (self-)collision
+We use the capsule-capsule and capsule-\linebreak environment pairs
+defined in Section \ref{distance-constraints}. Given a configuration
+\config{} of the robot, we check that distances for pairs of bodies
+and pairs of body and obstacle are positive to ensure (self-)collision
 avoidance. We first tried to add one constraint per pair, which added
 up to $(327 + 23)*n_{ms}$ constraints, where $n_{ms}$ is the number of
 shooting nodes in \textsc{MUSCOD-II}. This led to poor performance as
@@ -2501,8 +2501,8 @@ implementations of these algorithms would obviously lead to enhanced
 performance.
 
 \paragraph{Enforcing constraints}
-\textsc{MUSCOD-II} is based on a direct multiple shooting method. This
-implies, as we saw in Section
+\textsc{MUSCOD-II} is based on a direct multiple shooting\linebreak
+method. This implies, as we saw in Section
 \ref{subsubsec:chap3-direct-multiple-shooting}, that the OCP is
 transcribed to a finite-dimensional NLP thanks to a discretization of
 both the control and state vector. This also implies that constraints
